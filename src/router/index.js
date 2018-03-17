@@ -5,7 +5,7 @@ import Dashboard from '@/components/Dashboard'
 import NewTask   from '@/components/NewTask'
 import EditTask  from '@/components/EditTask'
 import ViewTask  from '@/components/ViewTask'
-import Login     from '@/components/Login'
+import Login    from '@/components/Login'
 
 Vue.use(Router)
 
