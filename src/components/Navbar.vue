@@ -11,8 +11,8 @@
       <b-navbar-nav>
         <router-link to="/dashboard">Gestor</router-link>
         <router-link to="/login">LogIn</router-link>
-        <router-link to="/task">Nueva tarea</router-link>
-        <router-link to="/task/1">Ver tarea</router-link>
+        <router-link to="/task">Pruebas nueva tarea</router-link>
+        <router-link to="/gestionoperarios">Gestion Operarios</router-link>
         <router-link to="/task/edit/1">Editar tarea</router-link>
       </b-navbar-nav>
 
