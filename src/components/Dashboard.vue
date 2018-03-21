@@ -1,56 +1,76 @@
 <template>
-    <div id="dashboard">
+  <div id="dashboard">
+    <!-- Modal Add Tarea -->
+    <!--<b-modal id="modal-new-task" size="lg" centered  title="Añadir tarea al planificador">
+      <p class="my-4">Esto es una prueba</p>
+    </b-modal>
+    <!-- FIN: Modal Add Tarea -->
 
-      <div class="wn-col col-pendientes">
-        <div class="wn-col-title">Tareas Pendientes <button class="wn-menu-btn">Nueva tarea</button></div>
-
-        <div v-for="task in tasks_planificadas" class="wn-task-container">
-          <div class="wn-task-data">
-            <h3>{{task.title}}</h3>
-            <p>Oprerario:  {{task.operario}}</p>
-            <p>Duración: {{task.duracion}}/{{task.estimado}} min</p>
-          </div>
-          <div class="wn-btn-div">
-            <button class="wn-menu-btn">Eliminar</button>
-            <button class="wn-menu-btn disabled">Prioridad</button>
-            <button class="wn-menu-btn">Editar</button>
-          </div>
-        </div>
+    <div class="wn-col col-pendientes">
+      <div class="wn-col-title">Tareas Pendientes
+        <button v-b-modal.modal-new-task class="wn-menu-btn">Nueva tarea</button>
       </div>
 
-      <div class="wn-col col-asignadas">
-        <div class="wn-col-title">Tareas Asignadas</div>
-        <div v-for="task in tasks_asignadas" class="wn-task-container">
-          <div class="wn-task-data">
-            <h3>{{task.title}}</h3>
-            <p>Oprerario:  {{task.operario}}</p>
-            <p>Duración: {{task.duracion}}/{{task.estimado}} min</p>
-          </div>
-          <div class="wn-btn-div">
-            <button class="wn-menu-btn">Eliminar</button>
-            <button class="wn-menu-btn disabled">Prioridad</button>
-            <button class="wn-menu-btn">Editar</button>
-          </div>
+      <div v-for="task in tasks_planificadas" class="wn-task-container">
+        <div class="wn-task-data">
+          <h3>{{task.title}}</h3>
+          <p>Oprerario:  {{task.operario}}</p>
+          <p>Duración: {{task.duracion}}/{{task.estimado}} min</p>
+        </div>
+        <div class="wn-btn-div">
+          <button class="wn-menu-btn">Eliminar</button>
+          <button class="wn-menu-btn disabled">Prioridad</button>
+          <button class="wn-menu-btn">Editar</button>
         </div>
       </div>
-
-      <div class="wn-col col-realizadas">
-        <div class="wn-col-title ">Tareas Realizadas</div>
-        <div v-for="task in tasks_realizadas" class="wn-task-container">
-          <div class="wn-task-data">
-            <h3>{{task.title}}</h3>
-            <p>Oprerario:  {{task.operario}}</p>
-            <p>Duración: {{task.duracion}}/{{task.estimado}} min</p>
-          </div>
-          <div class="wn-btn-div">
-            <button class="wn-menu-btn">Eliminar</button>
-            <button class="wn-menu-btn disabled">Prioridad</button>
-            <button class="wn-menu-btn">Editar</button>
-          </div>
-        </div>
-      </div>
-
     </div>
+
+    <div class="wn-col col-asignadas">
+      <div class="wn-col-title">Tareas Asignadas</div>
+      <div v-for="task in tasks_asignadas" class="wn-task-container">
+        <div class="wn-task-data">
+          <h3>{{task.title}}</h3>
+          <p>Oprerario:  {{task.operario}}</p>
+          <p>Duración: {{task.duracion}}/{{task.estimado}} min</p>
+        </div>
+        <div class="wn-btn-div">
+          <button class="wn-menu-btn">Eliminar</button>
+          <button class="wn-menu-btn disabled">Prioridad</button>
+          <button class="wn-menu-btn">Editar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="wn-col col-realizadas">
+      <div class="wn-col-title ">Tareas Realizadas</div>
+      <div v-for="task in tasks_realizadas" class="wn-task-container">
+        <div class="wn-task-data">
+          <h3>{{task.title}}</h3>
+          <p>Oprerario:  {{task.operario}}</p>
+          <p>Duración: {{task.duracion}}/{{task.estimado}} min</p>
+        </div>
+        <div class="wn-btn-div">
+          <button class="wn-menu-btn">Eliminar</button>
+          <button class="wn-menu-btn disabled">Prioridad</button>
+          <button class="wn-menu-btn">Editar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Add Tarea -->
+    <b-modal id="modal-new-task" centered size="lg"
+             ref="modal_new_task"
+             title="Añadiendo tarea al planificador"
+             @ok="createTask"
+             @shown="cleanForm">
+      <form @submit.stop.prevent="handleSubmit">
+        <b-form-input type="text" placeholder="Nombre de tarea" v-model="frm_title"></b-form-input>
+        <b-form-input type="text" placeholder="Tiempo estimado (en minutos)" v-model="frm_estimado"></b-form-input>
+      </form>
+    </b-modal>
+    <!-- FIN: Modal Add Tarea -->
+  </div>
+
 </template>
 
 <script>
@@ -70,8 +90,40 @@
         ],
 
         tasks_realizadas: [
-          { title: 'Reparar grifo',     operario:'Carlos Martinez', duracion:12, estimado:10 }
-        ]
+          { title: 'Reparar grifo', operario:'Carlos Martinez', duracion:12, estimado:10 }
+        ],
+
+        frm_title: '',
+        frm_estimado: ''
+      }
+    },
+    methods: {
+      createTask (evt) {
+        evt.preventDefault()
+        if (!this.frm_title) {
+          alert('El título no puede estar vacío')
+        }
+        else if (!this.frm_estimado) {
+          alert('El tiempo estimado no puede estar vacío')
+        }
+        else if (isNaN(this.frm_estimado)) {
+          alert('El tiempo estimado debe ser un número entero')
+        }
+        else {
+          this.handleSubmit()
+        }
+      },
+
+      handleSubmit () {
+        this.tasks_planificadas.push(
+          { title: this.frm_title, operario:'-', duracion:'-', estimado:this.frm_estimado}
+        )
+        this.$refs.modal_new_task.hide()
+      },
+
+      cleanForm () {
+        this.frm_title = '';
+        this.frm_estimado = '';
       }
     }
   }
