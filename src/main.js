@@ -4,18 +4,27 @@ import Vue from 'vue'
 import BootstrapVue from 'bootstrap-vue'
 import App from './App'
 import router from './router'
+import firebase from 'firebase';
+import './components/firebaseInit';
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 
-Vue.config.productionTip = false
+
 Vue.use(BootstrapVue);
 
-/* eslint-disable no-new */
-new Vue({
-  el: '#app',
-  router,
-  components: { App },
-  template: '<App/>'
-})
+Vue.config.productionTip = false;
+
+let app;
+firebase.auth().onAuthStateChanged(function(user) {
+  if (!app) {
+    /* eslint-disable no-new */
+    app = new Vue({
+      el: '#app',
+      router,
+      template: '<App/>',
+      components: { App }
+    });
+  }
+});

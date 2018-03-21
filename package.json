@@ -2,7 +2,7 @@
   "name": "watchnextserver",
   "version": "1.0.0",
   "description": "Aplicacion de WatchNext, parte del Encargado",
-  "author": "Sergi Cuenca Luque <al315546@uji.es>",
+  "author": "Sergi Cuenca Luque <al315546@uji.es>, Dionisio García García <al315729@uji.es>",
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
@@ -16,7 +16,9 @@
   "dependencies": {
     "bootstrap-vue": "^2.0.0-rc.2",
     "element-ui": "^2.2.2",
+    "firebase": "^4.11.0",
     "materialize-css": "^0.100.2",
+    "npm": "^5.7.1",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1"
   },

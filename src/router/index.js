@@ -6,35 +6,106 @@ import NewTask   from '@/components/NewTask'
 import EditTask  from '@/components/EditTask'
 import ViewTask  from '@/components/ViewTask'
 import Login    from '@/components/Login'
+import Initial from '@/components/Initial'
+import firebase from 'firebase';
 
-Vue.use(Router)
+Vue.use(Router);
 
-export default new Router({
+let router = new Router({
   routes: [
     {
-      path: '/',
+      path: '/dashboard',
       name: 'dashboard',
-      component: Dashboard
+      component: Dashboard,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/task',
       name: 'new-task',
-      component: NewTask
+      component: NewTask,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/task/edit/:task_id',
       name: 'edit-task',
-      component: EditTask
+      component: EditTask,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/task/:task_id',
       name: 'view-task',
-      component: ViewTask
+      component: ViewTask,
+      meta: {
+        requiresAuth: true
+
+      }
+    },
+    {
+      path: '/',
+      name: 'initial',
+      component: Initial,
+      meta: {
+        requiresGuest: true
+      }
     },
     {
       path: '/login',
       name: 'login',
-      component: Login
+      component: Login,
+      meta: {
+        requiresGuest: true
+      }
     }
   ]
-})
+});
+
+// Nav Guard
+/*
+router.beforeEach((to, from, next) => {
+  // Check for requiresAuth guard
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+
+    // Check if NO logged user
+    if (!firebase.auth().currentUser) {
+      alert(firebase.auth().currentUser);
+      // Go to login
+      next({
+        path: '/login',
+        query: {
+          redirect: to.fullPath
+        }
+      });
+    } else {
+      // Proceed to route
+      next();
+    }
+  } else if (to.matched.some(record => record.meta.requiresGuest)) {
+    // Check if NO logged user
+    if (firebase.auth().currentUser) {
+      // Go to login
+      next({
+        path: '/',
+        query: {
+          redirect: to.fullPath
+        }
+      });
+    } else {
+      // Proceed to route
+      next();
+    }
+  } else {
+    // Proceed to route
+    next();
+  }
+});
+
+*/
+
+
+export default router;

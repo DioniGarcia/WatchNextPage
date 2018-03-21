@@ -1,6 +1,7 @@
 <template>
-    <div id="dashboard">
 
+    <div id="dashboard">
+      <Navbar />
       <div class="wn-col col-pendientes">
         <div class="wn-col-title">Tareas Pendientes <button class="wn-menu-btn">Nueva tarea</button></div>
 
@@ -54,8 +55,14 @@
 </template>
 
 <script>
+
+  import Navbar from './Navbar';
+
   export default {
     name: 'dashboard',
+    components: {
+      Navbar
+    },
     data() {
       return {
         tasks_planificadas: [

@@ -9,7 +9,7 @@
     <b-collapse is-nav id="nav_collapse">
 
       <b-navbar-nav>
-        <router-link to="/">Principal</router-link>
+        <router-link to="/dashboard">Gestor</router-link>
         <router-link to="/login">LogIn</router-link>
         <router-link to="/task">Nueva tarea</router-link>
         <router-link to="/task/1">Ver tarea</router-link>
