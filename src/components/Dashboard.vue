@@ -106,7 +106,7 @@
         else if (!this.frm_estimado) {
           alert('El tiempo estimado no puede estar vacío')
         }
-        else if (isNaN(this.frm_estimado)) {
+        else if (this.frm_estimado.includes(".") || isNaN(this.frm_estimado)) {
           alert('El tiempo estimado debe ser un número entero')
         }
         else {
