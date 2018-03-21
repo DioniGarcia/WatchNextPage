@@ -1,5 +1,5 @@
 <template>
-    <div id="gestionoperario">
+    <div id="gOperarios">
       <Navbar />
 
       <h3>Gestion de Operarios</h3>
@@ -10,7 +10,7 @@
 <script>
   import Navbar from './Navbar';
   export default {
-    name: 'gestionoperario',
+    name: 'gOperarios',
     data() {
       return {
       }
