@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-
+    <Navbar />
     <div>
       <router-view/>
     </div>
@@ -8,14 +8,8 @@
 </template>
 
 <script>
-  import Navbar from './components/Navbar';
-  import NewTask from './components/NewTask';
   export default {
-    name: 'app',
-    components: {
-      Navbar,
-      NewTask
-    }
+    name: 'app'
   }
 </script>
 
