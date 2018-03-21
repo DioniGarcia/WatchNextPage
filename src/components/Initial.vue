@@ -6,14 +6,15 @@
     <header class="mb-auto">
     <main role="main" class="inner cover" >
       <h1 class="cover-heading">WatchNext®</h1>
-      <pre class="lead">
-        "WatchNext® is under construction! Be Patient!
-        Prepare yourself 4 the most exciting web app !!
-        You will able to buy your own WN product soon!!.
-      </pre>
-      <img src="../assets/wnLogo.png">
+      <div class="trans">
+        <pre class="lead">
+          "WatchNext® is under construction! Be Patient!
+          Prepare yourself 4 the most exciting web app !!
+          You will able to buy your own WN product soon!!.</pre>
+      </div>
+      <img class="logo" src="../assets/wnLogo.png">
       <p class="lead">
-        <router-link to="/login">LogIn</router-link>
+        <router-link class="button" to="/login">LogIn</router-link>
       </p>
     </main>
     </header>
@@ -25,14 +26,37 @@
 
 <style>
 
+  .lead{
+   color: black;
+    align: center;
+  }
   .logo {
-    height: 100%;
-    width: 100%;
+    height: 25%;
+    width: 25%;
   }
-  .body{
+  body{
     vertical-align: center;
-    background-image: url("../assets/Blue.jpg");
-
-
+    background-image: url(../assets/background.png);
   }
+  .trans {
+
+    background-color:white;
+    opacity: 0.5;
+  }
+  .button{
+    color: #222;
+    background-color:lightseagreen;
+    border: 1px outset #CCC;
+    padding: .1em .5em;
+  }
+
+  .button:hover {
+    background: #CCB;
+  }
+
+  .button:active {
+    border: 1px inset #000;
+  }
+
+
 </style>
