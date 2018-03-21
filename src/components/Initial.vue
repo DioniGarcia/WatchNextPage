@@ -1,33 +1,33 @@
 
 <template>
 
-<body class="text-center" >
+  <body class="text-center" >
   <div class="cover-container d-flex h-100 p-3 mx-auto flex-column" >
     <header class="mb-auto">
-    <main role="main" class="inner cover" >
-      <h1 class="cover-heading">WatchNext®</h1>
-      <div class="trans">
+      <main role="main" class="inner cover" >
+        <h1 class="cover-heading">WatchNext®</h1>
+        <div class="trans">
         <pre class="lead">
           "WatchNext® is under construction! Be Patient!
           Prepare yourself 4 the most exciting web app !!
           You will able to buy your own WN product soon!!.</pre>
-      </div>
-      <img class="logo" src="../assets/wnLogo.png">
-      <p class="lead">
-        <router-link class="button" to="/login">LogIn</router-link>
-      </p>
-    </main>
+        </div>
+        <img class="logo" src="../assets/wnLogo.png">
+        <p class="lead">
+          <router-link class="button" to="/login">LogIn</router-link>
+        </p>
+      </main>
     </header>
 
   </div>
-</body>
+  </body>
 
 </template>
 
 <style>
 
   .lead{
-   color: black;
+    color: black;
     align: center;
   }
   .logo {
