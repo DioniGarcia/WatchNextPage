@@ -7,11 +7,10 @@
     <main role="main" class="inner cover" >
       <h1 class="cover-heading">WatchNext®</h1>
       <div class="trans">
-        <div class="lead">
+        <pre class="lead">
           "WatchNext® is under construction! Be Patient!
           Prepare yourself 4 the most exciting web app !!
-          You will able to buy your own WN product soon!!.
-        </div>
+          You will able to buy your own WN product soon!!.</pre>
       </div>
       <img class="logo" src="../assets/wnLogo.png">
       <p class="lead">
@@ -28,7 +27,7 @@
 <style>
 
   .lead{
-    background-color: transparent;
+   color: black;
     align: center;
   }
   .logo {
@@ -40,6 +39,7 @@
     background-image: url(../assets/background.png);
   }
   .trans {
+
     background-color:white;
     opacity: 0.5;
   }
