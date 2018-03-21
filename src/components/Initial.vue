@@ -14,7 +14,7 @@
       </div>
       <img class="logo" src="../assets/wnLogo.png">
       <p class="lead">
-        <router-link to="/login">LogIn</router-link>
+        <router-link class="button" to="/login">LogIn</router-link>
       </p>
     </main>
     </header>
@@ -43,7 +43,20 @@
     background-color:white;
     opacity: 0.5;
   }
+  .button{
+    color: #222;
+    background-color:lightseagreen;
+    border: 1px outset #CCC;
+    padding: .1em .5em;
+  }
 
+  .button:hover {
+    background: #CCB;
+  }
+
+  .button:active {
+    border: 1px inset #000;
+  }
 
 
 </style>
