@@ -1,15 +1,16 @@
 <template>
-    <div id="view-task">
+    <div id="gOperarios">
       <Navbar />
-      <h3>Vista Tarea</h3>
-      <p>Esta opción no estará en el menú, si no al lado de la tarea</p>
+
+      <h3>Gestion de Operarios</h3>
+      <p>Espacio para crear la vista donde se gestionan los operarios</p>
     </div>
 </template>
 
 <script>
   import Navbar from './Navbar';
   export default {
-    name: 'view-task',
+    name: 'gOperarios',
     data() {
       return {
       }

@@ -4,7 +4,7 @@ import Router from 'vue-router'
 import Dashboard from '@/components/Dashboard'
 import NewTask   from '@/components/NewTask'
 import EditTask  from '@/components/EditTask'
-import ViewTask  from '@/components/ViewTask'
+import GestionOperarios  from '@/components/GestionOperarios'
 import Login    from '@/components/Login'
 import Initial from '@/components/Initial'
 import firebase from 'firebase';
@@ -38,9 +38,9 @@ let router = new Router({
       }
     },
     {
-      path: '/task/:task_id',
-      name: 'view-task',
-      component: ViewTask,
+      path: '/gestionoperarios',
+      name: 'gestionoperarios',
+      component: GestionOperarios,
       meta: {
         requiresAuth: true
 
