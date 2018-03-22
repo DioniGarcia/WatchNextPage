@@ -18,9 +18,12 @@
     margin-bottom:10px;
   }
 
-  body {
+  html, body {
     height: 100%;
     background-image: url(assets/background.png);
+  }
+  #app{
+    height: 100%;
   }
 
 </style>

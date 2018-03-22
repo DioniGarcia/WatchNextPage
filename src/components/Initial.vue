@@ -9,9 +9,9 @@
           <h1 class="cover-heading">WatchNext®</h1>
           <pre class="lead">
             <div class="transparency">"WatchNext® is under construction! Be Patient!<br>Prepare yourself 4 the most exciting web app !!<br>You will able to buy your own WN product soon!!.</div></pre>
-          <p class="lead">
-            <router-link  to="/login" tag="img" ><img class="logo image-button" src="../assets/wnLogo.png" title="Login"></router-link>
-          </p>
+          <div>
+            <router-link  to="/login" tag="img" ><img class="logo image-button" src="../assets/wnLogo.png" title="Login" ></router-link>
+          </div>
         </main>
       </header>
     </div>
@@ -60,6 +60,10 @@
     -webkit-transition-duration: 0.5s;
     -o-transition-duration: 0.5s;
     cursor: pointer;
+    vertical-align: middle;
+  }
+  div{
+    height: 100%;
   }
 
 </style>

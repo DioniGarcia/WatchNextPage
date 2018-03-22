@@ -60,4 +60,9 @@
   };
 </script>
 
+<style>
+  div{
+    height: min-content;
+  }
+</style>
 
