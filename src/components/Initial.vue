@@ -10,7 +10,7 @@
           <pre class="lead">
             <div class="transparency">"WatchNext® is under construction! Be Patient!<br>Prepare yourself 4 the most exciting web app !!<br>You will able to buy your own WN product soon!!.</div></pre>
           <p class="lead">
-            <router-link  to="/login" tag="img" ><img class="logo image-button" src="../assets/wnLogo.png"></router-link>
+            <router-link  to="/login" tag="img" ><img class="logo image-button" src="../assets/wnLogo.png" title="Login"></router-link>
           </p>
         </main>
       </header>
@@ -46,6 +46,15 @@
     opacity: 0.7;
     -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity = 70);
     filter: alpha(opacity = 70);
+    transition-duration: 0.5s;
+    -moz-transition-duration: 0.5s;
+    -webkit-transition-duration: 0.5s;
+    -o-transition-duration: 0.5s;
+    cursor: pointer;
+
+  }
+
+  img{
     transition-duration: 0.5s;
     -moz-transition-duration: 0.5s;
     -webkit-transition-duration: 0.5s;
