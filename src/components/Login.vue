@@ -20,7 +20,6 @@
                     <label class="white-text" for="password">Password</label>
                   </div>
                   <button v-on:click="login" class="btn btn-large btn-extended grey lighten-4 black-text">Entrar</button>
-
                 </form>
               </div>
             </div>
@@ -60,3 +59,10 @@
     }
   };
 </script>
+
+<style>
+  body{
+    background-color:white;
+    background-image:none;
+  }
+</style>
