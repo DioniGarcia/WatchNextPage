@@ -60,9 +60,4 @@
   };
 </script>
 
-<style>
-  body{
-    background-color:white;
-    background-image:none;
-  }
-</style>
+

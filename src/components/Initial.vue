@@ -11,7 +11,7 @@
             <div class="transparency">"WatchNext® is under construction! Be Patient!<br>Prepare yourself 4 the most exciting web app !!<br>You will able to buy your own WN product soon!!.</div></pre>
           <img class="logo" src="../assets/wnLogo.png">
           <p class="lead">
-            <router-link class="button" to="/login">LogIn</router-link>
+            <router-link class=" btn btn-extended grey lighten-5 black-text" to="/login">LogIn</router-link>
           </p>
         </main>
       </header>
@@ -48,11 +48,8 @@
     padding: 10px;
     opacity:0.5;
   }
-  body{
+  body {
     height: max-content;
     background-image: url(../assets/background.png);
   }
-
-
-
 </style>
