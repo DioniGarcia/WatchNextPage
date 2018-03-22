@@ -36,11 +36,6 @@
     height: 25%;
     width: 25%;
   }
-  .background{
-    height: 100%;
-    vertical-align: center;
-    background-image: url(../assets/background.png);
-  }
   .transparency {
     width: auto;
     height: auto;
