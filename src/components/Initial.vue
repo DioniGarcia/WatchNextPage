@@ -9,9 +9,8 @@
           <h1 class="cover-heading">WatchNext®</h1>
           <pre class="lead">
             <div class="transparency">"WatchNext® is under construction! Be Patient!<br>Prepare yourself 4 the most exciting web app !!<br>You will able to buy your own WN product soon!!.</div></pre>
-          <img class="logo" src="../assets/wnLogo.png">
           <p class="lead">
-            <router-link class=" btn btn-extended grey lighten-5 black-text" to="/login">LogIn</router-link>
+            <router-link  to="/login" tag="img" ><img class="logo image-button" src="../assets/wnLogo.png"></router-link>
           </p>
         </main>
       </header>
@@ -33,8 +32,8 @@
     font-size:100%;
   }
   .logo {
-    height: 25%;
-    width: 25%;
+    height: 12.5%;
+    width: 12.5%;
   }
   .transparency {
     width: auto;
@@ -43,8 +42,15 @@
     padding: 10px;
     opacity:0.5;
   }
-  body {
-    height: max-content;
-    background-image: url(../assets/background.png);
+  img:hover{
+    opacity: 0.7;
+    -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity = 70);
+    filter: alpha(opacity = 70);
+    transition-duration: 0.5s;
+    -moz-transition-duration: 0.5s;
+    -webkit-transition-duration: 0.5s;
+    -o-transition-duration: 0.5s;
+    cursor: pointer;
   }
+
 </style>
