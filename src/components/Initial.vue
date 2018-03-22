@@ -9,12 +9,16 @@
           <h1 class="cover-heading">WatchNext®</h1>
           <pre class="lead">
             <div class="transparency">"WatchNext® is under construction! Be Patient!<br>Prepare yourself 4 the most exciting web app !!<br>You will able to buy your own WN product soon!!.</div></pre>
+          </main>
+
+          </header>
           <div>
-            <router-link  to="/login" tag="img" ><img class="logo image-button" src="../assets/wnLogo.png" title="Login" ></router-link>
+            <router-link  to="/login" tag="img" ><img class="logo" src="../assets/wnLogo.png" title="Login" ></router-link>
           </div>
-        </main>
-      </header>
+
+
     </div>
+
   </div>
   </body>
 
@@ -32,8 +36,8 @@
     font-size:100%;
   }
   .logo {
-    height: 12.5%;
-    width: 12.5%;
+    /*height: 12.5%;*/
+    /*width: 12.5%;*/
   }
   .transparency {
     width: auto;
@@ -42,10 +46,10 @@
     padding: 10px;
     opacity:0.5;
   }
-  img:hover{
+  img:hover {
     opacity: 0.7;
-    -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity = 70);
-    filter: alpha(opacity = 70);
+    -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=70);
+    filter: alpha(opacity=70);
     transition-duration: 0.5s;
     -moz-transition-duration: 0.5s;
     -webkit-transition-duration: 0.5s;
@@ -53,17 +57,20 @@
     cursor: pointer;
 
   }
-
+  main, header{
+    height: max-content;
+  }
   img{
     transition-duration: 0.5s;
     -moz-transition-duration: 0.5s;
     -webkit-transition-duration: 0.5s;
     -o-transition-duration: 0.5s;
     cursor: pointer;
-    vertical-align: middle;
+    height: 250px;
+    width: 250px;
   }
   div{
-    height: 100%;
+    height: ;
   }
 
 </style>
