@@ -77,7 +77,7 @@
       Navbar
     },
     methods: {
-      createWorker (evt) {
+      createWorker(evt) {
         evt.preventDefault()
         if (!this.frm_nombre) {
           alert('El nombre no puede estar vacío')
@@ -102,7 +102,7 @@
           this.handleSubmit()
         }
       },
-      persistData () {
+      persistData() {
         db.collection('operarios').add({
           nombre: this.frm_nombre,
           apellidos: this.frm_apellidos,
@@ -113,29 +113,30 @@
             console.log('Operario añadido a FireBase!')
           })
           .catch(error => {
-            console.error('Error añadiendo el operario!',error)
+            console.error('Error añadiendo el operario!', error)
           })
       },
 
-      handleSubmit () {
+      handleSubmit() {
         this.operarios.push(
-          { nombre: this.frm_nombre, apellidos:this.frm_apellidos, id:this.frm_id, pass:this.frm_pass}
+          {nombre: this.frm_nombre, apellidos: this.frm_apellidos, id: this.frm_id, pass: this.frm_pass}
         )
         this.$refs.modal_new_worker.hide()
       }
       ,
 
-      cleanForm () {
+      cleanForm() {
         this.frm_nombre = '';
         this.frm_apellidos = '';
         this.frm_id = '';
         this.frm_pass = '';
       },
-      deleteWorker () {
-        if(confirm ('Estas seguro que quieres borrar el empleado?')) {
-          db.collection('operarios').where('id', '==', this.$route.id).get().then((querySnapshot) => {
+      deleteWorker() {
+        if (confirm('Estas seguro que quieres borrar el empleado?')) {
+          db.collection('operarios').where('id', '==', this.$route.params.frm_id).get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               doc.ref.delete();
+
             })
           })
         }
