@@ -20,7 +20,7 @@
 
   html, body {
     height: 100%;
-    background-image: url(assets/background.png);
+    /*background-image: url(assets/background.png);*/
   }
   #app{
     height: 100%;

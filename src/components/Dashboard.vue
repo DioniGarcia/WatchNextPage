@@ -3,14 +3,14 @@
     <Navbar />
 
     <div class="wn-col col-pendientes">
-      <div class="wn-col-title">Tareas Pendientes
+      <div class="wn-col-title">Tareas Sin Asignar
         <button v-b-modal.modal-new-task class="wn-menu-btn">Nueva tarea</button>
       </div>
 
-      <div v-for="task in tasks_planificadas" class="wn-task-container">
+      <div v-for="task in tasks_sin_asignar" v-bind:key="task.id" class="wn-task-container">
         <div class="wn-task-data">
-          <h3>{{task.title}}</h3>
-          <p>Oprerario:  {{task.operario}}</p>
+          <h3>{{task.titulo}}</h3>
+          <p>Operario:  {{task.operario}}</p>
           <p>Duración: {{task.duracion}}/{{task.estimado}} min</p>
         </div>
         <div class="wn-btn-div">
@@ -20,13 +20,13 @@
         </div>
       </div>
     </div>
-
+                                                                              <!-- REFACTORIZAR!!! -->
     <div class="wn-col col-asignadas">
       <div class="wn-col-title">Tareas Asignadas</div>
-      <div v-for="task in tasks_asignadas" class="wn-task-container">
+      <div v-for="task in tasks_asignadas" v-bind:key="task.id" class="wn-task-container">
         <div class="wn-task-data">
-          <h3>{{task.title}}</h3>
-          <p>Oprerario:  {{task.operario}}</p>
+          <h3>{{task.titulo}}</h3>
+          <p>Operario:  {{task.operario}}</p>
           <p>Duración: {{task.duracion}}/{{task.estimado}} min</p>
         </div>
         <div class="wn-btn-div">
@@ -39,9 +39,9 @@
 
     <div class="wn-col col-realizadas">
       <div class="wn-col-title ">Tareas Realizadas</div>
-      <div v-for="task in tasks_realizadas" class="wn-task-container">
+      <div v-for="task in tasks_realizadas" v-bind:key="task.id" class="wn-task-container">
         <div class="wn-task-data">
-          <h3>{{task.title}}</h3>
+          <h3>{{task.titulo}}</h3>
           <p>Oprerario:  {{task.operario}}</p>
           <p>Duración: {{task.duracion}}/{{task.estimado}} min</p>
         </div>
@@ -54,14 +54,15 @@
     </div>
 
     <!-- Modal Add Tarea -->
+
     <b-modal id="modal-new-task" centered size="lg"
              ref="modal_new_task"
-             title="Añadiendo tarea al planificador"
+             title="Añadir tarea al planificador"
              @ok="createTask"
              @shown="cleanForm">
       <form @submit.stop.prevent="handleSubmit">
-        <b-form-input type="text" placeholder="Nombre de tarea" v-model="frm_title"></b-form-input>
-        <b-form-input type="text" placeholder="Tiempo estimado (en minutos)" v-model="frm_estimado"></b-form-input>
+        <b-form-input type="text" placeholder="Nombre de la tarea" v-model="frm_titulo"></b-form-input>
+        <b-form-input type="text" placeholder="Tiempo estimado (minutos)" v-model="frm_estimado"></b-form-input>
       </form>
     </b-modal>
     <!-- FIN: Modal Add Tarea -->
@@ -71,33 +72,96 @@
 
 <script>
   import Navbar from './Navbar';
+  import db from './firebaseInit'
+
   export default {
     name: 'dashboard',
     data() {
       return {
-        tasks_planificadas: [
-          { title: 'Reparar grifo',     operario:'Pablito Perez', duracion:0, estimado:10 },
-          { title: 'Reparar ventana',   operario:'Juan Lopez',    duracion:0, estimado:12 },
-          { title: 'Comprar bombillas', operario:'Juan Lopez',    duracion:0, estimado:20 }
+        tasks_sin_asignar: [],
+
+        tasks_asignadas: [ /*
+          { titulo: 'Cambiar bombilla',     operario:'Pablito Perez', duracion:9, estimado:10 },
+          { titulo: 'Desmontar ventana',    operario:'Juan Lopez',    duracion:23, estimado:20 } */
         ],
 
-        tasks_asignadas: [
-          { title: 'Cambiar bombilla',     operario:'Pablito Perez', duracion:9, estimado:10 },
-          { title: 'Desmontar ventana',    operario:'Juan Lopez',    duracion:23, estimado:20 }
+        tasks_realizadas: [ /*
+          { titulo: 'Reparar grifo', estimado:12 } */
         ],
+        //Modelo de datos del form
+        frm_titulo: '',
+        frm_operario: '',
+        frm_duracion: '',
+        frm_estimado: '',
 
-        tasks_realizadas: [
-          { title: 'Reparar grifo', operario:'Carlos Martinez', duracion:12, estimado:10 }
-        ],
-
-        frm_title: '',
-        frm_estimado: ''
+        loading: true
       }
     },
+    created() { // REFACTORIZAR
+      db
+        .collection('sinAsignar')
+        .orderBy('titulo')
+        .get()
+        .then(querySnapshot => {
+          this.loading = false;
+          querySnapshot.forEach(doc => {
+            const task = {
+              id: doc.id,
+              operario: doc.operario,
+              titulo: doc.data().titulo,
+              duracion: doc.data().duracion,
+              estimado: doc.data().estimado
+            };
+            this.tasks_sin_asignar.push(task);
+
+          });
+        });
+
+      db
+        .collection('asignadas')
+        .orderBy('titulo')
+        .get()
+        .then(querySnapshot => {
+          this.loading = false;
+          querySnapshot.forEach(doc => {
+            const task = {
+              id: doc.id,
+              operario: doc.operario,
+              titulo: doc.data().titulo,
+              duracion: doc.data().duracion,
+              estimado: doc.data().estimado
+            };
+            this.tasks_asignadas.push(task);
+
+          });
+        });
+
+      db
+        .collection('finalizadas')
+        .orderBy('titulo')
+        .get()
+        .then(querySnapshot => {
+          this.loading = false;
+          querySnapshot.forEach(doc => {
+            const task = {
+              id: doc.id,
+              operario: doc.operario,
+              titulo: doc.data().titulo,
+              duracion: doc.data().duracion,
+              estimado: doc.data().estimado
+            };
+            this.tasks_realizadas.push(task);
+
+          });
+        });
+
+
+    },
     methods: {
+
       createTask (evt) {
         evt.preventDefault()
-        if (!this.frm_title) {
+        if (!this.frm_titulo) {
           alert('El título no puede estar vacío')
         }
         else if (!this.frm_estimado) {
@@ -107,21 +171,39 @@
           alert('El tiempo estimado debe ser un número entero')
         }
         else {
+          this.persistData()
           this.handleSubmit()
+
         }
+      },
+      persistData () {
+        db.collection('sinAsignar').add({
+          operario: this.frm_operario,
+          titulo: this.frm_titulo,
+          duracion: this.frm_duracion,
+          estimado: this.frm_estimado
+        })
+          .then(docRef => {
+            console.log('Tarea añadida a FireBase!')
+          })
+          .catch(error => {
+            console.error('Error añadiendo la tarea!',error)
+          })
       },
 
       handleSubmit () {
-        this.tasks_planificadas.push(
-          { title: this.frm_title, operario:'-', duracion:'-', estimado:this.frm_estimado}
+        this.tasks_sin_asignar.push(
+          { titulo: this.frm_titulo, operario:this.frm_titulo, duracion:this.frm_duracion, estimado:this.frm_estimado}
         )
         this.$refs.modal_new_task.hide()
-      },
+      }
+      ,
 
       cleanForm () {
-        this.frm_title = '';
+        this.frm_titulo = '';
         this.frm_estimado = '';
       }
+
     },
     components: {
       Navbar
