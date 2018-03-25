@@ -4,7 +4,7 @@
 
       <div class="wn-col col-pendientes">
         <div class="wn-col-title">Lista Operarios
-          <button v-b-modal.modal-new-worker class="wn-menu-btn">Nuevo operario</button>
+          <button v-b-modal.modal-new-worker class="wn-menu-btn">Alta operario</button>
         </div>
 
         <div v-for="operario in operarios" v-bind:key="operario.id" class="wn-task-container">

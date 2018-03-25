@@ -11,11 +11,8 @@
       <b-navbar-nav>
         <ul>
 
-          <li v-if="isLoggedIn"><router-link to="/dashboard">Gestor</router-link></li>
-          <li v-if="!isLoggedIn"><router-link to="/login">LogIn</router-link></li>
-          <li v-if="isLoggedIn"><router-link to="/task">Pruebas nueva tarea</router-link></li>
+          <li v-if="isLoggedIn"><router-link to="/dashboard">Dashboard</router-link></li>
           <li v-if="isLoggedIn"><router-link to="/gestionoperarios">Gestion Operarios</router-link></li>
-          <li v-if="isLoggedIn"><router-link to="/task/edit/1">Editar tarea</router-link></li>
 
         </ul>
 

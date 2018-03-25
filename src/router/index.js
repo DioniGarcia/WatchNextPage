@@ -3,7 +3,6 @@ import Router from 'vue-router'
 
 import Dashboard from '@/components/Dashboard'
 import NewTask   from '@/components/NewTask'
-import EditTask  from '@/components/EditTask'
 import GestionOperarios  from '@/components/GestionOperarios'
 import Login    from '@/components/Login'
 import Initial from '@/components/Initial'
@@ -25,14 +24,6 @@ let router = new Router({
       path: '/task',
       name: 'new-task',
       component: NewTask,
-      meta: {
-        requiresAuth: true
-      }
-    },
-    {
-      path: '/task/edit/:task_id',
-      name: 'edit-task',
-      component: EditTask,
       meta: {
         requiresAuth: true
       }
