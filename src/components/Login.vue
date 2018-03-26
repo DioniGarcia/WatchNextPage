@@ -5,7 +5,7 @@
       <div class="text-center">
         <div class="container">
           <div class="row">
-            <div class="col s12 m8 offset-m2">
+            <div class=" col s12 m8 offset-m2">
               <div class="login card-panel cyan darken-2 white-text center">
                 <h3>Autenticación Encargado</h3>
                 <form action="index.html">
@@ -62,9 +62,9 @@
 
 <style scoped>
 
-  div{
-    height: min-content;
-    display: flex;
+  div {
+
+    /*display: flex;*/
     align-items: center;
   }
 </style>

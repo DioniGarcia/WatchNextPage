@@ -7,7 +7,7 @@
         <button v-b-modal.modal-new-task class="wn-menu-btn">Nueva tarea</button>
       </div>
 
-      <div v-for="task in tasks_sin_asignar" v-bind:key="task.id" class="wn-task-container">
+      <div v-for="task in tasks_sin_asignar" v-bind:key="task.id" class="wn-task-container"><!--scroll-->
         <div class="wn-task-data">
           <h3>{{task.titulo}}</h3>
           <p>Operario:  {{task.operario}}</p>
@@ -23,7 +23,7 @@
                                                                               <!-- REFACTORIZAR!!! -->
     <div class="wn-col col-asignadas">
       <div class="wn-col-title">Tareas Asignadas</div>
-      <div v-for="task in tasks_asignadas" v-bind:key="task.id" class="wn-task-container">
+      <div v-for="task in tasks_asignadas" v-bind:key="task.id" class="wn-task-container"><!--scroll-->
         <div class="wn-task-data">
           <h3>{{task.titulo}}</h3>
           <p>Operario:  {{task.operario}}</p>
@@ -39,7 +39,7 @@
 
     <div class="wn-col col-realizadas">
       <div class="wn-col-title ">Tareas Realizadas</div>
-      <div v-for="task in tasks_realizadas" v-bind:key="task.id" class="wn-task-container">
+      <div v-for="task in tasks_realizadas" v-bind:key="task.id" class="wn-task-container"><!--scroll-->
         <div class="wn-task-data">
           <h3>{{task.titulo}}</h3>
           <p>Oprerario:  {{task.operario}}</p>
