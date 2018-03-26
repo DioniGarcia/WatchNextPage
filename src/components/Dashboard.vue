@@ -92,7 +92,7 @@
         loading: true
       }
     },
-    created() { // REFACTORIZAR
+    created: function () { // REFACTORIZAR
       db
         .collection('sinAsignar')
         .orderBy('titulo')
@@ -112,42 +112,36 @@
           });
         });
 
-      db
-        .collection('asignadas').get()
-        .then(querySnapshot => {
+      db.collection('asignadas').get().then(
+        querySnapshot => {
           this.loading = false;
-          querySnapshot.forEach(doc => {
-            const task = {
-              operario : doc.id }
-              /*
-            task.collection('Tareas').get().then(querySnapshot => {
-              this.loading = false;
-              querySnapshot.forEach(doc => {
-                const tosk = {
-                  id: doc.id,
-                  operario: doc.operario,
-                  titulo: doc.data().titulo,
-                  duracion: doc.data().duracion,
-                  estimado: doc.data().estimado
-                };
-              })*/
-          );
-            });
+          querySnapshot.docs.map(doc => {
+            console.log(doc.data());
+            const id=doc.id;
+            db.collection('asignadas').doc(id).collection('Tareas').get().then(
+              querySnapshot => {
+                this.loading = false;
+                querySnapshot.docs.map(doc2 => {
+                  const task = {
+                    id: doc2.id,
+                    operario: doc.id,
+                    titulo: doc2.data().titulo,
+                    duracion: doc2.data().duracion,
+                    estimado: doc2.data().estimado
+                  };
+                  this.tasks_asignadas.push(task);
+                });
 
-
-/*
-
-*/
-            this.tasks_asignadas.push(task);
-
+              });
           });
         });
 
-      db
-        .collection('finalizadas')
-        .orderBy('titulo')
-        .get()
-        .then(querySnapshot => {
+
+
+
+
+
+      db.collection('finalizadas').orderBy('titulo').get().then(querySnapshot => {
           this.loading = false;
           querySnapshot.forEach(doc => {
             const task = {
