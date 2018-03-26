@@ -227,10 +227,6 @@
     margin-bottom: 0px;
   }
 
-  body{
-    background-image:none;
-    background-color:white;
-  }
 
 
 </style>

@@ -78,21 +78,16 @@
     name: 'dashboard',
     data() {
       return {
+
         tasks_sin_asignar: [],
+        tasks_asignadas: [],
+        tasks_realizadas: [],
 
-        tasks_asignadas: [ /*
-          { titulo: 'Cambiar bombilla',     operario:'Pablito Perez', duracion:9, estimado:10 },
-          { titulo: 'Desmontar ventana',    operario:'Juan Lopez',    duracion:23, estimado:20 } */
-        ],
+        // Modelo de datos del form
 
-        tasks_realizadas: [ /*
-          { titulo: 'Reparar grifo', estimado:12 } */
-        ],
-        //Modelo de datos del form
         frm_titulo: '',
         frm_operario: '',
         frm_duracion: '',
-        frm_estimado: '',
 
         loading: true
       }
@@ -118,19 +113,31 @@
         });
 
       db
-        .collection('asignadas')
-        .orderBy('titulo')
-        .get()
+        .collection('asignadas').get()
         .then(querySnapshot => {
           this.loading = false;
           querySnapshot.forEach(doc => {
             const task = {
-              id: doc.id,
-              operario: doc.operario,
-              titulo: doc.data().titulo,
-              duracion: doc.data().duracion,
-              estimado: doc.data().estimado
-            };
+              operario : doc.id }
+              /*
+            task.collection('Tareas').get().then(querySnapshot => {
+              this.loading = false;
+              querySnapshot.forEach(doc => {
+                const tosk = {
+                  id: doc.id,
+                  operario: doc.operario,
+                  titulo: doc.data().titulo,
+                  duracion: doc.data().duracion,
+                  estimado: doc.data().estimado
+                };
+              })*/
+          );
+            });
+
+
+/*
+
+*/
             this.tasks_asignadas.push(task);
 
           });
