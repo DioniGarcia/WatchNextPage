@@ -24,7 +24,7 @@
 
 </template>
 
-<style>
+<style scoped>
 
   pre.lead{
     font-size: 150%;
@@ -60,7 +60,7 @@
   main, header{
     height: max-content;
   }
-  img{
+  img {
     transition-duration: 0.5s;
     -moz-transition-duration: 0.5s;
     -webkit-transition-duration: 0.5s;
@@ -69,8 +69,15 @@
     height: 250px;
     width: 250px;
   }
+  body{
+    background-image:url("../assets/background.png");
+    height:100vh;
+  }
   div{
-    height: ;
+    height:100vh;
+    display: flex;
+    align-items: center;
   }
 
 </style>
+

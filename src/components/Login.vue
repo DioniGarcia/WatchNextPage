@@ -63,6 +63,8 @@
 <style>
   div{
     height: min-content;
+    display: flex;
+    align-items: center;
   }
 </style>
 
