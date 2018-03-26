@@ -20,6 +20,9 @@
   #app{
     height: 100%;
   }
-
+  body {
+    background-image:url("assets/background.png");
+    min-height:100vh;
+  }
 
 </style>

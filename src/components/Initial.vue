@@ -69,10 +69,7 @@
     height: 250px;
     width: 250px;
   }
-  body{
-    background-image:url("../assets/background.png");
-    height:100vh;
-  }
+
   div{
     height:100vh;
     display: flex;

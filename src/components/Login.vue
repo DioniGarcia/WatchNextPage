@@ -1,7 +1,7 @@
 <template>
   <div id="edit-task">
 
-    <template>
+
       <div class="text-center">
         <div class="container">
           <div class="row">
@@ -26,7 +26,7 @@
           </div>
         </div>
       </div>
-    </template>
+
   </div>
 </template>
 
@@ -60,7 +60,8 @@
   };
 </script>
 
-<style>
+<style scoped>
+
   div{
     height: min-content;
     display: flex;
