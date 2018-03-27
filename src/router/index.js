@@ -41,50 +41,28 @@ let router = new Router({
       path: '/',
       name: 'initial',
       component: Initial,
-      meta: {
-        requiresGuest: true
-      }
     },
     {
       path: '/login',
       name: 'login',
-      component: Login/*,
-      meta: {
-        requiresGuest: true
-      }*/
+      component: Login
     }
   ]
 });
 
 // Nav Guard
 
-/*
+
 router.beforeEach((to, from, next) => {
   // Check for requiresAuth guard
   if (to.matched.some(record => record.meta.requiresAuth)) {
 
     // Check if NO logged user
     if (!firebase.auth().currentUser) {
-      alert('ENTERS1');
-      alert(firebase.auth().currentUser);
+      alert('No puedes usar WatchNext sin loguearte');
       // Go to login
       next({
         path: '/login',
-        query: {
-          redirect: to.fullPath
-        }
-      });
-    } else {
-      // Proceed to route
-      next();
-    }
-  } else if (to.matched.some(record => record.meta.requiresGuest)) {
-    // Check if NO logged user
-    if (firebase.auth().currentUser) {
-      alert('ENTERS2');
-      // Go to login
-      next({
-        path: '/',
         query: {
           redirect: to.fullPath
         }
@@ -98,6 +76,6 @@ router.beforeEach((to, from, next) => {
     next();
   }
 });
-*/
+
 
 export default router;
