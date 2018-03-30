@@ -5,15 +5,17 @@
       <router-view/>
     </div>
   </div>
-</template>
+  </template>
 
-<script>
+  <script>
   export default {
     name: 'app'
   }
 </script>
 
 <style>
+  @import url("//unpkg.com/element-ui/lib/theme-chalk/index.css");
+
   nav {
     margin-bottom:10px;
   }

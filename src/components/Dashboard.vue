@@ -1,10 +1,9 @@
 <template>
   <div id="dashboard">
     <Navbar />
-
     <div class="wn-col col-pendientes">
       <div class="wn-col-title">Tareas Sin Asignar
-        <button v-b-modal.modal-new-task class="wn-menu-btn">Nueva tarea</button>
+        <button @click="dialogVisible = true" class="wn-menu-btn">Nueva tarea</button>
       </div>
 
       <div v-for="task in tasks_sin_asignar" v-bind:key="task.id" class="wn-task-container"><!--scroll-->
@@ -53,41 +52,131 @@
       </div>
     </div>
 
-    <!-- Modal Add Tarea -->
 
-    <b-modal id="modal-new-task" centered size="lg"
-             ref="modal_new_task"
-             title="Añadir tarea al planificador"
-             @ok="createTask"
-             @shown="cleanForm">
-      <form @submit.stop.prevent="handleSubmit">
-        <b-form-input type="text" placeholder="Nombre de la tarea" v-model="frm_titulo"></b-form-input>
-        <b-form-input type="text" placeholder="Tiempo estimado (minutos)" v-model="frm_estimado"></b-form-input>
-      </form>
-    </b-modal>
+    <!-- Modal Add Tarea -->
+    <el-dialog
+        title="Tips"
+        :visible.sync="dialogVisible"
+        width="65%"
+        :before-close="handleClose">
+
+      <b-form @submit.stop.prevent="handleSubmit">
+        <b-form-group id="taskTitleGroup"
+                      label="Título:"
+                      label-for="taskTitle">
+          <b-form-input id="taskTitle"
+                        type="text"
+                        v-model="frm_titulo"
+                        required
+                        placeholder="Ponerle un nombre chachi pistachi a tu tarea">
+          </b-form-input>
+        </b-form-group>
+        <b-form-group id="taskDescriptionGroup"
+                      label="Descripción:"
+                      label-for="taskDescription">
+          <b-form-input id="taskDescription"
+                        type="text"
+                        v-model="frm_descripcion"
+                        required
+                        placeholder="Para poner un nombre chuli a tu tarea tienes que usar la imaginación y buscar en el el fondo de tu corazón...">
+          </b-form-input>
+        </b-form-group>
+
+        <b-form-group id="taskEstimationGroup"
+                      label="Tiempo estimado:"
+                      label-for="taskEstimado"
+                      description="En minutos">
+          <b-form-input id="taskEstimado"
+                        type="text"
+                        v-model="frm_estimado"
+                        required
+                        placeholder="45">
+          </b-form-input>
+        </b-form-group>
+
+        <b-form-group id="taskPrioridadGroup"
+                      label="Prioridad:"
+                      label-for="taskPrioridad">
+          <b-form-select id="taskPrioridad"
+                         :options="prioridades"
+                         required
+                         v-model="frm_prioridad">
+            <template slot="first">
+              <option :value=200 >Media</option>
+            </template>
+          </b-form-select>
+        </b-form-group>
+
+        <el-checkbox v-model="frm_pausable" label="Pausable" border></el-checkbox>
+
+        <el-tag
+          :key="tag"
+          v-for="tag in frm_etiquetas"
+          closable
+          :disable-transitions="false"
+          @close="handleClose(tag)">
+          {{tag}}
+        </el-tag>
+        <el-input
+          class="input-new-tag"
+          v-if="inputVisible"
+          v-model="inputValue"
+          ref="saveTagInput"
+          size="mini"
+          @keyup.enter.native="handleInputConfirm"
+          @blur="handleInputConfirm"
+        >
+        </el-input>
+        <el-button v-else class="button-new-tag" size="small" @click="showInput">+ Nuevo tag</el-button>
+
+      </b-form>
+
+        <span slot="footer" class="dialog-footer">
+      <el-button @click="dialogVisible = false">Cancel</el-button>
+      <el-button type="primary" @click="handleSubmit">Confirm</el-button>
+    </span>
+    </el-dialog>
     <!-- FIN: Modal Add Tarea -->
   </div>
 
 </template>
 
+
+
 <script>
   import Navbar from './Navbar';
-  import db from './firebaseInit'
+  import db from './firebaseInit';
+  import ButtonGroup from "bootstrap-vue/es/components/button-group/button-group";
+  import InputTag from 'vue-input-tag';
 
   export default {
     name: 'dashboard',
     data() {
       return {
 
+        dialogVisible: false,
+
         tasks_sin_asignar: [],
-        tasks_asignadas: [],
-        tasks_realizadas: [],
+        tasks_asignadas:   [],
+        tasks_realizadas:  [],
 
         // Modelo de datos del form
+        frm_titulo:        '',
+        frm_descripcion:   '',
+        frm_estimado:      '',
+        frm_prioridad:    200,
+        frm_pausable:   false,
+        frm_etiquetas:     [],
 
-        frm_titulo: '',
-        frm_operario: '',
-        frm_duracion: '',
+        prioridades: [
+          { value: 400, text: 'Urgente' },
+          { value: 300, text: 'Alta' },
+          { value: 100, text: 'Baja' },
+          { value: 0,   text: 'Muy baja' },
+        ],
+
+        inputVisible: false,
+        inputValue: '',
 
         loading: true
       }
@@ -102,7 +191,7 @@
           querySnapshot.forEach(doc => {
             const task = {
               id: doc.id,
-              operario: doc.operario,
+              operario: "___",
               titulo: doc.data().titulo,
               duracion: doc.data().duracion,
               estimado: doc.data().estimado
@@ -135,10 +224,6 @@
               });
           });
         });
-
-
-
-
 
 
       db.collection('finalizadas').orderBy('titulo').get().then(querySnapshot => {
@@ -179,40 +264,78 @@
       },
       persistData () {
         db.collection('sinAsignar').add({
-          operario: this.frm_operario,
-          titulo: this.frm_titulo,
-          duracion: this.frm_duracion,
-          estimado: this.frm_estimado
+          asignable: true,
+          descripcion: this.frm_descripcion,
+          estimado: parseInt(this.frm_estimado),
+          etiquetas: this.frm_etiquetas,
+          fecha_realizacion:  Date.now(),
+          pausable:  this.frm_pausable,
+          prioridad: this.frm_prioridad,
+          titulo:    this.frm_titulo
         })
           .then(docRef => {
-            console.log('Tarea añadida a FireBase!')
+            console.log('Tarea añadida a FireBase!');
+            this.cleanForm();
           })
           .catch(error => {
-            console.error('Error añadiendo la tarea!',error)
+            console.error('Error añadiendo la tarea!',error);
+            alert('Error añadiendo la tarea! Vuelve a intentarlo');
           })
       },
 
       handleSubmit () {
         this.tasks_sin_asignar.push(
-          { titulo: this.frm_titulo, operario:this.frm_titulo, duracion:this.frm_duracion, estimado:this.frm_estimado}
+          { titulo: this.frm_titulo,
+            operario: "?",
+            duracion: "?",
+            estimado:this.frm_estimado}
         )
-        this.$refs.modal_new_task.hide()
-      }
-      ,
+        this.dialogVisible = false;
+        this.persistData();
+      },
+
+      handleClose(tag) {
+        this.frm_etiquetas.splice(this.frm_etiquetas.indexOf(tag), 1);
+      },
+
+      showInput() {
+        this.inputVisible = true;
+        this.$nextTick(_ => {
+          this.$refs.saveTagInput.$refs.input.focus();
+        });
+      },
+
+      handleInputConfirm() {
+        let inputValue = this.inputValue;
+        if (inputValue) {
+          this.frm_etiquetas.push(inputValue);
+        }
+        this.inputVisible = false;
+        this.inputValue = '';
+      },
+
 
       cleanForm () {
-        this.frm_titulo = '';
-        this.frm_estimado = '';
+        this.frm_titulo='';
+        this.frm_descripcion='';
+        this.frm_estimado='';
+        this.frm_prioridad=200;
+        this.frm_pausable=false;
+        this.frm_etiquetas=[];
       }
 
     },
     components: {
-      Navbar
+      ButtonGroup,
+      Navbar,
+      'bootstrap-modal': require('vue2-bootstrap-modal'),
+      InputTag
     }
   }
 </script>
 
 <style>
+
   div.wn-col div{
     padding-left:  10px;
     padding-top:    3px;
@@ -291,6 +414,22 @@
     float: right;
     margin-top:    0px;
     margin-bottom: 0px;
+  }
+
+  .el-tag + .el-tag {
+    margin-left: 10px;
+  }
+  .button-new-tag {
+    margin-left: 10px;
+    height: 32px;
+    line-height: 30px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  .input-new-tag {
+    width: 90px;
+    margin-left: 10px;
+    vertical-align: bottom;
   }
 
    /*body{*/

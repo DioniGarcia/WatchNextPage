@@ -1,6 +1,7 @@
 // https://github.com/michael-ciniawsky/postcss-load-config
 
 module.exports = {
+  /* eslint-disable */
   "plugins": {
     "postcss-import": {},
     "postcss-url": {},
