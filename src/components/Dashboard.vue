@@ -55,7 +55,7 @@
 
     <!-- Modal Add Tarea -->
     <el-dialog
-        title="Tips"
+        title="Nueva tarea"
         :visible.sync="dialogVisible"
         width="65%"
         :before-close="handleClose">
