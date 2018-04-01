@@ -9,11 +9,13 @@
 
   <script>
   export default {
-    name: 'app'
+    name: 'app',
+
   }
 </script>
 
 <style>
+
   @import url("//unpkg.com/element-ui/lib/theme-chalk/index.css");
 
   nav {

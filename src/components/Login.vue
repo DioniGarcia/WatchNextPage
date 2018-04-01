@@ -42,18 +42,22 @@
     },
     methods: {
       login: function(e) {
-        firebase
-          .auth()
-          .signInWithEmailAndPassword(this.email, this.password)
-          .then(
-            user => {
-              alert(`¡ Bienvenido ${user.email} !`);
-              this.$router.push('/dashboard');
-            },
-            err => {
-              alert(err.message);
-            }
-          );
+        if (this.email == 'operario@watchnext.com') {
+          alert('Acceso denegado');
+        }else{
+          firebase
+            .auth()
+            .signInWithEmailAndPassword(this.email, this.password)
+            .then(
+              user => {
+                alert(`¡ Bienvenido ${user.email} !`);
+                this.$router.push('/dashboard');
+              },
+              err => {
+                alert(err.message);
+              }
+            );
+        }
         e.preventDefault();
       }
     }
