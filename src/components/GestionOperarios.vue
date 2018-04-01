@@ -134,6 +134,7 @@
             this.ed_nombre = doc.data().nombre;
             this.ed_apellidos = doc.data().apellidos;
             this.ed_pass = doc.data().pass;
+            this.ed_id = id;
 
         }).catch(function(error) {
           console.log("Error gettings document:", error);
@@ -158,8 +159,8 @@
         }
         else {
           console.log('else_ed_wo_>'+this.id+'<')
-          this.updateEmployee('78')               // A PIÑO FIJO A FALTA QUE LLEGUE EL ID
-          this.handleEdit('78')
+          this.updateEmployee(this.ed_id)               // A PIÑO FIJO A FALTA QUE LLEGUE EL ID
+          this.handleEdit(this.ed_id)
         }
       },
 
