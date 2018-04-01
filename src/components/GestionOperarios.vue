@@ -15,8 +15,7 @@
           </div>
           <div class="wn-btn-div">
             <button @click="deleteWorker(operario.id)" class="wn-menu-btn">Eliminar</button>
-            <button @click="fillData(operario.id)" class="wn-menu-btn" data-id="123">Editar</button>
-            <!--<button v-b-modal.modal-edit-worker class="wn-menu-btn" data-id="123">Editar</button>-->
+            <button @click="fillData(operario.id)" v-b-modal.modal-edit-worker class="wn-menu-btn" data-id="123">Editar</button>
           </div>
         </div>
       </div>
@@ -40,9 +39,7 @@
       <b-modal id="modal-edit-worker" centered size="lg"
                ref="modal_edit_worker"
                title="Editar operario"
-               @ok="editWorker"
-               @show="printAlert(123)">
-
+               @ok="editWorker">
         <form @submit.prevent="handleEdit">
           <b-form-input type="text" v-model="ed_nombre"></b-form-input>
           <b-form-input type="text" v-model="ed_apellidos"></b-form-input>
@@ -108,10 +105,7 @@
     },
 
     methods: {
-      printAlert(id){
-        alert('En vez de esta función, ha de llamarse fillData(id) y cargar los datos en el modelo, ' +
-          'para luego cogerlos los textfields del modal de edicion')
-      },
+
       createWorker(evt) {
         evt.preventDefault()
         if (!this.frm_nombre) {
@@ -132,32 +126,20 @@
       },
 
       fillData(id){
-        console.log('start_filldata_ID->'+id+'<-') // WORKS WELL
-
+        console.log(id)
         var opRef = db.collection("operarios").doc(id.toString());
 
-        opRef.get().then(function(doc) {
-          if (doc.exists) {
-
-            console.log('ALL_DOC: '+doc.data().nombre+' '+doc.data().apellidos+' '+doc.data().pass+' '+doc.id) // WORKS WELL
-
-            /*
+        opRef.get()
+          .then(doc => {
             this.ed_nombre = doc.data().nombre;
-
             this.ed_apellidos = doc.data().apellidos;
             this.ed_pass = doc.data().pass;
 
-            this.ed_id = doc.id;*/
-            console.log("DocumentsX data:", doc.data());
-          } else {
-            console.log("No suchsX document!");
-          }
         }).catch(function(error) {
-          console.log("Error gettingsX document:", error);
+          console.log("Error gettings document:", error);
         });
-
-        console.log('endFILL_id?->'+this.ed_id+'<-')
       },
+
 
       editWorker(evt){
         evt.preventDefault()
