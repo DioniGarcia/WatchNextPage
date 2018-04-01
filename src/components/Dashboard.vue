@@ -6,18 +6,21 @@
         <button @click="dialogVisible = true" class="wn-menu-btn">Nueva tarea</button>
       </div>
 
-      <div v-for="task in tasks_sin_asignar" v-bind:key="task.id" class="wn-task-container"><!--scroll-->
-        <div class="wn-task-data">
-          <h3>{{task.titulo}}</h3>
-          <p>Operario:  {{task.operario}}</p>
-          <p>Duración: {{task.duracion}}/{{task.estimado}} min</p>
-        </div>
-        <div class="wn-btn-div">
-          <button class="wn-menu-btn">Eliminar</button>
-          <button class="wn-menu-btn disabled">Prioridad</button>
-          <button class="wn-menu-btn">Editar</button>
+      <div class="wn-col-container">
+        <div v-for="task in tasks_sin_asignar" v-bind:key="task.id" class="wn-task-container"><!--scroll-->
+          <div class="wn-task-data">
+            <h3>{{task.titulo}}</h3>
+            <p>Operario:  {{task.operario}}</p>
+            <p>Duración: {{task.duracion}}/{{task.estimado}} min</p>
+          </div>
+          <div class="wn-btn-div">
+            <button class="wn-menu-btn">Eliminar</button>
+            <button class="wn-menu-btn disabled">Prioridad</button>
+            <button class="wn-menu-btn">Editar</button>
+          </div>
         </div>
       </div>
+
     </div>
                                                                               <!-- REFACTORIZAR!!! -->
     <div class="wn-col col-asignadas">
@@ -57,8 +60,7 @@
     <el-dialog
         title="Nueva tarea"
         :visible.sync="dialogVisible"
-        width="65%"
-        :before-close="handleClose">
+        width="65%">
 
       <b-form @submit.stop.prevent="handleSubmit">
         <b-form-group id="taskTitleGroup"
@@ -275,7 +277,15 @@
         })
           .then(docRef => {
             console.log('Tarea añadida a FireBase!');
+
+            for(var i in this.frm_etiquetas){
+              db.collection('etiquetas').add({
+                tag: this.frm_etiquetas[i],
+                veces: 1
+              })
+            }
             this.cleanForm();
+
           })
           .catch(error => {
             console.error('Error añadiendo la tarea!',error);
@@ -346,7 +356,7 @@
     float: left;
     margin-top: -9px;
     border: solid 2px white;
-    height: auto;
+    height: 100%;
   }
   div.wn-col-title {
     background: cadetblue;
@@ -354,6 +364,16 @@
     font-size: 16px;
     padding-bottom: 2px;
   }
+
+  div.wn-col-container {
+    overflow-y:scroll;
+    align-content: center;
+    padding: 0;
+    margin:  0;
+    height: 100%;
+    width:  100%;
+  }
+
   div.wn-task-container {
     margin-top: 3px;
     background: whitesmoke;
