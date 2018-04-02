@@ -62,81 +62,61 @@
         :visible.sync="dialogVisible"
         width="65%">
 
-      <b-form @submit.stop.prevent="handleSubmit">
-        <b-form-group id="taskTitleGroup"
-                      label="Título:"
-                      label-for="taskTitle">
-          <b-form-input id="taskTitle"
-                        type="text"
-                        v-model="frm_titulo"
-                        required
-                        placeholder="Ponerle un nombre chachi pistachi a tu tarea">
-          </b-form-input>
-        </b-form-group>
-        <b-form-group id="taskDescriptionGroup"
-                      label="Descripción:"
-                      label-for="taskDescription">
-          <b-form-input id="taskDescription"
-                        type="text"
-                        v-model="frm_descripcion"
-                        required
-                        placeholder="Para poner un nombre chuli a tu tarea tienes que usar la imaginación y buscar en el el fondo de tu corazón...">
-          </b-form-input>
-        </b-form-group>
+      <el-form ref="form" :model="form" label-position="left" label-width="120px">
 
-        <b-form-group id="taskEstimationGroup"
-                      label="Tiempo estimado:"
-                      label-for="taskEstimado"
-                      description="En minutos">
-          <b-form-input id="taskEstimado"
-                        type="text"
-                        v-model="frm_estimado"
-                        required
-                        placeholder="45">
-          </b-form-input>
-        </b-form-group>
+        <el-form-item label="Título:"  required >
+            <el-input  type="text" v-model="frm_titulo" placeholder="Nombre de la tarea"></el-input>
+        </el-form-item>
 
-        <b-form-group id="taskPrioridadGroup"
-                      label="Prioridad:"
-                      label-for="taskPrioridad">
-          <b-form-select id="taskPrioridad"
-                         :options="prioridades"
-                         required
-                         v-model="frm_prioridad">
-            <template slot="first">
-              <option :value=200 >Media</option>
-            </template>
-          </b-form-select>
-        </b-form-group>
+        <el-form-item label="Prioridad:" required>
+          <el-select v-model="frm_prioridad" placeholder="Medio">
+            <el-option
+              v-for="item in prioridades"
+              :key="item.value"
+              :label="item.text"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
 
-        <el-checkbox v-model="frm_pausable" label="Pausable" border></el-checkbox>
+        <el-form-item label="Descripción:" required>
+          <el-input type="textarea" v-model="frm_descripcion" placeholder="Descripción de la tarea"></el-input>
+        </el-form-item>
 
-        <el-tag
-          :key="tag"
-          v-for="tag in frm_etiquetas"
-          closable
-          :disable-transitions="false"
-          @close="handleClose(tag)">
-          {{tag}}
-        </el-tag>
-        <el-input
-          class="input-new-tag"
-          v-if="inputVisible"
-          v-model="inputValue"
-          ref="saveTagInput"
-          size="mini"
-          @keyup.enter.native="handleInputConfirm"
-          @blur="handleInputConfirm"
-        >
-        </el-input>
-        <el-button v-else class="button-new-tag" size="small" @click="showInput">+ Nuevo tag</el-button>
+        <el-form-item label="T. estimado:"  required>
+          <el-input v-model="frm_estimado" placeholder="30" style="width: 10%"></el-input>
+        </el-form-item>
 
-      </b-form>
+        <el-switch  active-text="Pausable" v-model="frm_pausable"></el-switch>
 
-        <span slot="footer" class="dialog-footer">
-      <el-button @click="dialogVisible = false">Cancel</el-button>
-      <el-button type="primary" @click="handleSubmit">Confirm</el-button>
-    </span>
+        <el-form-item label="Etiquetas:"  required>
+          <el-tag
+            :key="tag"
+            v-for="tag in frm_etiquetas"
+            closable
+            :disable-transitions="false"
+            @close="handleClose(tag)">
+            {{tag}}
+          </el-tag>
+
+          <el-input
+            class="input-new-tag"
+            v-if="inputVisible"
+            v-model="inputValue"
+            ref="saveTagInput"
+            size="mini"
+            @keyup.enter.native="handleInputConfirm"
+            @blur="handleInputConfirm">
+          </el-input>
+
+          <el-button v-else class="button-new-tag" size="small" @click="showInput">+ Nuevo tag</el-button>
+        </el-form-item>
+
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="handleSubmit">Confirm</el-button>
+      </span>
     </el-dialog>
     <!-- FIN: Modal Add Tarea -->
   </div>
@@ -173,6 +153,7 @@
         prioridades: [
           { value: 400, text: 'Urgente' },
           { value: 300, text: 'Alta' },
+          { value: 200, text: 'Media' },
           { value: 100, text: 'Baja' },
           { value: 0,   text: 'Muy baja' },
         ],

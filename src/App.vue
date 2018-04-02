@@ -15,9 +15,6 @@
 </script>
 
 <style>
-
-  @import url("//unpkg.com/element-ui/lib/theme-chalk/index.css");
-
   nav {
     margin-bottom:10px;
   }
