@@ -16,6 +16,17 @@
 
         </ul>
 
+        <ul>
+          <el-date-picker
+            v-model="frm_timestamp"
+            clear-icon="none"
+            type="date"
+            placeholder="Selecciona una fecha"
+            format="yyyy/MM/dd"
+            value-format="timestamp">
+          </el-date-picker>
+        </ul>
+
         <ul class="right hide-on-med-and-down">
           <li v-if="isLoggedIn"><span class="email black-text">Bienvenido: {{currentUser}}</span></li>
           <li v-if="isLoggedIn"><button v-on:click="logout" class="btn black">Logout</button></li>
@@ -33,6 +44,9 @@
     name: 'navbar',
     data() {
       return {
+
+        frm_timestamp: "",
+
         isLoggedIn: false,
         currentUser: false
       };

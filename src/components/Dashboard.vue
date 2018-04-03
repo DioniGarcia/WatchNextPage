@@ -99,15 +99,19 @@
             {{tag}}
           </el-tag>
 
-          <el-input
+          <el-autocomplete
             class="input-new-tag"
             v-if="inputVisible"
             v-model="inputValue"
             ref="saveTagInput"
-            size="mini"
+            :fetch-suggestions="querySearch"
+            placeholder="Nombre etiqueta"
             @keyup.enter.native="handleInputConfirm"
-            @blur="handleInputConfirm">
-          </el-input>
+            @select="handleSelectTag">
+          </el-autocomplete>
+
+
+
 
           <el-button v-else class="button-new-tag" size="small" @click="showInput">+ Nuevo tag</el-button>
         </el-form-item>
@@ -157,6 +161,8 @@
           { value: 100, text: 'Baja' },
           { value: 0,   text: 'Muy baja' },
         ],
+
+        tagRecomendations: [],
 
         inputVisible: false,
         inputValue: '',
@@ -222,11 +228,40 @@
             this.tasks_realizadas.push(task);
 
           });
-        });
+      });
 
 
     },
     methods: {
+
+      querySearch(queryString, cb) {
+        var tagRecomendations = this.tagRecomendations;
+        var results = queryString ? tagRecomendations.filter(this.createFilter(queryString)) : tagRecomendations;
+        // call callback function to return suggestions
+        cb(results);
+      },
+      createFilter(queryString) {
+        return (link) => {
+          return (link.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        };
+      },
+      handleSelectTag(item) {
+        console.log(item);
+        this.handleInputConfirm();
+      },
+      loadTags() {
+        var tags = [];
+
+        db.collection('etiquetas').get().then(querySnapshot => {
+          querySnapshot.forEach(doc => {
+            const t = {
+              "value": doc.data().tag
+            };
+            tags.push(t);
+          });
+        });
+        return tags;
+      },
 
       createTask (evt) {
         evt.preventDefault()
@@ -259,12 +294,15 @@
           .then(docRef => {
             console.log('Tarea añadida a FireBase!');
 
-            for(var i in this.frm_etiquetas){
-              db.collection('etiquetas').add({
+
+            //TODO
+            for(var i in this.frm_etiquetas) {
+              db.collection('etiquetas').doc(this.frm_etiquetas[i].toString()).set({
                 tag: this.frm_etiquetas[i],
-                veces: 1
+                veces: 6
               })
             }
+
             this.cleanForm();
 
           })
@@ -316,6 +354,11 @@
       }
 
     },
+
+    mounted() {
+      this.tagRecomendations = this.loadTags();
+    },
+
     components: {
       ButtonGroup,
       Navbar,
