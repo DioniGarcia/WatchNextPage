@@ -110,9 +110,6 @@
             @select="handleSelectTag">
           </el-autocomplete>
 
-
-
-
           <el-button v-else class="button-new-tag" size="small" @click="showInput">+ Nuevo tag</el-button>
         </el-form-item>
 
@@ -241,8 +238,8 @@
         cb(results);
       },
       createFilter(queryString) {
-        return (link) => {
-          return (link.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        return (coso) => {
+          return (coso.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
         };
       },
       handleSelectTag(item) {
@@ -277,7 +274,6 @@
         else {
           this.persistData()
           this.handleSubmit()
-
         }
       },
       persistData () {
