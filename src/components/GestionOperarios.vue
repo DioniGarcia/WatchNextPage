@@ -4,7 +4,7 @@
 
       <div class="wn-col col-pendientes">
         <div class="wn-col-title">Lista Operarios
-          <button v-b-modal.modal-new-worker class="wn-menu-btn">Crear nuevo</button>
+          <button @click="dialogVisible = true" class="wn-menu-btn">Crear nuevo</button>
         </div>
 
         <div v-for="operario in operarios" v-bind:key="operario.id" class="wn-task-container">
@@ -15,39 +15,60 @@
           </div>
           <div class="wn-btn-div">
             <button @click="deleteWorker(operario.id)" class="wn-menu-btn">Eliminar</button>
-            <button @click="fillData(operario.id)" v-b-modal.modal-edit-worker class="wn-menu-btn" data-id="123">Editar</button>
+            <button @click="fillData(operario.id), dialogEditVisible = true" class="wn-menu-btn" data-id="123">Editar</button>
           </div>
         </div>
       </div>
 
-      <!-- princiPIO: Modal NUEVO Operario -->
-      <b-modal id="modal-new-worker" centered size="lg"
-               ref="modal_new_worker"
-               title="Crear nuevo operario"
-               @ok="createWorker"
-               @shown="cleanForm">
-        <form @submit.prevent="handleSubmit">
-          <b-form-input type="text" placeholder="Nombre " v-model="frm_nombre"></b-form-input>
-          <b-form-input type="text" placeholder="Apellidos" v-model="frm_apellidos"></b-form-input>
-          <b-form-input type="password" placeholder="Password"  v-model="frm_pass"></b-form-input>
-        </form>
-      </b-modal>
-      <!-- FIN: Modal NUEVO Operario -->
+      <!-- Modal NUEVO Operario -->
+      <el-dialog
+        title="Alta nuevo operario"
+        :visible.sync="dialogVisible"
+        width="65%">
 
+        <el-form ref="modal_new_worker" :model="form" label-position="left" label-width="120px">
+          <el-form-item label="Nombre:"  required >
+            <el-input  type="text" v-model="frm_nombre" placeholder="Nombre del operario"></el-input>
+          </el-form-item>
+          <el-form-item label="Apellidos:"  required >
+            <el-input  type="text" v-model="frm_apellidos" placeholder="Apellidos del operario"></el-input>
+          </el-form-item>
+          <el-form-item label="Contraseña:"  required >
+            <el-input  type="password" v-model="frm_pass" placeholder="123456"></el-input>
+          </el-form-item>
+        </el-form>
 
-      <!-- princiPIO: Modal edit Operario -->
-      <b-modal id="modal-edit-worker" centered size="lg"
-               ref="modal_edit_worker"
-               title="Editar operario"
-               @ok="editWorker">
-        <form @submit.prevent="handleEdit">
-          <b-form-input type="text" v-model="ed_nombre"></b-form-input>
-          <b-form-input type="text" v-model="ed_apellidos"></b-form-input>
-          <b-form-input type="password" v-model="ed_pass"></b-form-input>
-        </form>
-      </b-modal>
-      <!-- FIN: Modal edit Operario -->
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">Cancelar</el-button>
+          <el-button type="primary" @click="createWorker">Crear</el-button>
+        </span>
+      </el-dialog>
+      <!-- FIN: Modal NUEVO Operario-->
 
+      <!-- Modal EDITAR Operario-->
+      <el-dialog
+        title="Editar operario"
+        :visible.sync="dialogEditVisible"
+        width="65%">
+
+        <el-form ref="modal_edit_worker" :model="form" label-position="left" label-width="120px">
+          <el-form-item label="Nombre:"  required >
+            <el-input  type="text" v-model="ed_nombre" placeholder="Nombre del operario"></el-input>
+          </el-form-item>
+          <el-form-item label="Apellidos:"  required >
+            <el-input  type="text" v-model="ed_apellidos" placeholder="Apellidos del operario"></el-input>
+          </el-form-item>
+          <el-form-item label="Contraseña:"  required >
+            <el-input  type="password" v-model="ed_pass" placeholder="123456"></el-input>
+          </el-form-item>
+        </el-form>
+
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogEditVisible = false">Cancelar</el-button>
+          <el-button type="primary" @click="editWorker">Guardar</el-button>
+        </span>
+      </el-dialog>
+      <!-- FIN: Modal EDITAR Operario-->
 
     </div>
 </template>
@@ -77,6 +98,8 @@
 
         id:'',
 
+        dialogVisible: false,
+        dialogEditVisible: false,
         loading: true
       }
     },
@@ -121,6 +144,7 @@
           alert('El Password ha de ser numérico')
         }
         else {
+          this.dialogVisible = false;
           this.persistData()
         }
       },
@@ -158,8 +182,9 @@
           alert('El Password ha de ser numérico')
         }
         else {
-          console.log('else_ed_wo_>'+this.id+'<')
-          this.updateEmployee(this.ed_id)               // A PIÑO FIJO A FALTA QUE LLEGUE EL ID
+          this.dialogEditVisible = false;
+
+          this.updateEmployee(this.ed_id)
           this.handleEdit(this.ed_id)
         }
       },
@@ -198,7 +223,7 @@
         this.operarios.push(
           {nombre: this.frm_nombre, apellidos: this.frm_apellidos, pass: this.frm_pass, id:this.id}
         );
-        this.$refs.modal_new_worker.hide();
+        this.cleanForm();
       },
 
       handleEdit(id) {
