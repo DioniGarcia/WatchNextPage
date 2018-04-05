@@ -15,7 +15,6 @@
           </div>
           <div class="wn-btn-div">
             <button class="wn-menu-btn">Eliminar</button>
-            <button class="wn-menu-btn disabled">Prioridad</button>
             <button class="wn-menu-btn">Editar</button>
           </div>
         </div>
@@ -33,7 +32,6 @@
         </div>
         <div class="wn-btn-div">
           <button class="wn-menu-btn">Eliminar</button>
-          <button class="wn-menu-btn disabled">Prioridad</button>
           <button class="wn-menu-btn">Editar</button>
         </div>
       </div>
@@ -49,7 +47,6 @@
         </div>
         <div class="wn-btn-div">
           <button class="wn-menu-btn">Eliminar</button>
-          <button class="wn-menu-btn disabled">Prioridad</button>
           <button class="wn-menu-btn">Editar</button>
         </div>
       </div>
@@ -167,7 +164,7 @@
         loading: true
       }
     },
-    created: function () { // REFACTORIZAR
+    created: function () {
       db
         .collection('sinAsignar')
         .orderBy('titulo')
@@ -276,6 +273,7 @@
           this.handleSubmit()
         }
       },
+
       persistData () {
         db.collection('sinAsignar').add({
           asignable: true,
@@ -286,26 +284,35 @@
           pausable:  this.frm_pausable,
           prioridad: this.frm_prioridad,
           titulo:    this.frm_titulo
+        }).then(docRef => {
+
+          console.log('Tarea añadida a FireBase!');
+
+          for (var i = 0; i < this.frm_etiquetas.length; i++) {
+            var eti = this.frm_etiquetas[i].toString();
+
+            this.persistTag(eti);
+          }
+              this.cleanForm();
+          }).catch(error => {console.error('Error añadiendo la tarea!',error);
         })
-          .then(docRef => {
-            console.log('Tarea añadida a FireBase!');
+      },
 
+      persistTag(tag){
+        var refTag = db.collection('etiquetas').doc(tag);
 
-            //TODO
-            for(var i in this.frm_etiquetas) {
-              db.collection('etiquetas').doc(this.frm_etiquetas[i].toString()).set({
-                tag: this.frm_etiquetas[i],
-                veces: 6
-              })
-            }
+        var getDoc = refTag.get().then(doc => {
 
-            this.cleanForm();
-
-          })
-          .catch(error => {
-            console.error('Error añadiendo la tarea!',error);
-            alert('Error añadiendo la tarea! Vuelve a intentarlo');
-          })
+          if (!doc.exists) {
+            refTag.set({tag: tag, veces: 1})
+              .then(docRef => {console.log('Nueva etiqueta añadida a FireBase!: '+tag)})
+              .catch(error => {console.error('Error añadiendo la etiqueta!: '+tag, error)});
+          } else {
+            var updateVeces = refTag.set({tag: tag, veces: doc.data().veces + 1})
+              .then(docRef => {console.log('Etiqueta actualizada en FireBase!: '+tag)})
+          }
+        })
+          .catch(err => {console.log('Error getting document', err);});
       },
 
       handleSubmit () {
@@ -347,7 +354,7 @@
         this.frm_prioridad=200;
         this.frm_pausable=false;
         this.frm_etiquetas=[];
-      }
+      },
 
     },
 
