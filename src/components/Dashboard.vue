@@ -103,7 +103,7 @@
             v-model="inputValue"
             ref="saveTagInput"
             :fetch-suggestions="querySearch"
-            placeholder="Nombre etiqueta"
+            placeholder="Nombre nueva etiqueta"
             @keyup.enter.native="handleInputConfirm"
             @select="handleSelectTag">
           </el-autocomplete>
@@ -230,27 +230,34 @@
     methods: {
 
       querySearch(queryString, cb) {
+        console.log('q_s')
         var tagRecomendations = this.tagRecomendations;
         var results = queryString ? tagRecomendations.filter(this.createFilter(queryString)) : tagRecomendations;
         // call callback function to return suggestions
         cb(results);
       },
       createFilter(queryString) {
+        console.log('C_F')
         return (coso) => {
           return (coso.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
         };
       },
       handleSelectTag(item) {
+        console.log('hd_st')
         console.log(item);
         this.handleInputConfirm();
       },
       loadTags() {
+        console.log('ld_tags')
         var tags = [];
 
         db.collection('etiquetas').get().then(querySnapshot => {
           querySnapshot.forEach(doc => {
+            console.log('ld_tgs_data: '+doc.data().tag);
             const t = {
+
               "value": doc.data().tag
+
             };
             tags.push(t);
           });
@@ -272,7 +279,7 @@
         else {
           this.dialogVisible = false;
           this.persistData()
-          //this.handleSubmit()
+
         }
       },
 
@@ -299,17 +306,25 @@
 
               }).then(docRef => {
                 console.log('Tarea añadida a FireBase!')
+
                 for (var i = 0; i < this.frm_etiquetas.length; i++) {
                   var eti = this.frm_etiquetas[i].toString();
 
                   this.persistTag(eti);
                 }
               }).then(() => {
-                  this.handleSubmit()
+                this.handleSubmit()
+                console.log('then')
+                console.log('TgR: ' + this.tagRecomendations)
+                console.log('TGS: ' + this.frm_etiquetas)
+                console.log('thon')
+
+                console.log('t0on')
               }).catch(error => {
                 console.error('Error añadiendo la tarea!',error)
               });
               t.update(autRef, {tareas: newTask});
+
             })
         })
 
@@ -380,7 +395,10 @@
 
           if (!doc.exists) {
             refTag.set({tag: tag, veces: 1})
-              .then(docRef => {console.log('Nueva etiqueta añadida a FireBase!: '+tag)})
+              .then(docRef => {
+                console.log('Nueva etiqueta añadida a FireBase!: '+tag)
+                this.tagRecomendations = this.loadTags();
+              })
               .catch(error => {console.error('Error añadiendo la etiqueta!: '+tag, error)});
           } else {
             var updateVeces = refTag.set({tag: tag, veces: doc.data().veces + 1})
@@ -391,7 +409,7 @@
       },
 
       handleSubmit () {
-
+        console.log('hd_sm')
         this.tasks_sin_asignar.push(
           {
             titulo: this.frm_titulo,
@@ -403,14 +421,17 @@
 
         )
         this.dialogVisible = false;
+
         this.cleanForm();
       },
 
       handleClose(tag) {
+        console.log('hd_cls')
         this.frm_etiquetas.splice(this.frm_etiquetas.indexOf(tag), 1);
       },
 
       showInput() {
+        console.log('sw_input')
         this.inputVisible = true;
         this.$nextTick(_ => {
           this.$refs.saveTagInput.$refs.input.focus();
@@ -418,8 +439,10 @@
       },
 
       handleInputConfirm() {
+        console.log('hd_icnf')
         let inputValue = this.inputValue;
         if (inputValue) {
+          console.log('iv'+inputValue)
           this.frm_etiquetas.push(inputValue);
         }
         this.inputVisible = false;
@@ -428,6 +451,7 @@
 
 
       cleanForm () {
+        console.log('cl_frm')
         this.frm_titulo='';
         this.frm_descripcion='';
         this.frm_estimado='';
@@ -440,6 +464,7 @@
     },
 
     mounted() {
+      console.log('mounted')
       this.tagRecomendations = this.loadTags();
     },
 
