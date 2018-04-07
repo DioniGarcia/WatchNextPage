@@ -9,13 +9,14 @@
       <div class="wn-col-container">
         <div v-for="task in tasks_sin_asignar" v-bind:key="task.id" class="wn-task-container"><!--scroll-->
           <div class="wn-task-data">
-            <h3>{{task.titulo}}</h3>
+            <h3>ID: {{task.id}}</h3>
+            <p>Nombre: {{task.titulo}}</p>
             <p>Operario:  {{task.operario}}</p>
             <p>Duración: {{task.duracion}}/{{task.estimado}} min</p>
           </div>
           <div class="wn-btn-div">
-            <button class="wn-menu-btn">Eliminar</button>
-            <button class="wn-menu-btn">Editar</button>
+            <button @click="deleteTask(task.id)" class="wn-menu-btn">Eliminar</button>
+            <button @click="fillData(task.id), dialogEditVisible = true" class="wn-menu-btn">Editar</button>
           </div>
         </div>
       </div>
@@ -113,7 +114,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="handleSubmit">Confirm</el-button>
+        <el-button type="primary" @click="createTask">Confirm</el-button>
       </span>
     </el-dialog>
     <!-- FIN: Modal Add Tarea -->
@@ -160,7 +161,7 @@
 
         inputVisible: false,
         inputValue: '',
-
+        id:'',
         loading: true
       }
     },
@@ -174,7 +175,7 @@
           querySnapshot.forEach(doc => {
             const task = {
               id: doc.id,
-              operario: "___",
+              operario: "No Asignado",
               titulo: doc.data().titulo,
               duracion: doc.data().duracion,
               estimado: doc.data().estimado
@@ -269,36 +270,110 @@
           alert('El tiempo estimado debe ser un número entero')
         }
         else {
+          this.dialogVisible = false;
           this.persistData()
-          this.handleSubmit()
+          //this.handleSubmit()
         }
       },
 
       persistData () {
-        db.collection('sinAsignar').add({
-          asignable: true,
-          descripcion: this.frm_descripcion,
-          estimado: parseInt(this.frm_estimado),
-          etiquetas: this.frm_etiquetas,
-          fecha_realizacion:  Date.now(),
-          pausable:  this.frm_pausable,
-          prioridad: this.frm_prioridad,
-          titulo:    this.frm_titulo
-        }).then(docRef => {
 
-          console.log('Tarea añadida a FireBase!');
+        var autRef = db.collection('autoIncrems').doc('tareas');
+        var transaction = db.runTransaction( async t => {
+          return t.get(autRef)
+            .then(doc => {
 
-          for (var i = 0; i < this.frm_etiquetas.length; i++) {
-            var eti = this.frm_etiquetas[i].toString();
+              var newTask = doc.data().tareas + 1;
+              this.id = newTask;
+              db.collection('sinAsignar').doc(newTask.toString()).set({
 
-            this.persistTag(eti);
-          }
-              this.cleanForm();
-          }).catch(error => {console.error('Error añadiendo la tarea!',error);
+                asignable: true,
+                descripcion: this.frm_descripcion,
+                estimado: parseInt(this.frm_estimado),
+                etiquetas: this.frm_etiquetas,
+                fecha_realizacion: Date.now(),
+                pausable: this.frm_pausable,
+                prioridad: this.frm_prioridad,
+                titulo: this.frm_titulo,
+                id: newTask
+
+              }).then(docRef => {
+                console.log('Tarea añadida a FireBase!')
+                for (var i = 0; i < this.frm_etiquetas.length; i++) {
+                  var eti = this.frm_etiquetas[i].toString();
+
+                  this.persistTag(eti);
+                }
+              }).then(() => {
+                  this.handleSubmit()
+              }).catch(error => {
+                console.error('Error añadiendo la tarea!',error)
+              });
+              t.update(autRef, {tareas: newTask});
+            })
         })
+
       },
 
+      deleteTask(id) {
+
+        if (confirm('¿Estas seguro que quieres borrar la tarea con ID: ' + id + ' ?')) {
+          var evalTags = [];
+          var ref = db.collection('sinAsignar').doc(id.toString());
+
+          return ref.get()
+            .then(doc => {
+              evalTags = doc.data().etiquetas;
+              for (var i = 0; i < evalTags.length; i++) {
+                this.decreaseTag(evalTags[i])
+              }
+            }).then(doc => {
+              db.collection('sinAsignar').doc(id.toString()).delete().then(function () {
+                console.log("Tarea borrada con éxito!");
+              }).catch(function (error) {
+                console.error("Error borrando tarea!: ", error);
+              });
+
+              this.removeFromModel(id);
+            })
+        }
+      },
+
+      removeFromModel(id){
+
+        var idx = -1;
+        var i = 0;
+        this.tasks_sin_asignar.forEach(function(task) {
+          if(task.id == id){
+            idx=i;
+          };
+          i++;
+        });
+        this.tasks_sin_asignar.splice(idx,1);
+      },
+
+      decreaseTag(tag){
+
+        var ref = db.collection('etiquetas').doc(tag);
+
+        return ref.get()
+          .then(doc => {
+            var num = doc.data().veces;
+            console.log(num)
+            if(num > 1){
+              ref.update({veces:num-1})
+            }else{
+              ref.delete().then(function() {
+                console.log("Etiqueta borrada con éxito!");
+              }).catch(function(error) {
+                console.error("Error borrando etiqueta!: ", error);
+              });
+            }
+          })
+
+      },
       persistTag(tag){
+
         var refTag = db.collection('etiquetas').doc(tag);
 
         var getDoc = refTag.get().then(doc => {
@@ -309,21 +384,26 @@
               .catch(error => {console.error('Error añadiendo la etiqueta!: '+tag, error)});
           } else {
             var updateVeces = refTag.set({tag: tag, veces: doc.data().veces + 1})
-              .then(docRef => {console.log('Etiqueta actualizada en FireBase!: '+tag)})
+              .then(docRef => {console.log('Etiqueta incrementada en FireBase!: '+tag)})
           }
         })
           .catch(err => {console.log('Error getting document', err);});
       },
 
       handleSubmit () {
+
         this.tasks_sin_asignar.push(
-          { titulo: this.frm_titulo,
-            operario: "?",
-            duracion: "?",
-            estimado:this.frm_estimado}
+          {
+            titulo: this.frm_titulo,
+            operario: "N/A",
+            duracion: 0,
+            estimado:parseInt(this.frm_estimado),
+            id: this.id
+          }
+
         )
         this.dialogVisible = false;
-        this.persistData();
+        this.cleanForm();
       },
 
       handleClose(tag) {
@@ -353,7 +433,8 @@
         this.frm_estimado='';
         this.frm_prioridad=200;
         this.frm_pausable=false;
-        this.frm_etiquetas=[];
+        this.frm_etiquetas=[]
+        this.id = '';
       },
 
     },
