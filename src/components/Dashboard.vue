@@ -118,6 +118,71 @@
       </span>
     </el-dialog>
     <!-- FIN: Modal Add Tarea -->
+
+    <!-- Modal EDIT Tarea -->
+    <el-dialog
+      title="Editar tarea"
+      :visible.sync="dialogEditVisible"
+      width="65%">
+
+      <el-form ref="form" :model="form" label-position="left" label-width="120px">
+
+        <el-form-item label="Título:"  required >
+          <el-input  type="text" v-model="frm_titulo" placeholder="Nombre de la tarea"></el-input>
+        </el-form-item>
+
+        <el-form-item label="Prioridad:" required>
+          <el-select v-model="frm_prioridad" placeholder="Medio">
+            <el-option
+              v-for="item in prioridades"
+              :key="item.value"
+              :label="item.text"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="Descripción:" required>
+          <el-input type="textarea" v-model="frm_descripcion" placeholder="Descripción de la tarea"></el-input>
+        </el-form-item>
+
+        <el-form-item label="T. estimado:"  required>
+          <el-input v-model="frm_estimado" placeholder="30" style="width: 10%"></el-input>
+        </el-form-item>
+
+        <el-switch  active-text="Pausable" v-model="frm_pausable"></el-switch>
+
+        <el-form-item label="Etiquetas:"  required>
+          <el-tag
+            :key="tag"
+            v-for="tag in frm_etiquetas"
+            closable
+            :disable-transitions="false"
+            @close="handleClose(tag)">
+            {{tag}}
+          </el-tag>
+
+          <el-autocomplete
+            class="input-new-tag"
+            v-if="inputVisible"
+            v-model="inputValue"
+            ref="saveTagInput"
+            :fetch-suggestions="querySearch"
+            placeholder="Nombre nueva etiqueta"
+            @keyup.enter.native="handleInputConfirm"
+            @select="handleSelectTag">
+          </el-autocomplete>
+
+          <el-button v-else class="button-new-tag" size="small" @click="showInput">+ Nuevo tag</el-button>
+        </el-form-item>
+
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogEditVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="editTask">Confirm</el-button>
+      </span>
+    </el-dialog>
+    <!-- FIN: Modal EDIT Tarea -->
   </div>
 
 </template>
@@ -142,6 +207,9 @@
         tasks_realizadas:  [],
 
         // Modelo de datos del form
+        frm_operario: '',
+        frm_fechaRealizacion: '',
+        frm_asignable:   true,
         frm_titulo:        '',
         frm_descripcion:   '',
         frm_estimado:      '',
@@ -279,10 +347,66 @@
         else {
           this.dialogVisible = false;
           this.persistData()
-
         }
       },
 
+      editTask (evt) {
+        evt.preventDefault()
+        if (!this.frm_titulo) {
+          alert('El título no puede estar vacío')
+        }
+        else if (!this.frm_estimado) {
+          alert('El tiempo estimado no puede estar vacío')
+        }
+        else if (isNaN(this.frm_estimado)) {
+          alert('El tiempo estimado debe ser un número entero')
+        }
+        else {
+          this.dialogEditVisible = false;
+          this.updateTask(this.id)
+          this.handleEdit(this.id)
+        }
+      },
+      fillData(id){
+        console.log(id)
+        var opRef = db.collection("sinAsignar").doc(id.toString());
+
+        opRef.get()
+          .then(doc => {
+            this.frm_operario = doc.data().operario,
+            this.frm_asignable = doc.data().asignable,
+            this.frm_titulo = doc.data().titulo,
+            this.frm_descripcion = doc.data().descripcion,
+            this.frm_estimado=  doc.data().estimado,
+            this.frm_prioridad=  doc.data().prioridad,
+            this.frm_pausable = doc.data().pausable,
+            this.frm_etiquetas = doc.data().etiquetas,
+            this.frm_fechaRealizacion = doc.data().fecha_realizacion,
+            this.id = doc.id
+          }).catch(function(error) {
+          console.log("Error gettings document:", error);
+        });
+      },
+      updateTask(id) {
+        console.log('up_tsk_id_>'+id+'<')
+        var tsRef = db.collection("sinAsignar").doc(id.toString());
+
+        return tsRef.update({
+          descripcion: this.frm_descripcion,
+          estimado: parseInt(this.frm_estimado),
+          etiquetas: this.frm_etiquetas,
+          fecha_realizacion: Date.now(),
+          pausable: this.frm_pausable,
+          prioridad: this.frm_prioridad,
+          titulo: this.frm_titulo,
+        })
+          .then(function() {
+            console.log("Tarea actualizada con éxito!");
+          })
+          .catch(function(error) {
+            console.error("Error actualizando la tarea: ", error);
+          });
+      },
       persistData () {
 
         var autRef = db.collection('autoIncrems').doc('tareas');
@@ -314,12 +438,7 @@
                 }
               }).then(() => {
                 this.handleSubmit()
-                console.log('then')
-                console.log('TgR: ' + this.tagRecomendations)
-                console.log('TGS: ' + this.frm_etiquetas)
-                console.log('thon')
 
-                console.log('t0on')
               }).catch(error => {
                 console.error('Error añadiendo la tarea!',error)
               });
@@ -407,7 +526,22 @@
         })
           .catch(err => {console.log('Error getting document', err);});
       },
-
+      handleEdit(id) {
+        console.log('hnd_edit_id>'+id+'<')
+        var i = 0;
+        for(i=0;i<this.tasks_sin_asignar.length;i++){
+          if(this.tasks_sin_asignar[i].id == id){
+            this.tasks_sin_asignar.titulo=this.frm_titulo;
+            this.tasks_sin_asignar.operario=this.frm_operario;
+            this.tasks_sin_asignar.pausable=this.frm_pausable;
+            this.tasks_sin_asignar.prioridad=this.frm_prioridad;
+            this.tasks_sin_asignar.estimado=this.frm_estimado;
+            this.tasks_sin_asignar.descripcion=this.frm_descripcion;
+            this.tasks_sin_asignar.etiquetas=this.frm_etiquetas;
+          }
+        }
+        this.dialogEditVisible = false;
+      },
       handleSubmit () {
         console.log('hd_sm')
         this.tasks_sin_asignar.push(
