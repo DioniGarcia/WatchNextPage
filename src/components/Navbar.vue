@@ -63,7 +63,7 @@
           .auth()
           .signOut()
           .then(() => {
-            this.$router.push('./Login');
+            this.$router.push('./');
           });
       }
     }

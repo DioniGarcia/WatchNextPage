@@ -1,20 +1,48 @@
-
 <template>
+  <body class="flex-box text-center" >
+  <div class="flex-box background">
+    <div class="flex-box cover-container d-flex h-100 p-3 mx-auto flex-column" >
 
-  <body class="text-center" >
-  <div class="background">
-    <div class="cover-container d-flex h-100 p-3 mx-auto flex-column" >
-      <header class="mb-auto">
-        <main role="main" class="inner cover" >
-          <h1 class="cover-heading">WatchNext®</h1>
-          <pre class="lead">
-            <div class="transparency">"WatchNext® is under construction! Be Patient!<br>Prepare yourself 4 the most exciting web app !!<br>You will able to buy your own WN product soon!!.</div></pre>
-          </main>
+      <div class="flex-box">
 
-          </header>
-          <div>
-            <router-link  to="/login" tag="img" ><img class="logo" src="../assets/wnLogo.png" title="Login" ></router-link>
+        <transition name="fade">
+          <h1 class="cover-heading welcome" v-if="showTitle" v-animation>WatchNext®</h1>
+        </transition>
+        <transition name="lupa">
+          <img v-show="showIcon" @click="handleClickIcon" class="logo reflex" src="../assets/wnLogo.png" title="Login"/>
+        </transition>
+        <!-- Esto era el botón
+         <router-link  to="/login" tag="img" ><img class="logo" src="../assets/wnLogo.png" title="Login" ></router-link>
+        -->
+
+        <el-dialog style="margin-top:-50px"
+
+          :visible.sync="showLogin"
+          width="460px"
+          :show-close="false"
+          :close-on-press-escape="false"
+          :close-on-click-modal="false"
+          >
+          <h1 style="margin-top:-30px; padding-bottom:30px;">Login</h1>
+          <div style="height:140px; margin-left:-20px; margin-right:-20px; margin-bottom:30px; background:cadetblue">
+            <img style="width:100px; height:100px; margin-top:20px;" class="logo" src="../assets/wnLogo.png" title="Login"/>
           </div>
+          <el-form ref="form" :model="form" label-position="left" label-width="120px">
+            <el-form-item label="Usuario:"  required >
+              <el-input  type="text" v-model="email" placeholder="Usuario"></el-input>
+            </el-form-item>
+            <el-form-item label="Contraseña:"  required >
+              <el-input  type="password" v-model="password" placeholder="Contraseña"></el-input>
+            </el-form-item>
+          </el-form>
+
+          <span slot="footer" class="dialog-footer">
+            <el-button class="btn-login reflex" type="primary" @click="handleLogin">Login</el-button>
+          </span>
+        </el-dialog>
+
+      </div>
+
 
 
     </div>
@@ -24,29 +52,106 @@
 
 </template>
 
+<script>
+  import firebase from 'firebase';
+  export default {
+    name: 'initial',
+    data() {
+      return {
+        showIcon: true,
+        showTitle: true,
+
+        showLogin: false,
+
+        email:'',
+        password:''
+      };
+    },
+    methods: {
+
+      handleClickIcon: function() {
+        this.showIcon=false
+        this.showTitle=false
+        this.showLogin=true
+      },
+
+      handleLogin: function(e) {
+        if (this.email == 'operario@watchnext.com') {
+          alert('Acceso denegado');
+        }else{
+          firebase
+            .auth()
+            .signInWithEmailAndPassword(this.email, this.password)
+            .then(
+              user => {
+                alert(`¡Bienvenido ${user.email}!`);
+                this.$router.push('/dashboard');
+              },
+              err => {
+                alert(err.message);
+              }
+            );
+        }
+        e.preventDefault();
+      }
+
+    }
+  };
+
+</script>
+
 <style scoped>
 
-  pre.lead{
-    font-size: 150%;
-    text-align:center;
+  .fade-enter-active {
+    animation: disappear .5s;
   }
-  .lead{
-    font-color:black;
-    align: center;
-    font-size:100%;
+  .fade-leave-active {
+    animation: disappear .5s reverse;
   }
-  .logo {
-    /*height: 12.5%;*/
-    /*width: 12.5%;*/
+
+  .lupa-enter-active {
+    animation: bounce-in .5s;
   }
-  .transparency {
-    width: auto;
-    height: auto;
-    background-color: #FFFFFF;
-    padding: 10px;
-    opacity:0.5;
+  .lupa-leave-active {
+    animation: bounce-in .5s reverse;
   }
-  img:hover {
+
+  @keyframes bounce-in {
+    0% {
+      transform: scale(0);
+    }
+    50% {
+      transform: scale(1.5);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes disappear {
+    0% {
+      transform: translateX(400px) scale(0);
+    }
+    50% {
+      transform: translateX(200px) scale(0.1);
+    }
+    100% {
+      transform: translateX(0px) scale(1);
+    }
+  }
+
+  .btn-login {
+    padding-left:  120px;
+    padding-right: 120px;
+    margin-top: -40px;
+    margin-bottom: 20px;
+    margin-right: 14%;
+    font-size: 21px;
+    border-radius: 50px;
+    background: cadetblue;
+  }
+
+  .reflex:hover {
     opacity: 0.7;
     -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=70);
     filter: alpha(opacity=70);
@@ -60,21 +165,35 @@
   main, header{
     height: max-content;
   }
+
   img {
     transition-duration: 0.5s;
     -moz-transition-duration: 0.5s;
     -webkit-transition-duration: 0.5s;
     -o-transition-duration: 0.5s;
-    cursor: pointer;
     height: 250px;
     width: 250px;
   }
 
-  div{
+  div.flex-box {
     height:100vh;
     display: flex;
     align-items: center;
   }
 
+  html {
+    height: 100%;
+  }
+
+  body {
+    width: 100%;
+    height: 100%;
+    background-image: url("../assets/background.png") ;
+    background-position: center center;
+    background-repeat:  no-repeat;
+    background-attachment: fixed;
+    background-size:  cover;
+    background-color: #999;
+  }
 </style>
 

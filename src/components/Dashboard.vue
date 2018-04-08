@@ -719,10 +719,4 @@
     vertical-align: bottom;
   }
 
-   /*body{*/
-     /*background-image:none;*/
-     /*background-color:white;*/
-   /*}*/
-
-
 </style>
