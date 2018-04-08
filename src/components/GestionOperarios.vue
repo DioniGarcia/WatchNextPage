@@ -7,7 +7,8 @@
           <button @click="dialogVisible = true" class="wn-menu-btn">Crear nuevo</button>
         </div>
 
-        <div v-for="operario in operarios" v-bind:key="operario.id" class="wn-task-container">
+        <div class="wn-col-container">
+          <div v-for="operario in operarios" v-bind:key="operario.id" class="wn-task-container">
           <div class="wn-task-data">
             <h3>ID: {{operario.id}} </h3>
             <p>Nombre:  {{operario.nombre}} </p>
@@ -18,8 +19,9 @@
             <button @click="fillData(operario.id), dialogEditVisible = true" class="wn-menu-btn" data-id="123">Editar</button>
           </div>
         </div>
-      </div>
 
+        </div>
+      </div>
       <!-- Modal NUEVO Operario -->
       <el-dialog
         title="Alta nuevo operario"
@@ -319,14 +321,6 @@
   div.col-pendientes {
     border-left: none;
   }
-  div.col-asignadas {
-    border-left: none;
-    border-right: none;
-  }
-  div.col-realizadas {
-    border-right: none;
-  }
-
 
   div.wn-task-data {
     width: 80%;
@@ -340,7 +334,7 @@
   div.wn-task-data p {
     font-size:     12px;
     padding-top:    4px;
-    padding-bottom: 0px;
+    padding-bottom: 0;
     margin-bottom:  -6px;
   }
 
@@ -356,10 +350,6 @@
     font-size: 12px;
     float: right;
     width: 140px;
-    padding-top:    2px;
-    padding-bottom: 2px;
-    padding-left:  34px;
-    padding-right: 34px;
     margin-top:     1px;
     margin-right:  24px;
   }
@@ -369,8 +359,8 @@
     font-size: 12px;
     text-align: left;
     float: right;
-    margin-top:    0px;
-    margin-bottom: 0px;
+    margin-top:    0;
+    margin-bottom: 0;
   }
 
 

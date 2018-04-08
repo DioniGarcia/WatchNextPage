@@ -2,7 +2,7 @@
   <div id="app" >
     <Navbar style="height: 4vh"/>
     <div>
-      <router-view style="height: 86vh" />
+      <router-view style="height: 100vh" />
     </div>
   </div>
   </template>
@@ -20,7 +20,7 @@
   }
 
   html, body {
-    height: 100vh;
+
   }
 
   /*

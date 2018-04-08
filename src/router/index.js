@@ -4,7 +4,6 @@ import Router from 'vue-router'
 import Dashboard from '@/components/Dashboard'
 import NewTask   from '@/components/NewTask'
 import GestionOperarios  from '@/components/GestionOperarios'
-import Login    from '@/components/Login'
 import Initial from '@/components/Initial'
 import firebase from 'firebase';
 
@@ -41,11 +40,6 @@ let router = new Router({
       path: '/',
       name: 'initial',
       component: Initial,
-    },
-    {
-      path: '/login',
-      name: 'login',
-      component: Login
     }
   ]
 });
@@ -62,7 +56,7 @@ router.beforeEach((to, from, next) => {
       alert('No puedes usar WatchNext sin loguearte');
       // Go to login
       next({
-        path: '/login',
+        path: '/',
         query: {
           redirect: to.fullPath
         }
