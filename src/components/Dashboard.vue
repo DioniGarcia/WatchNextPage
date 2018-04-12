@@ -201,6 +201,7 @@
       return {
 
         dialogVisible: false,
+        dialogEditVisible: false,
 
         tasks_sin_asignar: [],
         tasks_asignadas:   [],
@@ -272,7 +273,6 @@
                   };
                   this.tasks_asignadas.push(task);
                 });
-
               });
           });
         });
@@ -296,7 +296,9 @@
 
     },
     methods: {
-
+      peix(){
+        console.log('peix!')
+      },
       querySearch(queryString, cb) {
         console.log('q_s')
         var tagRecomendations = this.tagRecomendations;
@@ -351,6 +353,7 @@
       },
 
       editTask (evt) {
+        console.log('Edit task')
         evt.preventDefault()
         if (!this.frm_titulo) {
           alert('El título no puede estar vacío')
@@ -364,7 +367,6 @@
         else {
           this.dialogEditVisible = false;
           this.updateTask(this.id)
-          this.handleEdit(this.id)
         }
       },
       fillData(id){
@@ -399,13 +401,14 @@
           pausable: this.frm_pausable,
           prioridad: this.frm_prioridad,
           titulo: this.frm_titulo,
-        })
-          .then(function() {
+
+        }).then(function() {
             console.log("Tarea actualizada con éxito!");
-          })
-          .catch(function(error) {
+        }).then(() => {
+            this.handleEdit(id)
+        }).catch(function(error) {
             console.error("Error actualizando la tarea: ", error);
-          });
+        });
       },
       persistData () {
 
@@ -530,17 +533,20 @@
         console.log('hnd_edit_id>'+id+'<')
         var i = 0;
         for(i=0;i<this.tasks_sin_asignar.length;i++){
+          console.log('peces en el rio')
           if(this.tasks_sin_asignar[i].id == id){
-            this.tasks_sin_asignar.titulo=this.frm_titulo;
-            this.tasks_sin_asignar.operario=this.frm_operario;
-            this.tasks_sin_asignar.pausable=this.frm_pausable;
-            this.tasks_sin_asignar.prioridad=this.frm_prioridad;
-            this.tasks_sin_asignar.estimado=this.frm_estimado;
-            this.tasks_sin_asignar.descripcion=this.frm_descripcion;
-            this.tasks_sin_asignar.etiquetas=this.frm_etiquetas;
+            this.tasks_sin_asignar[i].titulo=this.frm_titulo;
+            this.tasks_sin_asignar[i].operario=this.frm_operario;
+            this.tasks_sin_asignar[i].pausable=this.frm_pausable;
+            this.tasks_sin_asignar[i].prioridad=this.frm_prioridad;
+            this.tasks_sin_asignar[i].estimado=this.frm_estimado;
+            this.tasks_sin_asignar[i].descripcion=this.frm_descripcion;
+            this.tasks_sin_asignar[i].etiquetas=this.frm_etiquetas;
           }
         }
+
         this.dialogEditVisible = false;
+        this.cleanForm();
       },
       handleSubmit () {
         console.log('hd_sm')
@@ -555,7 +561,6 @@
 
         )
         this.dialogVisible = false;
-
         this.cleanForm();
       },
 
