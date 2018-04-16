@@ -1,6 +1,5 @@
 <template>
   <div id="app" >
-    <Navbar style="height: 4vh"/>
     <div>
       <router-view style="height: 100vh" />
     </div>

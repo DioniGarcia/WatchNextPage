@@ -28,7 +28,7 @@
         :visible.sync="dialogVisible"
         width="65%">
 
-        <el-form ref="modal_new_worker" :model="form" label-position="left" label-width="120px">
+        <el-form ref="modal_new_worker"  label-position="left" label-width="120px">
           <el-form-item label="Nombre:"  required >
             <el-input  type="text" v-model="frm_nombre" placeholder="Nombre del operario"></el-input>
           </el-form-item>
@@ -37,6 +37,30 @@
           </el-form-item>
           <el-form-item label="Contraseña:"  required >
             <el-input  type="password" v-model="frm_pass" placeholder="123456"></el-input>
+          </el-form-item>
+
+          <el-form-item label="Etiquetas:"  required>
+            <el-tag
+              :key="tag"
+              v-for="tag in frm_etiquetas"
+              closable
+              :disable-transitions="false"
+              @close="handleClose(tag)">
+              {{tag}}
+            </el-tag>
+
+            <el-autocomplete
+              class="input-new-tag"
+              v-if="inputVisible"
+              v-model="inputValue"
+              ref="saveTagInput"
+              :fetch-suggestions="querySearch"
+              placeholder="Nombre nueva etiqueta"
+              @keyup.enter.native="handleInputConfirm"
+              @select="handleSelectTag">
+            </el-autocomplete>
+
+            <el-button v-else class="button-new-tag" size="small" @click="showInput">+ Nuevo tag</el-button>
           </el-form-item>
         </el-form>
 
@@ -53,16 +77,40 @@
         :visible.sync="dialogEditVisible"
         width="65%">
 
-        <el-form ref="modal_edit_worker" :model="form" label-position="left" label-width="120px">
+        <el-form ref="modal_edit_worker" label-position="left" label-width="120px">
           <el-form-item label="Nombre:"  required >
-            <el-input  type="text" v-model="ed_nombre" placeholder="Nombre del operario"></el-input>
+            <el-input  type="text" v-model="frm_nombre" placeholder="Nombre del operario"></el-input>
           </el-form-item>
           <el-form-item label="Apellidos:"  required >
-            <el-input  type="text" v-model="ed_apellidos" placeholder="Apellidos del operario"></el-input>
+            <el-input  type="text" v-model="frm_apellidos" placeholder="Apellidos del operario"></el-input>
           </el-form-item>
           <el-form-item label="Contraseña:"  required >
-            <el-input  type="password" v-model="ed_pass" placeholder="123456"></el-input>
+            <el-input  type="password" v-model="frm_pass" placeholder="123456"></el-input>
           </el-form-item>
+          <el-form-item label="Etiquetas:"  required>
+            <el-tag
+              :key="tag"
+              v-for="tag in frm_etiquetas"
+              closable
+              :disable-transitions="false"
+              @close="handleClose(tag)">
+              {{tag}}
+            </el-tag>
+
+            <el-autocomplete
+              class="input-new-tag"
+              v-if="inputVisible"
+              v-model="inputValue"
+              ref="saveTagInput"
+              :fetch-suggestions="querySearch"
+              placeholder="Nombre nueva etiqueta"
+              @keyup.enter.native="handleInputConfirm"
+              @select="handleSelectTag">
+            </el-autocomplete>
+
+            <el-button v-else class="button-new-tag" size="small" @click="showInput">+ Nuevo tag</el-button>
+          </el-form-item>
+
         </el-form>
 
         <span slot="footer" class="dialog-footer">
@@ -78,11 +126,16 @@
 <script>
   import Navbar from './Navbar';
   import db from './firebaseInit'
+  import ButtonGroup from "bootstrap-vue/es/components/button-group/button-group";
+  import InputTag from 'vue-input-tag';
 
   export default {
     name: 'gOperarios',
     data() {
       return {
+
+        dialogVisible: false,
+        dialogEditVisible: false,
 
         operarios: [],
 
@@ -90,18 +143,14 @@
         frm_nombre: '',
         frm_apellidos: '',
         frm_pass: '',
-        frm_id:'',
-
-        //Form editar
-        ed_nombre: '',
-        ed_apellidos: '',
-        ed_pass: '',
-        ed_id: '',
-
+        frm_etiquetas:     [],
         id:'',
 
-        dialogVisible: false,
-        dialogEditVisible: false,
+        tagRecomendations: [],
+
+        inputVisible: false,
+        inputValue: '',
+
         loading: true
       }
     },
@@ -126,7 +175,10 @@
         });
     },
     components: {
-      Navbar
+      ButtonGroup,
+      Navbar,
+      'bootstrap-modal': require('vue2-bootstrap-modal'),
+      InputTag
     },
 
     methods: {
@@ -157,10 +209,11 @@
 
         opRef.get()
           .then(doc => {
-            this.ed_nombre = doc.data().nombre;
-            this.ed_apellidos = doc.data().apellidos;
-            this.ed_pass = doc.data().pass;
-            this.ed_id = id;
+            this.frm_nombre = doc.data().nombre;
+            this.frm_apellidos = doc.data().apellidos;
+            this.frm_pass = doc.data().pass;
+            this.id = id;
+            this.frm_etiquetas= doc.data().etiquetas;
 
         }).catch(function(error) {
           console.log("Error gettings document:", error);
@@ -171,23 +224,21 @@
       editWorker(evt){
         evt.preventDefault()
         console.log('thisid_ed_work->'+this.id+'<-')
-        if (!this.ed_nombre) {
+        if (!this.frm_nombre) {
           alert('El nombre no puede estar vacío')
         }
-        else if (!this.ed_apellidos) {
+        else if (!this.frm_apellidos) {
           alert('Los apellidos no pueden estar vacios')
         }
-        else if (!this.ed_pass) {
+        else if (!this.frm_pass) {
           alert('Se requiere un Password')
         }
-        else if (isNaN(this.ed_pass)) {
+        else if (isNaN(this.frm_pass)) {
           alert('El Password ha de ser numérico')
         }
         else {
           this.dialogEditVisible = false;
-
-          this.updateEmployee(this.ed_id)
-          this.handleEdit(this.ed_id)
+          this.updateEmployee(this.id)
         }
       },
 
@@ -204,48 +255,57 @@
 
                 nombre: this.frm_nombre,
                 apellidos: this.frm_apellidos,
+                etiquetas: this.frm_etiquetas,
                 pass: this.frm_pass,
                 id: newOp
 
-              })
-                .then(docRef => {
+              }).then(docRef => {
                   console.log('Operario añadido a FireBase!')
-                })
-                .catch(error => {
+
+                  for (var i = 0; i < this.frm_etiquetas.length; i++) {
+                    var eti = this.frm_etiquetas[i].toString();
+
+                    this.persistTag(eti);
+                  }
+                }).then(() => {
+                  this.handleSubmit()
+
+                }).catch(error => {
                   console.error('Error añadiendo el operario!', error)
                 });
               t.update(autRef, {operarios: newOp});
             })
-        }).then(() => {
-          this.handleSubmit()
         })
       },
 
       handleSubmit() {
         this.operarios.push(
-          {nombre: this.frm_nombre, apellidos: this.frm_apellidos, pass: this.frm_pass, id:this.id}
+          {nombre: this.frm_nombre, apellidos: this.frm_apellidos,
+            pass: this.frm_pass, id:this.id, etiquetas:this.frm_etiquetas}
         );
         this.cleanForm();
       },
 
       handleEdit(id) {
-        console.log('hnd_edit_id>'+id+'<')
         var i = 0;
         for(i=0;i<this.operarios.length;i++){
           if(this.operarios[i].id == id){
-            this.operarios[i].nombre=this.ed_nombre;
-            this.operarios[i].apellidos=this.ed_apellidos;
-            this.operarios[i].pass=this.ed_pass;
+            this.operarios[i].nombre=this.frm_nombre;
+            this.operarios[i].apellidos=this.frm_apellidos;
+            this.operarios[i].pass=this.frm_pass;
+            this.operarios[i].etiquetas=this.frm_etiquetas;
           }
         }
-        this.$refs.modal_edit_worker.hide()
+        this.dialogEditVisible = false;
+        this.cleanForm();
       },
 
       cleanForm() {
-        console.log('clean_frmdata')
         this.frm_nombre = '';
         this.frm_apellidos = '';
         this.frm_pass = '';
+        this.id='';
+        this.frm_etiquetas=[];
       },
 
       removeFromModel(id){
@@ -261,34 +321,133 @@
       },
 
       deleteWorker(id) {
-        console.log('del_emp: '+id)
-        if (confirm('¿Estas seguro que quieres borrar el operario con ID: '+id+' ?')) {
-          db.collection('operarios').doc(id.toString()).delete().then(function() {
-            console.log("Operario borrado con éxito!");
-          }).catch(function(error) {
-            console.error("Error borrando operario!: ", error);
-          });
-          this.removeFromModel(id);
-        }
+        if (confirm('¿Estas seguro que quieres borrar el operario con ID: ' + id + ' ?')) {
+          var evalTags = [];
+          var ref = db.collection('operarios').doc(id.toString());
 
+          return ref.get()
+            .then(doc => {
+              evalTags = doc.data().etiquetas;
+              for (var i = 0; i < evalTags.length; i++) {
+                this.decreaseTag(evalTags[i])
+              }
+            }).then(doc => {
+              db.collection('operarios').doc(id.toString()).delete().then(function () {
+                console.log("Operario borrado con éxito!");
+              }).catch(function (error) {
+                console.error("Error borrando operario!: ", error);
+              });
+
+              this.removeFromModel(id);
+            })
+        }
       },
 
       updateEmployee(id) {
-        console.log('up_emp_id_>'+id+'<')
         var operarioRef = db.collection("operarios").doc(id.toString());
 
         return operarioRef.update({
-          nombre: this.ed_nombre,
-          apellidos: this.ed_apellidos,
-          pass: this.ed_pass
+          nombre: this.frm_nombre,
+          apellidos: this.frm_apellidos,
+          pass: this.frm_pass,
+          etiquetas: this.frm_etiquetas
         })
           .then(function() {
             console.log("Operario actualizado con éxito!");
-          })
-          .catch(function(error) {
+          }).then(() => {
+            this.handleEdit(this.id)
+          }).catch(function(error) {
             console.error("Error actualizando operario: ", error);
           });
-      }
+      },
+      querySearch(queryString, cb) {
+        var tagRecomendations = this.tagRecomendations;
+        var results = queryString ? tagRecomendations.filter(this.createFilter(queryString)) : tagRecomendations;
+        // call callback function to return suggestions
+        cb(results);
+      },
+      createFilter(queryString) {
+        return (coso) => {
+          return (coso.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        };
+      },
+      handleSelectTag(item) {
+        this.handleInputConfirm();
+      },
+      loadTags() {
+        var tags = [];
+
+        db.collection('etiquetas').get().then(querySnapshot => {
+          querySnapshot.forEach(doc => {
+            const t = {
+              "value": doc.data().tag
+            };
+            tags.push(t);
+          });
+        });
+        return tags;
+      },
+      decreaseTag(tag){
+        var ref = db.collection('etiquetas').doc(tag);
+
+        return ref.get()
+          .then(doc => {
+            var num = doc.data().veces;
+            console.log(num)
+            if(num > 1){
+              ref.update({veces:num-1})
+            }else{
+              ref.delete().then(function() {
+                console.log("Etiqueta borrada con éxito!");
+              }).catch(function(error) {
+                console.error("Error borrando etiqueta!: ", error);
+              });
+            }
+          })
+
+      },
+      persistTag(tag){
+        var refTag = db.collection('etiquetas').doc(tag);
+        var getDoc = refTag.get().then(doc => {
+
+          if (!doc.exists) {
+            refTag.set({tag: tag, veces: 1})
+              .then(docRef => {
+                console.log('Nueva etiqueta añadida a FireBase!: '+tag)
+                this.tagRecomendations = this.loadTags();
+              })
+              .catch(error => {console.error('Error añadiendo la etiqueta!: '+tag, error)});
+          } else {
+            var updateVeces = refTag.set({tag: tag, veces: doc.data().veces + 1})
+              .then(docRef => {console.log('Etiqueta incrementada en FireBase!: '+tag)})
+          }
+        })
+          .catch(err => {console.log('Error getting document', err);});
+      },
+      handleClose(tag) {
+        this.frm_etiquetas.splice(this.frm_etiquetas.indexOf(tag), 1);
+      },
+
+      showInput() {
+        this.inputVisible = true;
+        this.$nextTick(_ => {
+          this.$refs.saveTagInput.$refs.input.focus();
+        });
+      },
+
+      handleInputConfirm() {
+        let inputValue = this.inputValue;
+        if (inputValue) {
+          console.log('input_value:'+inputValue)
+          this.frm_etiquetas.push(inputValue);
+        }
+        this.inputVisible = false;
+        this.inputValue = '';
+      },
+
+    },
+    mounted() {
+      this.tagRecomendations = this.loadTags();
     }
   }
 </script>

@@ -29,7 +29,7 @@
       :visible.sync="dialogVisible"
       width="65%">
 
-      <el-form ref="form" :model="form" label-position="left" label-width="120px">
+      <el-form ref="form" label-position="left" label-width="120px">
 
         <el-form-item label="Título:"  required >
           <el-input  type="text" v-model="frm_titulo" placeholder="Nombre de la plantilla"></el-input>
@@ -94,7 +94,7 @@
       :visible.sync="dialogEditVisible"
       width="65%">
 
-      <el-form ref="form" :model="form" label-position="left" label-width="120px">
+      <el-form ref="form" label-position="left" label-width="120px">
 
         <el-form-item label="Título:"  required >
           <el-input  type="text" v-model="frm_titulo" placeholder="Nombre de la plantilla"></el-input>
@@ -535,6 +535,7 @@
   }
 </script>
 <style>
+
   div.wn-col div{
     padding-left:  10px;
     padding-top:    3px;
@@ -545,7 +546,7 @@
     float: left;
     margin-top: -9px;
     border: solid 2px white;
-    height: auto;
+    height: 100%;
   }
   div.wn-col-title {
     background: cadetblue;
@@ -553,6 +554,16 @@
     font-size: 16px;
     padding-bottom: 2px;
   }
+
+  div.wn-col-container {
+    overflow-y:scroll;
+    align-content: center;
+    padding: 0;
+    margin:  0;
+    height: 87%;
+    width:  100%;
+  }
+
   div.wn-task-container {
     margin-top: 3px;
     background: whitesmoke;
@@ -561,6 +572,14 @@
   div.col-pendientes {
     border-left: none;
   }
+  div.col-asignadas {
+    border-left: none;
+    border-right: none;
+  }
+  div.col-realizadas {
+    border-right: none;
+  }
+
 
   div.wn-task-data {
     width: 80%;
@@ -574,7 +593,7 @@
   div.wn-task-data p {
     font-size:     12px;
     padding-top:    4px;
-    padding-bottom: 0;
+    padding-bottom: 0px;
     margin-bottom:  -6px;
   }
 
@@ -590,6 +609,10 @@
     font-size: 12px;
     float: right;
     width: 140px;
+    padding-top:    2px;
+    padding-bottom: 2px;
+    padding-left:  34px;
+    padding-right: 34px;
     margin-top:     1px;
     margin-right:  24px;
   }
@@ -599,11 +622,24 @@
     font-size: 12px;
     text-align: left;
     float: right;
-    margin-top:    0;
-    margin-bottom: 0;
+    margin-top:    0px;
+    margin-bottom: 0px;
   }
 
-
+  .el-tag + .el-tag {
+    margin-left: 10px;
+  }
+  .button-new-tag {
+    margin-left: 10px;
+    height: 32px;
+    line-height: 30px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  .input-new-tag {
+    width: 90px;
+    margin-left: 10px;
+    vertical-align: bottom;
+  }
 
 </style>
-
