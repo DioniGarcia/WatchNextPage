@@ -28,39 +28,64 @@
           </div>
         </div>
       </div>
-
     </div>
+
+
+
                                                                               <!-- REFACTORIZAR!!! -->
     <div class="wn-col col-asignadas">
       <div class="wn-col-title">Tareas Asignadas</div>
-      <div v-for="task in tasks_asignadas" v-bind:key="task.id" class="wn-task-container"><!--scroll-->
-        <div class="wn-task-data">
-          <h3>ID: {{task.id}}</h3>
-          <p>Nombre: {{task.titulo}}</p>
-          <p>Operario:  {{task.operario}}</p>
-          <p>Duración: {{task.duracion}}/{{task.estimado}} min</p>
+        <div class="wn-col-container">
+          <div v-for="task in tasks_asignadas" v-bind:key="task.id" class="wn-task-container">
+            <Task
+              :id=task.id
+              :titulo=task.titulo
+              :operario=task.operario
+              :duracion=task.duracion
+              :estimado=task.estimado
+              :prioridad=task.prioridad
+              :showMore=task.showMore
+              :descripcion=task.descripcion
+              :pausable=task.pausable
+              :tags=task.tags
+            />
+            <div class="wn-btn-div">
+              <button v-if="!task.showMore" @click="task.showMore=true" class="wn-menu-btn"><i class="fa fa-eye " aria-hidden="true"></i></button>
+              <button v-if="task.showMore" @click="task.showMore=false" class="wn-menu-btn"><i class="fa fa-eye-slash " aria-hidden="true"></i></button>
+            </div>
+          </div>
         </div>
-        <div class="wn-btn-div">
-          <button class="wn-menu-btn">Eliminar</button>
-          <button class="wn-menu-btn">Editar</button>
-        </div>
-      </div>
     </div>
+
+
+
 
     <div class="wn-col col-realizadas">
       <div class="wn-col-title ">Tareas Realizadas</div>
-      <div v-for="task in tasks_realizadas" v-bind:key="task.id" class="wn-task-container"><!--scroll-->
-        <div class="wn-task-data">
-          <h3>{{task.titulo}}</h3>
-          <p>Oprerario:  {{task.operario}}</p>
-          <p>Duración: {{task.duracion}}/{{task.estimado}} min</p>
+        <div class="wn-col-container">
+          <div v-for="task in tasks_realizadas" v-bind:key="task.id" class="wn-task-container">
+            <Task
+              :id=task.id
+              :titulo=task.titulo
+              :operario=task.operario
+              :duracion=task.duracion
+              :estimado=task.estimado
+              :prioridad=task.prioridad
+              :showMore=task.showMore
+              :descripcion=task.descripcion
+              :pausable=task.pausable
+              :tags=task.tags
+            />
+            <div class="wn-btn-div">
+              <button v-if="!task.showMore" @click="task.showMore=true" class="wn-menu-btn"><i class="fa fa-eye " aria-hidden="true"></i></button>
+              <button v-if="task.showMore" @click="task.showMore=false" class="wn-menu-btn"><i class="fa fa-eye-slash " aria-hidden="true"></i></button>
+            </div>
+          </div>
         </div>
-        <div class="wn-btn-div">
-          <button class="wn-menu-btn">Eliminar</button>
-          <button class="wn-menu-btn">Editar</button>
-        </div>
-      </div>
     </div>
+
+
+
 
 
     <!-- Modal Add Tarea -->
@@ -284,7 +309,12 @@
                     operario: doc.id,
                     titulo: doc2.data().titulo,
                     duracion: doc2.data().duracion,
-                    estimado: doc2.data().estimado
+                    estimado: doc2.data().estimado,
+                    prioridad: doc2.data().prioridad,
+                    showMore: false,
+                    descripcion: doc2.data().descripcion,
+                    pausable: doc2.data().pausable,
+                    tags: doc2.data().etiquetas
                   };
                   this.tasks_asignadas.push(task);
                 });
@@ -301,7 +331,12 @@
               operario: doc.operario,
               titulo: doc.data().titulo,
               duracion: doc.data().duracion,
-              estimado: doc.data().estimado
+              estimado: doc.data().estimado,
+              prioridad: doc.data().prioridad,
+              showMore: false,
+              descripcion: doc.data().descripcion,
+              pausable: doc.data().pausable,
+              tags: doc.data().etiquetas
             };
             this.tasks_realizadas.push(task);
 
@@ -655,11 +690,12 @@
 
   div.wn-col-container {
     overflow-y:scroll;
+    overflow-x: hidden;
     align-content: center;
     background: whitesmoke;
     padding: 0;
     margin:  0;
-    height: 100%;
+    height: 600px;
     width:  100%;
   }
 

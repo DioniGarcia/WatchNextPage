@@ -11,18 +11,15 @@
         <transition name="lupa">
           <img v-show="showIcon" @click="handleClickIcon" class="logo reflex" src="../assets/wnLogo.png" title="Login"/>
         </transition>
-        <!-- Esto era el botón
-         <router-link  to="/login" tag="img" ><img class="logo" src="../assets/wnLogo.png" title="Login" ></router-link>
-        -->
 
         <el-dialog style="margin-top:-50px"
 
-          :visible.sync="showLogin"
-          width="460px"
-          :show-close="false"
-          :close-on-press-escape="false"
-          :close-on-click-modal="false"
-          >
+                   :visible.sync="showLogin"
+                   width="460px"
+                   :show-close="false"
+                   :close-on-press-escape="false"
+                   :close-on-click-modal="false"
+        >
           <h1 style="margin-top:-30px; padding-bottom:30px;">Login</h1>
           <div style="height:140px; margin-left:-20px; margin-right:-20px; margin-bottom:30px; background:cadetblue">
             <img style="width:100px; height:100px; margin-top:20px;" class="logo" src="../assets/wnLogo.png" title="Login"/>
@@ -42,8 +39,6 @@
         </el-dialog>
 
       </div>
-
-
 
     </div>
 
@@ -77,7 +72,11 @@
 
       handleLogin: function(e) {
         if (this.email == 'operario@watchnext.com') {
-          alert('Acceso denegado');
+          this.$notify.error({
+            title: 'Error en el Login',
+            message: 'Acceso denegado',
+            position: 'top-left'
+          });
         }else{
           firebase
             .auth()
@@ -88,7 +87,11 @@
                 this.$router.push('/dashboard');
               },
               err => {
-                alert(err.message);
+                this.$notify.error({
+                  title: 'Error en el Login',
+                  message: err.message,
+                  position: 'top-left'
+                });
               }
             );
         }

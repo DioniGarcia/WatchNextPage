@@ -10,13 +10,13 @@
       </h3>
 
       <p><b>Operario:</b>  {{this.operario}}</p>
-      <p>Duración: {{this.duracion}}/{{this.estimado}} min</p>
+      <p><b>Duración:</b> {{this.duracion}}/{{this.estimado}} min</p>
 
       <div v-if="showMore" class="more-info">
-        <p>Id: {{this.id}}</p>
-        <p>Pausable: {{this.pausable}}</p>
-        <p>Descipción:  {{this.descripcion}}</p>
-        <p>Etiquetas:</p>
+        <p><b>Id:</b> {{this.id}}</p>
+        <p><b>Pausable:</b> {{this.pausable}}</p>
+        <p><b>Descipción:</b>  {{this.descripcion}}</p>
+        <p><b>Etiquetas:</b></p>
         <div class="el-tag" v-for="t in this.tags"><p>{{t}}</p></div>
       </div>
 
@@ -48,21 +48,27 @@
 
 <style scoped>
 
+  b {
+    color: cadetblue;
+  }
+
   .end-line {
     border-bottom: 3px solid white;
-    width: 180%;
+    width: 160%;
     margin-top: 10px;
     margin-left: -20px;
   }
 
   .el-tag {
-    margin-top:  9px;
+    margin-top:  12px;
     padding-top: 0px;
+    background: cadetblue;
   }
 
   .el-tag p {
     padding: 0;
     font-size: 10px;
+    color: whitesmoke;
   }
 
   div.more-info {
@@ -70,7 +76,7 @@
     margin-left: 0;
     margin-top: 14px;
     border-top: 1px solid cadetblue;
-    width: 126%;
+    width: 120%;
   }
 
   .wn-task-data {
