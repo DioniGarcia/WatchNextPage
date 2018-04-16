@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+import GestionPlantillas from '@/components/GestionPlantillas'
 import Dashboard from '@/components/Dashboard'
 import NewTask   from '@/components/NewTask'
 import GestionOperarios  from '@/components/GestionOperarios'
@@ -15,6 +16,14 @@ let router = new Router({
       path: '/dashboard',
       name: 'dashboard',
       component: Dashboard,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/plantillas',
+      name: 'plantillas',
+      component: GestionPlantillas,
       meta: {
         requiresAuth: true
       }

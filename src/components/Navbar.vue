@@ -13,6 +13,7 @@
 
           <li v-if="isLoggedIn"><router-link to="/dashboard">Dashboard</router-link></li>
           <li v-if="isLoggedIn"><router-link to="/gestionoperarios">Gestion Operarios</router-link></li>
+          <li v-if="isLoggedIn"><router-link to="/plantillas">Gestion Plantillas</router-link></li>
 
         </ul>
 

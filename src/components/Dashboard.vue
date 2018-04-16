@@ -7,7 +7,7 @@
       </div>
 
       <div class="wn-col-container">
-        <div v-for="task in tasks_sin_asignar" v-bind:key="task.id" class="wn-task-container"><!--scroll-->
+        <div v-for="task in templates" v-bind:key="task.id" class="wn-task-container"><!--scroll-->
           <div class="wn-task-data">
             <h3>ID: {{task.id}}</h3>
             <p>Nombre: {{task.titulo}}</p>
@@ -27,7 +27,8 @@
       <div class="wn-col-title">Tareas Asignadas</div>
       <div v-for="task in tasks_asignadas" v-bind:key="task.id" class="wn-task-container"><!--scroll-->
         <div class="wn-task-data">
-          <h3>{{task.titulo}}</h3>
+          <h3>ID: {{task.id}}</h3>
+          <p>Nombre: {{task.titulo}}</p>
           <p>Operario:  {{task.operario}}</p>
           <p>Duración: {{task.duracion}}/{{task.estimado}} min</p>
         </div>
@@ -203,7 +204,7 @@
         dialogVisible: false,
         dialogEditVisible: false,
 
-        tasks_sin_asignar: [],
+        templates: [],
         tasks_asignadas:   [],
         tasks_realizadas:  [],
 
@@ -249,7 +250,7 @@
               duracion: doc.data().duracion,
               estimado: doc.data().estimado
             };
-            this.tasks_sin_asignar.push(task);
+            this.templates.push(task);
 
           });
         });
@@ -480,13 +481,13 @@
 
         var idx = -1;
         var i = 0;
-        this.tasks_sin_asignar.forEach(function(task) {
+        this.templates.forEach(function(task) {
           if(task.id == id){
             idx=i;
           };
           i++;
         });
-        this.tasks_sin_asignar.splice(idx,1);
+        this.templates.splice(idx,1);
       },
 
       decreaseTag(tag){
@@ -532,16 +533,16 @@
       handleEdit(id) {
         console.log('hnd_edit_id>'+id+'<')
         var i = 0;
-        for(i=0;i<this.tasks_sin_asignar.length;i++){
+        for(i=0; i<this.templates.length; i++){
           console.log('peces en el rio')
-          if(this.tasks_sin_asignar[i].id == id){
-            this.tasks_sin_asignar[i].titulo=this.frm_titulo;
-            this.tasks_sin_asignar[i].operario=this.frm_operario;
-            this.tasks_sin_asignar[i].pausable=this.frm_pausable;
-            this.tasks_sin_asignar[i].prioridad=this.frm_prioridad;
-            this.tasks_sin_asignar[i].estimado=this.frm_estimado;
-            this.tasks_sin_asignar[i].descripcion=this.frm_descripcion;
-            this.tasks_sin_asignar[i].etiquetas=this.frm_etiquetas;
+          if(this.templates[i].id == id){
+            this.templates[i].titulo=this.frm_titulo;
+            this.templates[i].operario=this.frm_operario;
+            this.templates[i].pausable=this.frm_pausable;
+            this.templates[i].prioridad=this.frm_prioridad;
+            this.templates[i].estimado=this.frm_estimado;
+            this.templates[i].descripcion=this.frm_descripcion;
+            this.templates[i].etiquetas=this.frm_etiquetas;
           }
         }
 
@@ -550,7 +551,7 @@
       },
       handleSubmit () {
         console.log('hd_sm')
-        this.tasks_sin_asignar.push(
+        this.templates.push(
           {
             titulo: this.frm_titulo,
             operario: "N/A",
