@@ -8,15 +8,23 @@
 
       <div class="wn-col-container">
         <div v-for="task in templates" v-bind:key="task.id" class="wn-task-container"><!--scroll-->
-          <div class="wn-task-data">
-            <h3>ID: {{task.id}}</h3>
-            <p>Nombre: {{task.titulo}}</p>
-            <p>Operario:  {{task.operario}}</p>
-            <p>Duración: {{task.duracion}}/{{task.estimado}} min</p>
-          </div>
+          <Task
+            :id=task.id
+            :titulo=task.titulo
+            :operario=task.operario
+            :duracion=task.duracion
+            :estimado=task.estimado
+            :prioridad=task.prioridad
+            :showMore=task.showMore
+            :descripcion=task.descripcion
+            :pausable=task.pausable
+            :tags=task.tags
+          />
           <div class="wn-btn-div">
-            <button @click="deleteTask(task.id)" class="wn-menu-btn">Eliminar</button>
-            <button @click="fillData(task.id), dialogEditVisible = true" class="wn-menu-btn">Editar</button>
+            <button @click="deleteTask(task.id)" class="wn-menu-btn"><i class="fa fa-close " aria-hidden="true"></i></button>
+            <button @click="fillData(task.id), dialogEditVisible = true" class="wn-menu-btn"><i class="fa fa-edit " aria-hidden="true"></i></button>
+            <button v-if="!task.showMore" @click="task.showMore=true" class="wn-menu-btn"><i class="fa fa-eye " aria-hidden="true"></i></button>
+            <button v-if="task.showMore" @click="task.showMore=false" class="wn-menu-btn"><i class="fa fa-eye-slash " aria-hidden="true"></i></button>
           </div>
         </div>
       </div>
@@ -61,7 +69,7 @@
         :visible.sync="dialogVisible"
         width="65%">
 
-      <el-form ref="form" :model="form" label-position="left" label-width="120px">
+      <el-form ref="form" label-position="left" label-width="120px">
 
         <el-form-item label="Título:"  required >
             <el-input  type="text" v-model="frm_titulo" placeholder="Nombre de la tarea"></el-input>
@@ -126,7 +134,7 @@
       :visible.sync="dialogEditVisible"
       width="65%">
 
-      <el-form ref="form" :model="form" label-position="left" label-width="120px">
+      <el-form ref="form" label-position="left" label-width="120px">
 
         <el-form-item label="Título:"  required >
           <el-input  type="text" v-model="frm_titulo" placeholder="Nombre de la tarea"></el-input>
@@ -192,6 +200,7 @@
 
 <script>
   import Navbar from './Navbar';
+  import Task from './Task';
   import db from './firebaseInit';
   import ButtonGroup from "bootstrap-vue/es/components/button-group/button-group";
   import InputTag from 'vue-input-tag';
@@ -248,7 +257,12 @@
               operario: "No Asignado",
               titulo: doc.data().titulo,
               duracion: doc.data().duracion,
-              estimado: doc.data().estimado
+              estimado: doc.data().estimado,
+              prioridad: doc.data().prioridad,
+              showMore: false,
+              descripcion: doc.data().descripcion,
+              pausable: doc.data().pausable,
+              tags: doc.data().etiquetas
             };
             this.templates.push(task);
 
@@ -611,6 +625,7 @@
     components: {
       ButtonGroup,
       Navbar,
+      Task,
       'bootstrap-modal': require('vue2-bootstrap-modal'),
       InputTag
     }
@@ -641,6 +656,7 @@
   div.wn-col-container {
     overflow-y:scroll;
     align-content: center;
+    background: whitesmoke;
     padding: 0;
     margin:  0;
     height: 100%;
@@ -649,7 +665,7 @@
 
   div.wn-task-container {
     margin-top: 3px;
-    background: whitesmoke;
+
     height: 80px;
   }
   div.col-pendientes {
@@ -701,12 +717,11 @@
   }
 
   div.wn-btn-div .wn-menu-btn {
-    width: 100px;
     font-size: 12px;
     text-align: left;
+    width: 20px;
     float: right;
-    margin-top:    0px;
-    margin-bottom: 0px;
+    margin:    0;
   }
 
   .el-tag + .el-tag {

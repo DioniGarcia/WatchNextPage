@@ -12,7 +12,7 @@ import firebase from 'firebase';
 import './components/firebaseInit';
 
 import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap-vue/dist/bootstrap-vue.css';
+//import 'bootstrap-vue/dist/bootstrap-vue.css';
 //import { Modal } from 'bootstrap-vue/es/components';
 
 import App from './App.vue';
@@ -20,6 +20,7 @@ import App from './App.vue';
 Vue.use(ElementUI, { locale })
 Vue.use(BootstrapVue);
 Vue.config.productionTip = false;
+
 
 let app;
 firebase.auth().onAuthStateChanged(function(user) {
