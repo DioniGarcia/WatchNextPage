@@ -9,18 +9,25 @@
 
       <div class="wn-col-container">
         <div v-for="template in templates" v-bind:key="template.id" class="wn-task-container">
-          <div class="wn-task-data">
-            <h3>ID: {{template.id}}</h3>
-            <p>Nombre: {{template.titulo}}</p>
-            <p>Operario:  {{template.operario}}</p>
-            <p>Duración: {{template.duracion}}/{{template.estimado}} min</p>
-          </div>
+          <Task
+            :id=template.id
+            :titulo=template.titulo
+            :operario=template.operario
+            :duracion=template.duracion
+            :estimado=template.estimado
+            :prioridad=template.prioridad
+            :showMore=template.showMore
+            :descripcion=template.descripcion
+            :pausable=template.pausable
+            :tags=template.tags
+          />
           <div class="wn-btn-div">
-            <button @click="deleteTemplate(template.id)" class="wn-menu-btn">Eliminar</button>
-            <button @click="fillData(template.id), dialogEditVisible = true" class="wn-menu-btn" data-id="123">Editar</button>
+            <button @click="deleteTemplate(template.id)" class="wn-menu-btn"><i class="fa fa-close " aria-hidden="true"></i></button>
+            <button @click="fillData(template.id), dialogEditVisible = true" class="wn-menu-btn"><i class="fa fa-edit " aria-hidden="true"></i></button>
+            <button v-if="!template.showMore" @click="template.showMore=true" class="wn-menu-btn"><i class="fa fa-eye " aria-hidden="true"></i></button>
+            <button v-if="template.showMore" @click="template.showMore=false" class="wn-menu-btn"><i class="fa fa-eye-slash " aria-hidden="true"></i></button>
           </div>
         </div>
-
       </div>
     </div>
     <!-- Modal Add Plantilla -->
@@ -158,6 +165,7 @@
 
 <script>
   import Navbar from './Navbar';
+  import Task from './Task';
   import db from './firebaseInit';
   import ButtonGroup from "bootstrap-vue/es/components/button-group/button-group";
   import InputTag from 'vue-input-tag';
@@ -209,7 +217,12 @@
               operario: doc.data().operario,
               titulo: doc.data().titulo,
               duracion: doc.data().duracion,
-              estimado: doc.data().estimado
+              estimado: doc.data().estimado,
+              prioridad: doc.data().prioridad,
+              descripcion: doc.data().descripcion,
+              showMore: false,
+              pausable: doc.data().pausable,
+              tag: doc.data().tags
             };
             this.templates.push(template);
 
@@ -529,6 +542,7 @@
     components: {
       ButtonGroup,
       Navbar,
+      Task,
       'bootstrap-modal': require('vue2-bootstrap-modal'),
       InputTag
     }
@@ -557,16 +571,18 @@
 
   div.wn-col-container {
     overflow-y:scroll;
+    overflow-x: hidden;
     align-content: center;
+    background: whitesmoke;
     padding: 0;
     margin:  0;
-    height: 87%;
+    height: 600px;
     width:  100%;
   }
 
   div.wn-task-container {
     margin-top: 3px;
-    background: whitesmoke;
+
     height: 80px;
   }
   div.col-pendientes {
@@ -618,12 +634,11 @@
   }
 
   div.wn-btn-div .wn-menu-btn {
-    width: 100px;
     font-size: 12px;
     text-align: left;
+    width: 20px;
     float: right;
-    margin-top:    0px;
-    margin-bottom: 0px;
+    margin:    0;
   }
 
   .el-tag + .el-tag {
@@ -641,5 +656,6 @@
     margin-left: 10px;
     vertical-align: bottom;
   }
+
 
 </style>

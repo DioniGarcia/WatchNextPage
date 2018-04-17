@@ -7,19 +7,25 @@
           <button @click="dialogVisible = true" class="wn-menu-btn">Crear nuevo</button>
         </div>
 
-        <div class="wn-col-container">
-          <div v-for="operario in operarios" v-bind:key="operario.id" class="wn-task-container">
-          <div class="wn-task-data">
-            <h3>ID: {{operario.id}} </h3>
-            <p>Nombre:  {{operario.nombre}} </p>
-            <p>Apellidos: {{operario.apellidos}}</p>
-          </div>
-          <div class="wn-btn-div">
-            <button @click="deleteWorker(operario.id)" class="wn-menu-btn">Eliminar</button>
-            <button @click="fillData(operario.id), dialogEditVisible = true" class="wn-menu-btn" data-id="123">Editar</button>
-          </div>
-        </div>
+          <div class="wn-col-container">
+            <div v-for="operario in operarios" v-bind:key="operario.id" class="wn-task-container">
 
+              <Worker
+                :id=operario.id
+                :nombre=operario.nombre
+                :apellidos=operario.apellidos
+                :tags=operario.tags
+                :show-more=operario.showMore
+              />
+
+              <div class="wn-btn-div">
+                <button @click="deleteWorker(operario.id)" class="wn-menu-btn"><i class="fa fa-close " aria-hidden="true"></i></button>
+                <button @click="fillData(operario.id), dialogEditVisible = true" class="wn-menu-btn"><i class="fa fa-edit " aria-hidden="true"></i></button>
+                <button v-if="!operario.showMore" @click="operario.showMore=true" class="wn-menu-btn"><i class="fa fa-eye " aria-hidden="true"></i></button>
+                <button v-if="operario.showMore" @click="operario.showMore=false" class="wn-menu-btn"><i class="fa fa-eye-slash " aria-hidden="true"></i></button>
+              </div>
+
+            </div>
         </div>
       </div>
       <!-- Modal NUEVO Operario -->
@@ -125,6 +131,7 @@
 
 <script>
   import Navbar from './Navbar';
+  import Worker from './Worker';
   import db from './firebaseInit'
   import ButtonGroup from "bootstrap-vue/es/components/button-group/button-group";
   import InputTag from 'vue-input-tag';
@@ -168,7 +175,9 @@
               nombre: doc.data().nombre,
               apellidos: doc.data().apellidos,
               pass: doc.data().pass,
-              id: doc.id // El autoincrement de FB
+              id: doc.id, // El autoincrement de FB
+              tags: doc.data().etiquetas,
+              showMore: false
             };
             this.operarios.push(operario);
           });
@@ -177,6 +186,7 @@
     components: {
       ButtonGroup,
       Navbar,
+      Worker,
       'bootstrap-modal': require('vue2-bootstrap-modal'),
       InputTag
     },
@@ -449,11 +459,13 @@
     mounted() {
       this.tagRecomendations = this.loadTags();
     }
+
   }
 </script>
 
 
 <style>
+
   div.wn-col div{
     padding-left:  10px;
     padding-top:    3px;
@@ -464,7 +476,7 @@
     float: left;
     margin-top: -9px;
     border: solid 2px white;
-    height: auto;
+    height: 100%;
   }
   div.wn-col-title {
     background: cadetblue;
@@ -472,14 +484,34 @@
     font-size: 16px;
     padding-bottom: 2px;
   }
+
+  div.wn-col-container {
+    overflow-y:scroll;
+    overflow-x: hidden;
+    align-content: center;
+    background: whitesmoke;
+    padding: 0;
+    margin:  0;
+    height: 600px;
+    width:  100%;
+  }
+
   div.wn-task-container {
     margin-top: 3px;
-    background: whitesmoke;
+
     height: 80px;
   }
   div.col-pendientes {
     border-left: none;
   }
+  div.col-asignadas {
+    border-left: none;
+    border-right: none;
+  }
+  div.col-realizadas {
+    border-right: none;
+  }
+
 
   div.wn-task-data {
     width: 80%;
@@ -493,7 +525,7 @@
   div.wn-task-data p {
     font-size:     12px;
     padding-top:    4px;
-    padding-bottom: 0;
+    padding-bottom: 0px;
     margin-bottom:  -6px;
   }
 
@@ -509,20 +541,37 @@
     font-size: 12px;
     float: right;
     width: 140px;
+    padding-top:    2px;
+    padding-bottom: 2px;
+    padding-left:  34px;
+    padding-right: 34px;
     margin-top:     1px;
     margin-right:  24px;
   }
 
   div.wn-btn-div .wn-menu-btn {
-    width: 100px;
     font-size: 12px;
     text-align: left;
+    width: 20px;
     float: right;
-    margin-top:    0;
-    margin-bottom: 0;
+    margin:    0;
   }
 
-
+  .el-tag + .el-tag {
+    margin-left: 10px;
+  }
+  .button-new-tag {
+    margin-left: 10px;
+    height: 32px;
+    line-height: 30px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  .input-new-tag {
+    width: 90px;
+    margin-left: 10px;
+    vertical-align: bottom;
+  }
 
 </style>
 
