@@ -3,11 +3,11 @@
     <Navbar />
     <div class="wn-col col-pendientes">
       <div class="wn-col-title">Tareas Sin Asignar
-        <button @click="dialogVisible = true" class="wn-menu-btn">Nueva tarea</button>
+        <button @click="dialogVisible = true; fillTemplates()" class="wn-menu-btn">Nueva tarea</button>
       </div>
 
       <div class="wn-col-container">
-        <div v-for="task in templates" v-bind:key="task.id" class="wn-task-container"><!--scroll-->
+        <div v-for="task in tasks_sin_asignar" v-bind:key="task.id" class="wn-task-container"><!--scroll-->
           <Task
             :id=task.id
             :titulo=task.titulo
@@ -95,18 +95,31 @@
       <el-container>
 
         <el-aside class="modal-col-plantillas" width="22%">
+          <b-input-group>
+            <div>
+              <i class="material-icons prefix">search</i>
+              <b-form-input v-model="searchWord" placeholder="Buscar plantilla" />
+            </div>
+            <b-btn :disabled="!searchWord" @click="searchWord = ''">Borrar</b-btn>
+          </b-input-group>
           <el-table
-            :data="plantillas"
-            :show-header="false"
+            :data="filteredTemplates"
+
+            @current-change="handleCurrentChange"
+            :show-header="true"
             height="480px"
             max-height="480px"
           >
             <el-table-column
               prop="titulo"
               label="Plantillas"
-              width="180">
+              width="180"
+            >
+
             </el-table-column>
+
           </el-table>
+
         </el-aside>
 
         <el-container>
@@ -272,6 +285,7 @@
         dialogEditVisible: false,
 
         templates: [],
+        tasks_sin_asignar: [],
         tasks_asignadas:   [],
         tasks_realizadas:  [],
 
@@ -300,28 +314,8 @@
         inputValue: '',
         id:'',
         loading: true,
-
-        plantillas: [
-          { titulo: 'Plantilla 01'},
-          { titulo: 'Plantilla 02'},
-          { titulo: 'Plantilla 03'},
-          { titulo: 'Plantilla 04'},
-          { titulo: 'Plantilla 05'},
-          { titulo: 'Plantilla 06'},
-          { titulo: 'Plantilla 07'},
-          { titulo: 'Plantilla 18'},
-          { titulo: 'Plantilla 19'},
-          { titulo: 'Plantilla 11'},
-          { titulo: 'Plantilla 12'},
-          { titulo: 'Plantilla 13'},
-          { titulo: 'Plantilla 14'},
-          { titulo: 'Plantilla 15'},
-          { titulo: 'Plantilla 16'},
-          { titulo: 'Plantilla 17'},
-          { titulo: 'Plantilla 18'},
-          { titulo: 'Plantilla 19'},
-
-        ]
+        searchWord: '',
+        currentRow: null
       }
     },
     created: function () {
@@ -344,7 +338,7 @@
               pausable: doc.data().pausable,
               tags: doc.data().etiquetas
             };
-            this.templates.push(task);
+            this.tasks_sin_asignar.push(task);
 
           });
         });
@@ -400,9 +394,36 @@
 
 
     },
+    computed: {
+      filteredTemplates: function(){
+        return this.templates.filter((template) => {
+          return template.titulo.toLowerCase().match(this.searchWord.toLowerCase())
+        })
+      }
+    },
     methods: {
-      peix(){
-        console.log('peix!')
+
+      fillTemplates(){
+        db.collection('plantillas').orderBy('titulo').get().then(querySnapshot => {
+          this.loading = false;
+          querySnapshot.forEach(doc => {
+            const template = {
+              id: doc.id,
+              titulo: doc.data().titulo,
+
+            };
+            console.log('New tamplate modelo: '+template.titulo+' '+template.id)
+            this.templates.push(template);
+
+          });
+        });
+      },
+      peix(valor){
+        console.log('peix: '+valor+'!')
+      },
+      handleCurrentChange(val) {
+        console.log(val.titulo.toString() + ' - '+ val.id.toString())
+        this.currentRow = val;
       },
       querySearch(queryString, cb) {
         console.log('q_s')

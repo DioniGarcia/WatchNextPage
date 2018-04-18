@@ -3,12 +3,20 @@
     <Navbar />
 
     <div class="wn-col col-pendientes">
+      <b-input-group>
+        <div>
+          <i class="material-icons prefix">search</i>
+          <b-form-input v-model="searchWord" placeholder="Buscar plantilla" />
+        </div>
+          <b-btn :disabled="!searchWord" @click="searchWord = ''">Borrar</b-btn>
+      </b-input-group>
       <div class="wn-col-title">Lista Plantillas
         <button @click="dialogVisible = true" class="wn-menu-btn">Crear nueva</button>
       </div>
 
       <div class="wn-col-container">
-        <div v-for="template in templates" v-bind:key="template.id" class="wn-task-container">
+
+        <div v-for="template in filteredTemplates" v-bind:key="template.id" class="wn-task-container">
           <Task
             :id=template.id
             :titulo=template.titulo
@@ -198,6 +206,8 @@
           { value: 0,   text: 'Muy baja' },
         ],
 
+        searchWord: '',
+
         tagRecomendations: [],
         inputVisible: false,
         inputValue: '',
@@ -230,6 +240,13 @@
         });
     }
      ,
+    computed: {
+      filteredTemplates: function(){
+        return this.templates.filter((template) => {
+          return template.titulo.toLowerCase().match(this.searchWord.toLowerCase())
+        })
+      }
+    },
     methods: {
       peix(){
         console.log('peix!')
