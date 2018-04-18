@@ -3,7 +3,7 @@
     <Navbar />
     <div class="wn-col col-pendientes">
       <div class="wn-col-title">Tareas Sin Asignar
-        <button @click="dialogVisible = true; fillTemplates()" class="wn-menu-btn">Nueva tarea</button>
+        <button @click="dialogVisible = true" class="wn-menu-btn">Nueva tarea</button>
       </div>
 
       <div class="wn-col-container">
@@ -392,6 +392,8 @@
           });
       });
 
+      this.fillTemplates();
+
 
     },
     computed: {
@@ -421,8 +423,13 @@
       peix(valor){
         console.log('peix: '+valor+'!')
       },
+      fillModal(id){
+
+      },
       handleCurrentChange(val) {
-        console.log(val.titulo.toString() + ' - '+ val.id.toString())
+        console.log(val.id)
+        this.fillDataFromTemplate(val.id);
+
         this.currentRow = val;
       },
       querySearch(queryString, cb) {
@@ -511,6 +518,26 @@
             this.frm_etiquetas = doc.data().etiquetas,
             this.frm_fechaRealizacion = doc.data().fecha_realizacion,
             this.id = doc.id
+          }).catch(function(error) {
+          console.log("Error gettings document:", error);
+        });
+      },
+      fillDataFromTemplate(id){
+
+        var opRef = db.collection("plantillas").doc(id.toString());
+
+        opRef.get()
+          .then(doc => {
+            this.frm_operario = doc.data().operario,
+              this.frm_asignable = doc.data().asignable,
+              this.frm_titulo = doc.data().titulo,
+              this.frm_descripcion = doc.data().descripcion,
+              this.frm_estimado=  doc.data().estimado,
+              this.frm_prioridad=  doc.data().prioridad,
+              this.frm_pausable = doc.data().pausable,
+              this.frm_etiquetas = doc.data().etiquetas,
+              this.frm_fechaRealizacion = doc.data().fecha_realizacion,
+              this.id = doc.id
           }).catch(function(error) {
           console.log("Error gettings document:", error);
         });
@@ -606,13 +633,13 @@
 
         var idx = -1;
         var i = 0;
-        this.templates.forEach(function(task) {
+        this.tasks_sin_asignar.forEach(function(task) {
           if(task.id == id){
             idx=i;
           };
           i++;
         });
-        this.templates.splice(idx,1);
+        this.tasks_sin_asignar.splice(idx,1);
       },
 
       decreaseTag(tag){
@@ -658,16 +685,16 @@
       handleEdit(id) {
         console.log('hnd_edit_id>'+id+'<')
         var i = 0;
-        for(i=0; i<this.templates.length; i++){
-          console.log('peces en el rio')
-          if(this.templates[i].id == id){
-            this.templates[i].titulo=this.frm_titulo;
-            this.templates[i].operario=this.frm_operario;
-            this.templates[i].pausable=this.frm_pausable;
-            this.templates[i].prioridad=this.frm_prioridad;
-            this.templates[i].estimado=this.frm_estimado;
-            this.templates[i].descripcion=this.frm_descripcion;
-            this.templates[i].etiquetas=this.frm_etiquetas;
+        for(i=0; i<this.tasks_sin_asignar.length; i++){
+
+          if(this.tasks_sin_asignar[i].id == id){
+            this.tasks_sin_asignar[i].titulo=this.frm_titulo;
+            this.tasks_sin_asignar[i].operario=this.frm_operario;
+            this.tasks_sin_asignar[i].pausable=this.frm_pausable;
+            this.tasks_sin_asignar[i].prioridad=this.frm_prioridad;
+            this.tasks_sin_asignar[i].estimado=this.frm_estimado;
+            this.tasks_sin_asignar[i].descripcion=this.frm_descripcion;
+            this.tasks_sin_asignar[i].etiquetas=this.frm_etiquetas;
           }
         }
 
@@ -676,7 +703,7 @@
       },
       handleSubmit () {
         console.log('hd_sm')
-        this.templates.push(
+        this.tasks_sin_asignar.push(
           {
             titulo: this.frm_titulo,
             operario: "N/A",
