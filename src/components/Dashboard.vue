@@ -86,70 +86,102 @@
 
 
 
-
-
     <!-- Modal Add Tarea -->
     <el-dialog
         title="Nueva tarea"
         :visible.sync="dialogVisible"
         width="65%">
 
-      <el-form ref="form" label-position="left" label-width="120px">
+      <el-container>
 
-        <el-form-item label="Título:"  required >
-            <el-input  type="text" v-model="frm_titulo" placeholder="Nombre de la tarea"></el-input>
-        </el-form-item>
+        <el-aside class="modal-col-plantillas" width="22%">
+          <el-table
+            :data="plantillas"
+            :show-header="false"
+            height="480px"
+            max-height="480px"
+          >
+            <el-table-column
+              prop="titulo"
+              label="Plantillas"
+              width="180">
+            </el-table-column>
+          </el-table>
+        </el-aside>
 
-        <el-form-item label="Prioridad:" required>
-          <el-select v-model="frm_prioridad" placeholder="Medio">
-            <el-option
-              v-for="item in prioridades"
-              :key="item.value"
-              :label="item.text"
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </el-form-item>
+        <el-container>
+          <div class="modal-col-data">
+            <el-form ref="form" label-position="left" label-width="120px">
 
-        <el-form-item label="Descripción:" required>
-          <el-input type="textarea" v-model="frm_descripcion" placeholder="Descripción de la tarea"></el-input>
-        </el-form-item>
+              <el-form-item label="Título"  required >
+                <el-input  type="text" v-model="frm_titulo" placeholder="Nombre de la tarea"></el-input>
+              </el-form-item>
 
-        <el-form-item label="T. estimado:"  required>
-          <el-input v-model="frm_estimado" placeholder="30" style="width: 10%"></el-input>
-        </el-form-item>
+              <el-container>
+                <el-aside>
+                  <el-form-item label="Prioridad" required>
+                    <el-select v-model="frm_prioridad" placeholder="Medio">
+                      <el-option
+                        v-for="item in prioridades"
+                        :key="item.value"
+                        :label="item.text"
+                        :value="item.value">
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-aside>
 
-        <el-switch  active-text="Pausable" v-model="frm_pausable"></el-switch>
+                <el-container>
+                  <el-form-item label="T. estimado"  required>
+                    <el-input v-model="frm_estimado" placeholder="30" style="width: 20%"></el-input>
+                  </el-form-item>
+                </el-container>
+              </el-container>
 
-        <el-form-item label="Etiquetas:"  required>
-          <el-tag
-            :key="tag"
-            v-for="tag in frm_etiquetas"
-            closable
-            :disable-transitions="false"
-            @close="handleClose(tag)">
-            {{tag}}
-          </el-tag>
+              <el-form-item label="Descripción" required>
+                <el-input type="textarea" v-model="frm_descripcion" placeholder="Descripción de la tarea"></el-input>
+              </el-form-item>
 
-          <el-autocomplete
-            class="input-new-tag"
-            v-if="inputVisible"
-            v-model="inputValue"
-            ref="saveTagInput"
-            :fetch-suggestions="querySearch"
-            placeholder="Nombre nueva etiqueta"
-            @keyup.enter.native="handleInputConfirm"
-            @select="handleSelectTag">
-          </el-autocomplete>
+              <el-form-item label="Etiquetas"  required>
+                <el-tag
+                  :key="tag"
+                  v-for="tag in frm_etiquetas"
+                  closable
+                  :disable-transitions="false"
+                  @close="handleClose(tag)">
+                  {{tag}}
+                </el-tag>
 
-          <el-button v-else class="button-new-tag" size="small" @click="showInput">+ Nuevo tag</el-button>
-        </el-form-item>
+                <el-autocomplete
+                  style="width: 42%; font-size: 10px"
+                  class="input-new-tag"
+                  v-if="inputVisible"
+                  v-model="inputValue"
+                  size="small"
 
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="createTask">Confirm</el-button>
-      </span>
+                  :fetch-suggestions="querySearch"
+                  placeholder="Nombre nueva etiqueta"
+                  @keyup.enter.native="handleInputConfirm"
+                  @select="handleSelectTag"
+                  >
+                </el-autocomplete>
+
+                <el-button v-else class="button-new-tag" size="small" @click="showInput">+ Nuevo tag</el-button>
+              </el-form-item>
+
+              <el-switch  active-text="Pausable" v-model="frm_pausable"></el-switch>
+
+            </el-form>
+          </div>
+
+          <el-footer class="modal-footer">
+            <el-button @click="dialogVisible = false">Cancelar</el-button>
+            <el-button type="primary" @click="createTask">Confirmar</el-button>
+          </el-footer>
+        </el-container>
+
+      </el-container>
+
     </el-dialog>
     <!-- FIN: Modal Add Tarea -->
 
@@ -229,6 +261,7 @@
   import db from './firebaseInit';
   import ButtonGroup from "bootstrap-vue/es/components/button-group/button-group";
   import InputTag from 'vue-input-tag';
+  import ElContainer from "element-ui/packages/container/src/main";
 
   export default {
     name: 'dashboard',
@@ -266,7 +299,29 @@
         inputVisible: false,
         inputValue: '',
         id:'',
-        loading: true
+        loading: true,
+
+        plantillas: [
+          { titulo: 'Plantilla 01'},
+          { titulo: 'Plantilla 02'},
+          { titulo: 'Plantilla 03'},
+          { titulo: 'Plantilla 04'},
+          { titulo: 'Plantilla 05'},
+          { titulo: 'Plantilla 06'},
+          { titulo: 'Plantilla 07'},
+          { titulo: 'Plantilla 18'},
+          { titulo: 'Plantilla 19'},
+          { titulo: 'Plantilla 11'},
+          { titulo: 'Plantilla 12'},
+          { titulo: 'Plantilla 13'},
+          { titulo: 'Plantilla 14'},
+          { titulo: 'Plantilla 15'},
+          { titulo: 'Plantilla 16'},
+          { titulo: 'Plantilla 17'},
+          { titulo: 'Plantilla 18'},
+          { titulo: 'Plantilla 19'},
+
+        ]
       }
     },
     created: function () {
@@ -658,6 +713,7 @@
     },
 
     components: {
+      ElContainer,
       ButtonGroup,
       Navbar,
       Task,
@@ -774,6 +830,27 @@
     width: 90px;
     margin-left: 10px;
     vertical-align: bottom;
+  }
+
+  .modal-col-plantillas {
+    width: 5%;
+    float: left;
+    border-right: 1px solid whitesmoke ;
+    margin-right: 20px;
+  }
+
+  .modal-col-data {
+    width: 80%;
+    height: 100%;
+  }
+
+  .modal-footer {
+    padding-top: 40px;
+    border-top: 1px solid whitesmoke;
+  }
+
+  .resize-triggers { /*Recomendador de etiquetas*/
+
   }
 
 </style>
