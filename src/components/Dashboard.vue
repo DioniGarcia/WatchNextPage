@@ -31,7 +31,6 @@
     </div>
 
 
-
                                                                               <!-- REFACTORIZAR!!! -->
     <div class="wn-col col-asignadas">
       <div class="wn-col-title">Tareas Asignadas</div>
@@ -321,11 +320,9 @@
     created: function () {
       db
         .collection('sinAsignar')
-        .orderBy('titulo')
-        .get()
-        .then(querySnapshot => {
-          this.loading = false;
-          querySnapshot.forEach(doc => {
+        .onSnapshot(querySnapshot => {
+          this.tasks_sin_asignar=[]
+          querySnapshot.docs.map(doc => {
             const task = {
               id: doc.id,
               operario: "No Asignado",
@@ -333,19 +330,39 @@
               duracion: doc.data().duracion,
               estimado: doc.data().estimado,
               prioridad: doc.data().prioridad,
-              showMore: false,
+              //showMore: false,
               descripcion: doc.data().descripcion,
               pausable: doc.data().pausable,
               tags: doc.data().etiquetas
             };
             this.tasks_sin_asignar.push(task);
+          })
+      });
 
-          });
+      db
+        .collection('sinAsignar')
+        .onSnapshot(querySnapshot => {
+          this.tasks_sin_asignar=[]
+          querySnapshot.docs.map(doc => {
+            const task = {
+              id: doc.id,
+              operario: "No Asignado",
+              titulo: doc.data().titulo,
+              duracion: doc.data().duracion,
+              estimado: doc.data().estimado,
+              prioridad: doc.data().prioridad,
+              //showMore: false,
+              descripcion: doc.data().descripcion,
+              pausable: doc.data().pausable,
+              tags: doc.data().etiquetas
+            };
+            this.tasks_sin_asignar.push(task);
+          })
         });
 
-      db.collection('asignadas').get().then(
-        querySnapshot => {
-          this.loading = false;
+      db
+        .collection('asignadas')
+        .onSnapshot(querySnapshot => {
           querySnapshot.docs.map(doc => {
             console.log(doc.data());
             const id=doc.id;
@@ -372,8 +389,8 @@
         });
 
 
-      db.collection('finalizadas').orderBy('titulo').get().then(querySnapshot => {
-          this.loading = false;
+      db.collection('finalizadas')
+        .onSnapshot(querySnapshot => {
           querySnapshot.forEach(doc => {
             const task = {
               id: doc.id,
@@ -388,12 +405,10 @@
               tags: doc.data().etiquetas
             };
             this.tasks_realizadas.push(task);
-
-          });
+        });
       });
 
       this.fillTemplates();
-
 
     },
     computed: {
@@ -703,16 +718,7 @@
       },
       handleSubmit () {
         console.log('hd_sm')
-        this.tasks_sin_asignar.push(
-          {
-            titulo: this.frm_titulo,
-            operario: "N/A",
-            duracion: 0,
-            estimado:parseInt(this.frm_estimado),
-            id: this.id
-          }
 
-        )
         this.dialogVisible = false;
         this.cleanForm();
       },
