@@ -4,7 +4,6 @@ admin.initializeApp();
 
 
 exports.solicitarDatosTarea = functions.https.onRequest((req, res) => {
-
   var idOprario = req.query.id;
   var tareas = [];
 
@@ -34,20 +33,24 @@ exports.solicitarDatosTarea = functions.https.onRequest((req, res) => {
     });
   });
 
+exports.aceptarTarea = functions.https.onRequest((req, res) => {
+  //Aceptar tarea (idTara, idOprario)
+  //Calcular fecha fin
+  //Crear tarea en asignadas
+  //Eliminar tarea de sinAsignar
+});
 
 
-  //operariosConectados.doc(idOprario).get(tareas)
-  //if tareas.lenght = 0
-  //   resp "No hay tareas"
-  //else
-  //   resp "tarea.json"
 
+
+
+
+
+
+//Funciones de prueba:
 exports.saludar = functions.https.onRequest((req, res) => {
-
   var nombre = req.query.nombre;
-
   res.send("Hola "+nombre)
-
 });
 
 exports.asignarTarea = functions.https.onRequest((req, res) => {
