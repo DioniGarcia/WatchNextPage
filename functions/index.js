@@ -41,7 +41,11 @@ exports.aceptarTarea = functions.https.onRequest((req, res) => {
 });
 
 
-
+//Funciones de prueba:
+exports.salutare = functions.https.onRequest((req, res) => {
+  var nombre = req.query.nombre;
+  res.send(nombre+" te gusta comer t... dobladas y sudadas")
+});
 
 
 

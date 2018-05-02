@@ -19,6 +19,9 @@
               />
 
               <div class="wn-btn-div">
+                <div v-if="conectado" class="wn-task-container">
+                  <i class="plug"></i>
+                </div>
                 <button @click="deleteWorker(operario.id)" class="wn-menu-btn"><i class="fa fa-close " aria-hidden="true"></i></button>
                 <button @click="fillData(operario.id), dialogEditVisible = true" class="wn-menu-btn"><i class="fa fa-edit " aria-hidden="true"></i></button>
                 <button v-if="!operario.showMore" @click="operario.showMore=true" class="wn-menu-btn"><i class="fa fa-eye " aria-hidden="true"></i></button>
@@ -158,6 +161,7 @@
         inputVisible: false,
         inputValue: '',
 
+        conectado: '',
         loading: true
       }
     },
@@ -178,8 +182,25 @@
               id: doc.id, // El autoincrement de FB
               tags: doc.data().etiquetas,
               showMore: false
-            };
-            this.operarios.push(operario);
+            }
+
+            var opRef = db.collection("asignadas").doc(operario.id.toString());
+
+            opRef.get()
+              .then(doc => {
+                if(doc.exists){
+                  console.log(doc.data().conectado)
+                  conectado: doc.data().conectado;
+                  operario.push(conectado);
+                }
+
+
+              }).catch(function(error) {
+              console.log("Error gettings document:", error);
+            });
+            console.log(operario)
+            this.operarios.push(operario)
+
           });
         });
     },

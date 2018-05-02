@@ -318,31 +318,13 @@
       }
     },
     created: function () {
-      db
-        .collection('sinAsignar')
-        .onSnapshot(querySnapshot => {
-          this.tasks_sin_asignar=[]
-          querySnapshot.docs.map(doc => {
-            const task = {
-              id: doc.id,
-              operario: "No Asignado",
-              titulo: doc.data().titulo,
-              duracion: doc.data().duracion,
-              estimado: doc.data().estimado,
-              prioridad: doc.data().prioridad,
-              //showMore: false,
-              descripcion: doc.data().descripcion,
-              pausable: doc.data().pausable,
-              tags: doc.data().etiquetas
-            };
-            this.tasks_sin_asignar.push(task);
-          })
-      });
+
 
       db
         .collection('sinAsignar')
+        //.orderBy("prioridad","desc").orderBy("id") OLVIDAOS DE ORDERBY's => LAMBDA's
         .onSnapshot(querySnapshot => {
-          this.tasks_sin_asignar=[]
+
           querySnapshot.docs.map(doc => {
             const task = {
               id: doc.id,
@@ -351,41 +333,43 @@
               duracion: doc.data().duracion,
               estimado: doc.data().estimado,
               prioridad: doc.data().prioridad,
-              //showMore: false,
+              showMore: false,
               descripcion: doc.data().descripcion,
               pausable: doc.data().pausable,
               tags: doc.data().etiquetas
             };
             this.tasks_sin_asignar.push(task);
+
+            this.tasks_sin_asignar.sort(function(a, b) {
+              return b["prioridad"] - a["prioridad"] || a["id"] - b["id"];
+            });
           })
         });
 
       db
         .collection('asignadas')
+        //.orderBy("prioridad","desc").orderBy("id")
         .onSnapshot(querySnapshot => {
+
           querySnapshot.docs.map(doc => {
-            console.log(doc.data());
-            const id=doc.id;
-            db.collection('asignadas').doc(id).collection('Tareas').get().then(
-              querySnapshot => {
-                this.loading = false;
-                querySnapshot.docs.map(doc2 => {
-                  const task = {
-                    id: doc2.id,
-                    operario: doc.id,
-                    titulo: doc2.data().titulo,
-                    duracion: doc2.data().duracion,
-                    estimado: doc2.data().estimado,
-                    prioridad: doc2.data().prioridad,
-                    showMore: false,
-                    descripcion: doc2.data().descripcion,
-                    pausable: doc2.data().pausable,
-                    tags: doc2.data().etiquetas
-                  };
-                  this.tasks_asignadas.push(task);
-                });
-              });
-          });
+            const task = {
+              id: doc.id,
+              operario: doc.data().operario,
+              titulo: doc.data().titulo,
+              duracion: doc.data().duracion,
+              estimado: doc.data().estimado,
+              prioridad: doc.data().prioridad,
+              showMore: false,
+              descripcion: doc.data().descripcion,
+              pausable: doc.data().pausable,
+              tags: doc.data().etiquetas
+            };
+            this.tasks_asignadas.push(task);
+
+            this.tasks_asignadas.sort(function(a, b) {
+              return b["prioridad"] - a["prioridad"] || a["id"] - b["id"];
+            });
+          })
         });
 
 
@@ -405,6 +389,9 @@
               tags: doc.data().etiquetas
             };
             this.tasks_realizadas.push(task);
+            this.tasks_realizadas.sort(function(a, b) {
+              return b["prioridad"] - a["prioridad"] || a["id"] - b["id"];
+            });
         });
       });
 
