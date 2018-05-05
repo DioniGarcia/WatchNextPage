@@ -55,9 +55,7 @@
       return {
         showIcon: true,
         showTitle: true,
-
         showLogin: false,
-
         email:'',
         password:''
       };
