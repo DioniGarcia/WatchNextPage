@@ -324,7 +324,7 @@
         .collection('sinAsignar')
         //.orderBy("prioridad","desc").orderBy("id") OLVIDAOS DE ORDERBY's => LAMBDA's
         .onSnapshot(querySnapshot => {
-          tasks_sin_asignar.cl
+          this.tasks_sin_asignar.length=0
           querySnapshot.docs.map(doc => {
             const task = {
               id: doc.id,
@@ -340,9 +340,9 @@
             };
             this.tasks_sin_asignar.push(task);
 
-            //this.tasks_sin_asignar.sort(function(a, b) {
-            //  return b["prioridad"] - a["prioridad"] || a["id"] - b["id"];
-            //});
+            this.tasks_sin_asignar.sort(function(a, b) {
+              return b["prioridad"] - a["prioridad"] || a["id"] - b["id"];
+            });
           })
         });
 
@@ -350,7 +350,7 @@
         .collection('asignadas')
         //.orderBy("prioridad","desc").orderBy("id")
         .onSnapshot(querySnapshot => {
-
+          this.tasks_asignadas.length=0
           querySnapshot.docs.map(doc => {
             const task = {
               id: doc.id,
@@ -374,11 +374,13 @@
 
 
       db.collection('finalizadas')
+        //this.tasks_realizadas.length=0
         .onSnapshot(querySnapshot => {
+          this.tasks_realizadas.length=0;
           querySnapshot.forEach(doc => {
             const task = {
               id: doc.id,
-              operario: doc.operario,
+              operario: doc.data().operario,
               titulo: doc.data().titulo,
               duracion: doc.data().duracion,
               estimado: doc.data().estimado,
@@ -425,16 +427,6 @@
       peix(valor){
         console.log('peix: '+valor+'!')
       },
-
-      taskExistIn(lista, id){
-        for(var i=0; i < lista.length; i++){
-          if( lista[i].id == id){
-            return true
-          }
-        }
-        return false
-      },
-
       fillModal(id){
 
       },
