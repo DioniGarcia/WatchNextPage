@@ -47,6 +47,10 @@
           <el-form-item label="Contraseña:"  required >
             <el-input  type="password" v-model="frm_pass" placeholder="123456"></el-input>
           </el-form-item>
+          <el-form-item label="Repetir contraseña:"  required >
+            <el-input  type="password" v-model="frm_pass_2" placeholder="123456"></el-input>
+          </el-form-item>
+
 
           <el-form-item label="Etiquetas:"  required>
             <el-tag
@@ -153,6 +157,7 @@
         frm_nombre: '',
         frm_apellidos: '',
         frm_pass: '',
+        frm_pass_2: '',
         frm_etiquetas:     [],
         id:'',
 
@@ -224,6 +229,12 @@
         }
         else if (!this.frm_pass) {
           alert('Se requiere un Password')
+        }
+        else if (!this.frm_pass_2) {
+          alert('Se requiere confirmación de Password')
+        }
+        else if (this.frm_pass != this.frm_pass_2) {
+          alert('Las contraseñas no coinciden')
         }
         else if (isNaN(this.frm_pass)) {
           alert('El Password ha de ser numérico')
