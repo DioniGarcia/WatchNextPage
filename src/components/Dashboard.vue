@@ -324,7 +324,7 @@
         .collection('sinAsignar')
         //.orderBy("prioridad","desc").orderBy("id") OLVIDAOS DE ORDERBY's => LAMBDA's
         .onSnapshot(querySnapshot => {
-
+          tasks_sin_asignar.cl
           querySnapshot.docs.map(doc => {
             const task = {
               id: doc.id,
@@ -340,9 +340,9 @@
             };
             this.tasks_sin_asignar.push(task);
 
-            this.tasks_sin_asignar.sort(function(a, b) {
-              return b["prioridad"] - a["prioridad"] || a["id"] - b["id"];
-            });
+            //this.tasks_sin_asignar.sort(function(a, b) {
+            //  return b["prioridad"] - a["prioridad"] || a["id"] - b["id"];
+            //});
           })
         });
 
@@ -425,6 +425,16 @@
       peix(valor){
         console.log('peix: '+valor+'!')
       },
+
+      taskExistIn(lista, id){
+        for(var i=0; i < lista.length; i++){
+          if( lista[i].id == id){
+            return true
+          }
+        }
+        return false
+      },
+
       fillModal(id){
 
       },
@@ -552,7 +562,6 @@
           descripcion: this.frm_descripcion,
           estimado: parseInt(this.frm_estimado),
           etiquetas: this.frm_etiquetas,
-          fecha_realizacion: Date.now(),
           pausable: this.frm_pausable,
           prioridad: this.frm_prioridad,
           titulo: this.frm_titulo,
@@ -584,6 +593,9 @@
                 pausable: this.frm_pausable,
                 prioridad: this.frm_prioridad,
                 titulo: this.frm_titulo,
+                h_inicio: 0,
+                h_fin: 0,
+                satisfaccion: 0,
                 id: newTask
 
               }).then(docRef => {
