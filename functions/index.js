@@ -3,7 +3,7 @@ const admin = require('firebase-admin');
 admin.initializeApp();
 
 
-exports.solicitarDatosTarea2 = functions.https.onRequest((req, res) => {
+exports.solicitarDatosTarea3 = functions.https.onRequest((req, res) => {
   var idOprario = req.query.id;
   var tareas = [];
 
@@ -12,7 +12,7 @@ exports.solicitarDatosTarea2 = functions.https.onRequest((req, res) => {
       tareas=doc.data().tareas
 
       if (tareas.length == 0)
-        res.status(404).json({"error":"No hay tareas"});
+        return res.status(404).json({"error":"No hay tareas"});
       else
         try {
           return admin.firestore().collection('asignadas').doc(tareas[0].toString()).get()
@@ -73,58 +73,6 @@ exports.loginOperario = functions.https.onRequest((req, res) => {
       "message" :"Operario does not exists"
     });
   }
-  // admin.firestore().collection("operarios").doc(idOperario.toString()).get()
-  //   .then(doc=>{
-  //     if(doc.get(pass).equals(pass.toString())){
-  //       admin.firestore().collection("operariosConectados").where("id","==", idOprario.toString()).get()
-  //         .then(doc=> {
-  //           if (doc.get("tareas") != null && doc.get("tareas") != 0) {
-  //             return admin.firestore().collection("asigandas").where("id", "==", doc.get("tareas")[0]).get()
-  //               .then(doc => {
-  //                 var titulo = doc.data().titulo
-  //                 var descripcion = doc.data().descripcion
-  //                 var estimado = doc.data().estimado
-  //                 var prioridad = doc.data().prioridad
-  //
-  //                 res.status(201).json("{ " + //Estabas conectado
-  //                   "titulo: '" + titulo + "', " +
-  //                   "descripcion: '" + descripcion + "', " +
-  //                   "estimado: '" + estimado + "', " +
-  //                   "prioridad: '" + prioridad + "'"
-  //                   + " }"
-  //                 );
-  //               });
-  //           } else {
-  //             return admin.firestore().collection('sinAsignar').doc(tareas[0]).get()
-  //               .then(doc => {
-  //                 var titulo = doc.data().titulo
-  //                 var descripcion = doc.data().descripcion
-  //                 var estimado = doc.data().estimado
-  //                 var prioridad = doc.data().prioridad
-  //
-  //                 res.status(200).json("{ " +
-  //                   "titulo: '" + titulo + "', " +
-  //                   "descripcion: '" + descripcion + "', " +
-  //                   "estimado: '" + estimado + "', " +
-  //                   "prioridad: '" + prioridad + "'"
-  //                   + " }"
-  //                 );
-  //               });
-  //           }
-  //         });
-  //       admin.firestore().collection("operariosConectados").doc(idOperario)
-  //         .set({
-  //
-  //       });
-  //     }
-  //
-  //       })
-
-
-  //Aceptar tarea (idTara, idOprario)
-  //Calcular fecha fin
-  //Crear tarea en asignadas
-  //Eliminar tarea de sinAsignar
 });
 
 //Funciones de prueba:
@@ -147,94 +95,151 @@ exports.asignarTarea = functions.https.onRequest((req, res) => {
   var idOperario = req.query.id;
   console.log('Pide una tarea', idOperario);
   //TODO comprobar que funciona como toca...
-  return res.status(200).json({
-    "type": "error",
-    "message": "Esta función genera un bucle infinito"
-  });
-  try {
-    admin.firestore().collection("operariosConectados").doc(idOperario).onSnapshot(snapshot => {
-      var etiquetas = snapshot.get("etiquetas")
-      var tareas = snapshot.get("tareas")
-      console.log('Etiquetas y tareas del operario', etiquetas, tareas);
+  admin.firestore().collection("operariosConectados").doc(idOperario).get().then(snapshot => {
+    var etiquetas = snapshot.get("etiquetas")
+    var tareas = snapshot.get("tareas")
+    console.log('Etiquetas y tareas del operario', etiquetas, tareas);
 
-      admin.firestore().collection('sinAsignar').onSnapshot(snapshot => {
-        console.log('Entramos en sinAsignar', snapshot);
-        var asignada=false
-        for(x=0;x<snapshot.docs.length && !asignada;x++) {
-          var doc = snapshot.docs[x]
-          if(doc.get("asignable")) {
-            console.log('Documento tareas sin asignar', doc);
-            console.log('Documentoid', doc.id);
-            console.log('Documentoid', doc.data());
-            if (etiquetas.length > 0) {
-              var etiquetasTarea = doc.get("etiquetas")
-              if (etiquetasTarea.length > 0) {
-                for (i = 0; i < etiquetasTarea.length; i++) {
-                  var etq = etiquetasTarea[i]
-                  if (etiquetas.indexOf(etq) >= 0) {
-                    if (tareas.indexOf(doc.id) >= 0) {
-                      break
-                    } else {
-                      admin.firestore().collection("sinAsignar").doc(doc.id).update({asignable: false})
-                      admin.firestore().collection("asignadas").doc(doc.id).set(doc.data())
-                      if (tareas.indexOf(doc.id) < 0) {
-                        tareas.push(doc.id)
-                      }
-                      admin.firestore().collection("operariosConectados").doc(idOperario).update({"tareas": tareas})
-                      asignada = true
-                      return res.status(200).json({
-                        "type": "exito",
-                        "message": "Tarea" + doc.id + " asignada con exito al operario " + idOperario
-                      });
+    admin.firestore().collection('sinAsignar').get().then(snapshot => {
+      console.log('Entramos en sinAsignar', snapshot);
+      var asignada = false
+      for (x = 0; x < snapshot.docs.length && !asignada; x++) {
+        var doc = snapshot.docs[x]
+        if (doc.get("asignable")) {                //Si la tarea se puede asignar
+          console.log('Documento tareas sin asignar', doc);
+          console.log('Documentoid', doc.id);
+          console.log('Documentoid', doc.data());
+          if (etiquetas.length > 0) {           //Si el operario tiene etiquetas
+            var etiquetasTarea = doc.get("etiquetas")
+            if (etiquetasTarea.length > 0) {    //Solo si la tarea tiene etiquetas
+              for (i = 0; i < etiquetasTarea.length; i++) {
+                var etq = etiquetasTarea[i]
+                if (etiquetas.indexOf(etq) >= 0) {
+                  if (tareas.indexOf(doc.id) >= 0) {
+                    break
+                  } else {
+                    admin.firestore().collection("sinAsignar").doc(doc.id).update({asignable: false})
+                    admin.firestore().collection("asignadas").doc(doc.id).set(doc.data())
+                    if (tareas.indexOf(doc.id) < 0) {
+                      tareas.push(doc.id)
                     }
+                    admin.firestore().collection("operariosConectados").doc(idOperario).update({"tareas": tareas})
+                    asignada = true
+                    return res.status(200).json({
+                      "type": "exito",
+                      "message": "Tarea" + doc.id + " asignada con exito al operario " + idOperario
+                    });
                   }
                 }
-              } else {
-                admin.firestore().collection("sinAsignar").doc(doc.id).update({asignable: false})
-                admin.firestore().collection("asignadas").doc(doc.id).set(doc.data())
-                if (tareas.indexOf(doc.id) < 0) {
-                  tareas.push(doc.id)
-                }
-                admin.firestore().collection("operariosConectados").doc(idOperario).update({"tareas": tareas})
-                asignada = true
-                return res.status(200).json({
-                  "type": "exito",
-                  "message": "Tarea" + doc.id + " asignada con exito al operario " + idOperario
-                });
               }
-            } else {
-              if (etiquetasTarea.length == 0) {
-                admin.firestore().collection("sinAsignar").doc(doc.id).update({asignable: false})
-                admin.firestore().collection("asignadas").doc(doc.id).set(doc.data())
-                if (tareas.indexOf(doc.id) < 0) {
-                  tareas.push(doc.id)
-                }
-                admin.firestore().collection("operariosConectados").doc(idOperario).update({"tareas": tareas})
-                asignada = true
-                return res.status(200).json({
-                  "type": "exito",
-                  "message": "Tarea" + doc.id + " asignada con exito al operario " + idOperario
-                });
+            } else {                          //Si la tarea no tiene etiqueta se asigna automaticamente
+              admin.firestore().collection("sinAsignar").doc(doc.id).update({asignable: false})
+              admin.firestore().collection("asignadas").doc(doc.id).set(doc.data())
+              if (tareas.indexOf(doc.id) < 0) {
+                tareas.push(doc.id)
               }
+              admin.firestore().collection("operariosConectados").doc(idOperario).update({"tareas": tareas})
+              asignada = true
+              return res.status(200).json({
+                "type": "exito",
+                "message": "Tarea" + doc.id + " asignada con exito al operario " + idOperario
+              });
+            }
+          } else {                              //El operario no tiene etiquetas
+            if (etiquetasTarea.length == 0) { //Solo miramos las tareas sin etiquetas
+              admin.firestore().collection("sinAsignar").doc(doc.id).update({asignable: false})
+              admin.firestore().collection("asignadas").doc(doc.id).set(doc.data())
+              if (tareas.indexOf(doc.id) < 0) {
+                tareas.push(doc.id)
+              }
+              admin.firestore().collection("operariosConectados").doc(idOperario).update({"tareas": tareas})
+              asignada = true
+              return res.status(200).json({
+                "type": "exito",
+                "message": "Tarea" + doc.id + " asignada con exito al operario " + idOperario
+              });
             }
           }
-          if (asignada) {
-            break
-          }
-        }if(!asignada) {
-          return res.status(200).json({
-            "type": "error",
-            "message": "No hay tareas disponibles"
-          });
         }
+        if (asignada) {
+          break
+        }
+      }
+      if (!asignada) {
+        return res.status(200).json({
+          "type": "error",
+          "message": "No hay tareas disponibles"
+        });
+      }
+    }).catch(function (error) {
+      return res.status(200).json({
+        "type": "error",
+        "message": e.toString()
+      });
+    }).catch(function (error) {
+      return res.status(200).json({
+        "type": "error",
+        "message": e.toString()
+      });
+    });
+  }).catch(function (error) {
+    return res.status(200).json({
+      "type": "error",
+      "message": e.toString()
+    });
+  });
+});
+
+exports.finalizarTarea = functions.https.onRequest((req, res) => {
+  var idOperario = req.query.idOperario;
+  var idTarea = req.query.idTarea;
+  var tareas1 = []
+  var tarea =
+  admin.firestore().collection("operariosConectados").doc(idOperario.toString()).get().then(snapshot => {
+    console.log('Tareas dentro snapshot.', snapshot.get("tareas"));
+    var tareas1 = snapshot.get("tareas")
+    tareas1.indexOf(parseInt(idTarea))
+    console.log('Posicion de la tarea', tareas1.indexOf(parseInt(idTarea)))
+    tareas1.splice(tareas1.indexOf(parseInt(idTarea)), 1)
+    admin.firestore().collection("operariosConectados").doc(idOperario.toString()).update({"tareas": tareas1}).then(function () {
+      admin.firestore().collection("asignadas").doc(idTarea).get().then(tarea =>{
+        admin.firestore().collection("finalizadas").doc(tarea.id).set(tarea.data()).then(function () {
+          admin.firestore().collection("finalizadas").doc(tarea.id).update({"operario" : idOperario})
+          admin.firestore().collection("asignadas").doc(idTarea).delete().then(function () {
+            return res.status(200).json({
+              "status": "finalizada"
+            })
+          }).catch(function (error) {
+            return res.status(400).json({
+              "error": error.toString(),
+              "mensaje": "Error al borrar"
+            })
+          })
+        }).catch(function (error) {
+          return res.status(400).json({
+            "error": error.toString(),
+            "mensaje": "Error al mover"
+          })
+        })
+      }).catch(function (error) {
+        return res.status(400).json({
+          "error": error.toString(),
+          "mensaje": "Error al actualizar"
+        })
       })
     })
-  }catch (e){
-    return res.status(200).json({
-    "type": "error",
-    "message": e.toString()
-    });
-  }
+    // .catch(function (error) {
+    //   return res.status(400).json({
+    //     "error": error.toString(),
+    //     "mensaje": "Error al actualizar"
+    //   })
+    // })
+  }).catch(function (error) {
+    return res.status(400).json({
+      "error en snapshot": error.toString(),
+      "mensaje": "Error al acceder al operario"
+    })
+  })
 });
 
 exports.PruebasAbry = functions.https.onRequest((req, res) => {
