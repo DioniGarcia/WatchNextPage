@@ -892,7 +892,7 @@
     padding-bottom: 0;
   }
   .input-new-tag {
-    width: 90px;
+    width: 180px;
     margin-left: 10px;
     vertical-align: bottom;
   }
