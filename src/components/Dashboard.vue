@@ -92,15 +92,16 @@
         width="65%">
 
       <el-container>
-
         <el-aside class="modal-col-plantillas" width="22%">
           <b-input-group>
-            <div>
+
+            <b-form inline>
               <i class="material-icons prefix">search</i>
-              <b-form-input v-model="searchWord" placeholder="Buscar plantilla" />
-            </div>
-            <b-btn :disabled="!searchWord" @click="searchWord = ''">Borrar</b-btn>
+              <b-input style="width: 120px; margin-left: 10px; margin-right: 8px" v-model="searchWord" placeholder="Buscar" />
+              <i :disabled="!searchWord" @click="searchWord = ''" class="fa fa-times-circle prefix"></i>
+            </b-form>
           </b-input-group>
+
           <el-table
             :data="filteredTemplates"
 
@@ -110,9 +111,11 @@
             max-height="480px"
           >
             <el-table-column
+              style="color: orange"
               prop="titulo"
               label="Plantillas"
               width="180"
+              row
             >
 
             </el-table-column>
@@ -512,7 +515,7 @@
 
         opRef.get()
           .then(doc => {
-            this.frm_operario = doc.data().operario,
+            this.frm_operario = "No Asignada",
             this.frm_asignable = doc.data().asignable,
             this.frm_titulo = doc.data().titulo,
             this.frm_descripcion = doc.data().descripcion,
@@ -547,7 +550,7 @@
         });
       },
       updateTask(id) {
-        console.log('up_tsk_id_>'+id+'<')
+        //console.log('up_tsk_id_>'+id+'<')
         var tsRef = db.collection("sinAsignar").doc(id.toString());
 
         return tsRef.update({
@@ -769,6 +772,10 @@
 </script>
 
 <style>
+
+  .search-input {
+    width: 30px;
+  }
 
   div.wn-col div{
     padding-left:  10px;
