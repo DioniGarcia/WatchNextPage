@@ -6,7 +6,7 @@
         <button @click="dialogVisible = true" class="wn-menu-btn">Nueva tarea</button>
       </div>
 
-      <div class="wn-col-container">
+      <div class="wn-col-container scrollbar">
         <div v-for="task in tasks_sin_asignar" v-bind:key="task.id" class="wn-task-container"><!--scroll-->
           <Task
             :id=task.id
@@ -773,10 +773,6 @@
 
 <style>
 
-  .search-input {
-    width: 30px;
-  }
-
   div.wn-col div{
     padding-left:  10px;
     padding-top:    3px;
@@ -795,6 +791,23 @@
     font-size: 16px;
     padding-bottom: 2px;
   }
+
+
+  div.wn-col-container::-webkit-scrollbar {
+    width: 8px;
+    max-width: 8px;
+  }
+
+  div.wn-col-container::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 10px;
+  }
+
+  div.wn-col-container::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+  }
+
 
   div.wn-col-container {
     overflow-y:scroll;

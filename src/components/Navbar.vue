@@ -76,8 +76,14 @@
 
 <style scoped>
 
-  .degradado-cool {
-    background-color: red;
+  .bg-info {
+    /*background: linear-gradient(to bottom, #bcede9, #599693) !important;*/
+
+    background: #81cac7; /* Old browsers */
+    background: -moz-linear-gradient(top, #bcede9 0%, #81cac7 40%, #599693 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, #bcede9 0%, #81cac7 40%,#599693 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, #bcede9 0%, #81cac7 40%,#599693 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bcede9', endColorstr='#599693',GradientType=0 );
   }
 
   .menu-item {
