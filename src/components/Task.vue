@@ -1,11 +1,11 @@
 <template>
     <div class="wn-task-data">
       <h3>
-        <i v-if="this.prioridad==400" class="fa fa-angle-double-up " aria-hidden="true"></i>
-        <i v-if="this.prioridad==300" class="fa fa-angle-up " aria-hidden="true"></i>
-        <i v-if="this.prioridad==200" class="fa fa-angle-right " aria-hidden="true"></i>
-        <i v-if="this.prioridad==100" class="fa fa-angle-down" aria-hidden="true"></i>
-        <i v-if="this.prioridad==0"   class="fa fa-angle-double-down" aria-hidden="true"></i>
+        <i v-if="this.prioridad==400" class="fa fa-angle-double-up hot-icon" aria-hidden="true"></i>
+        <i v-if="this.prioridad==300" class="fa fa-angle-up hot-icon" aria-hidden="true"></i>
+        <i v-if="this.prioridad==200" class="fa fa-angle-up mid-icon" aria-hidden="true"></i>
+        <i v-if="this.prioridad==100" class="fa fa-angle-down low-icon" aria-hidden="true"></i>
+        <i v-if="this.prioridad==0"   class="fa fa-angle-double-down muy-low-icon" aria-hidden="true"></i>
         {{this.titulo}}
       </h3>
 
@@ -82,6 +82,42 @@
   .wn-task-data {
     padding-left:  0;
     padding-right: 0;
+  }
+
+  .hot-icon {
+    color: #F5F5F5;
+    background: #db5352;
+    border-radius: 6px;
+    padding-left: 4px;
+    padding-right: 4px;
+    margin-right: 4px;
+  }
+
+  .mid-icon {
+    color: #F5F5F5;
+    background: #dbba5c;
+    border-radius: 6px;
+    padding-left: 4px;
+    padding-right: 4px;
+    margin-right: 4px;
+  }
+
+  .low-icon {
+    color: #F5F5F5;
+    background: #89dbbc;
+    border-radius: 6px;
+    padding-left: 4px;
+    padding-right: 4px;
+    margin-right: 4px;
+  }
+
+  .muy-low-icon {
+    color: #F5F5F5;
+    background: rgb(188, 196, 194);
+    border-radius: 6px;
+    padding-left: 4px;
+    padding-right: 4px;
+    margin-right: 4px;
   }
 
 </style>

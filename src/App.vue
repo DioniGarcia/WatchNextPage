@@ -14,6 +14,8 @@
 
 <style>
   nav {
-    margin-bottom:10px;
+    margin-bottom: 7px;
+    border-bottom: 2px solid whitesmoke ;
+    box-shadow: none;
   }
 </style>

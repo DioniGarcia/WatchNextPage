@@ -3,10 +3,10 @@
     <Navbar />
     <div class="wn-col col-pendientes">
       <div class="wn-col-title">Tareas Sin Asignar
-        <button @click="dialogVisible = true" class="wn-menu-btn">Nueva tarea</button>
+        <button @click="cleanForm(),dialogVisible = true" class="wn-menu-btn">Nueva tarea</button>
       </div>
 
-      <div class="wn-col-container">
+      <div class="wn-col-container scrollbar">
         <div v-for="task in tasks_sin_asignar" v-bind:key="task.id" class="wn-task-container"><!--scroll-->
           <Task
             :id=task.id
@@ -92,15 +92,16 @@
         width="65%">
 
       <el-container>
-
         <el-aside class="modal-col-plantillas" width="22%">
           <b-input-group>
-            <div>
+
+            <b-form inline>
               <i class="material-icons prefix">search</i>
-              <b-form-input v-model="searchWord" placeholder="Buscar plantilla" />
-            </div>
-            <b-btn :disabled="!searchWord" @click="searchWord = ''">Borrar</b-btn>
+              <b-input style="width: 120px; margin-left: 10px; margin-right: 8px" v-model="searchWord" placeholder="Buscar" />
+              <i :disabled="!searchWord" @click="searchWord = ''" class="fa fa-times-circle prefix"></i>
+            </b-form>
           </b-input-group>
+
           <el-table
             :data="filteredTemplates"
 
@@ -110,9 +111,11 @@
             max-height="480px"
           >
             <el-table-column
+              style="color: orange"
               prop="titulo"
               label="Plantillas"
               width="180"
+              row
             >
 
             </el-table-column>
@@ -187,14 +190,18 @@
           </div>
 
           <el-footer class="modal-footer">
+            <el-button @click="clearFields">Borrar campos</el-button>
             <el-button @click="dialogVisible = false">Cancelar</el-button>
             <el-button type="primary" @click="createTask">Confirmar</el-button>
+
           </el-footer>
         </el-container>
 
       </el-container>
 
     </el-dialog>
+
+
     <!-- FIN: Modal Add Tarea -->
 
     <!-- Modal EDIT Tarea -->
@@ -228,7 +235,7 @@
           <el-input v-model="frm_estimado" placeholder="30" style="width: 10%"></el-input>
         </el-form-item>
 
-        <el-switch  active-text="Pausable" v-model="frm_pausable"></el-switch>
+
 
         <el-form-item label="Etiquetas:"  required>
           <el-tag
@@ -253,14 +260,17 @@
 
           <el-button v-else class="button-new-tag" size="small" @click="showInput">+ Nuevo tag</el-button>
         </el-form-item>
-
+        <el-switch  active-text="Pausable" v-model="frm_pausable"></el-switch>
       </el-form>
       <span slot="footer" class="dialog-footer">
+        <el-button @click="resetFields">Restablecer campos</el-button>
         <el-button @click="dialogEditVisible = false">Cancel</el-button>
         <el-button type="primary" @click="editTask">Confirm</el-button>
       </span>
     </el-dialog>
     <!-- FIN: Modal EDIT Tarea -->
+
+
   </div>
 
 </template>
@@ -299,6 +309,19 @@
         frm_pausable:   false,
         frm_etiquetas:     [],
 
+        //Restablecer el modal de edición
+        rst_operario:'',
+        rst_fechaRealizacion:'',
+        rst_asignable: true,
+        rst_titulo: '',
+        rst_descripcion: '',
+        rst_estimado: '',
+        rst_prioridad: 200,
+        rst_pausable: false,
+        rst_etiquetas: [],
+
+
+
         prioridades: [
           { value: 400, text: 'Urgente' },
           { value: 300, text: 'Alta' },
@@ -336,13 +359,18 @@
               showMore: false,
               descripcion: doc.data().descripcion,
               pausable: doc.data().pausable,
-              tags: doc.data().etiquetas
+              tags: doc.data().etiquetas,
+              asignable: doc.data().asignable
             };
-            this.tasks_sin_asignar.push(task);
 
-            this.tasks_sin_asignar.sort(function(a, b) {
-              return b["prioridad"] - a["prioridad"] || a["id"] - b["id"];
-            });
+            if(task.asignable){
+              this.tasks_sin_asignar.push(task);
+
+              this.tasks_sin_asignar.sort(function(a, b) {
+                return b["prioridad"] - a["prioridad"] || a["id"] - b["id"];
+              });
+            }
+
           })
         });
 
@@ -408,7 +436,20 @@
       }
     },
     methods: {
-
+      resetFields(){
+          this.frm_operario = this.rst_operario,
+          this.frm_asignable = this.rst_asignable,
+          this.frm_titulo = this.rst_titulo,
+          this.frm_descripcion = this.rst_descripcion,
+          this.frm_estimado=  this.rst_estimado,
+          this.frm_prioridad=  this.rst_prioridad,
+          this.frm_pausable = this.rst_pausable,
+          this.frm_etiquetas = this.rst_etiquetas.slice(),
+          this.frm_fechaRealizacion = this.rst_fechaRealizacion
+      },
+      clearFields(){
+        this.cleanForm();
+      },
       fillTemplates(){
         db.collection('plantillas').orderBy('titulo').get().then(querySnapshot => {
           this.loading = false;
@@ -512,7 +553,7 @@
 
         opRef.get()
           .then(doc => {
-            this.frm_operario = doc.data().operario,
+            this.frm_operario = "No Asignada",
             this.frm_asignable = doc.data().asignable,
             this.frm_titulo = doc.data().titulo,
             this.frm_descripcion = doc.data().descripcion,
@@ -521,7 +562,17 @@
             this.frm_pausable = doc.data().pausable,
             this.frm_etiquetas = doc.data().etiquetas,
             this.frm_fechaRealizacion = doc.data().fecha_realizacion,
-            this.id = doc.id
+            this.id = doc.id,
+
+            this.frm_operario = "No Asignada",
+            this.rst_asignable = doc.data().asignable,
+            this.rst_titulo = doc.data().titulo,
+            this.rst_descripcion = doc.data().descripcion,
+            this.rst_estimado=  doc.data().estimado,
+            this.rst_prioridad=  doc.data().prioridad,
+            this.rst_pausable = doc.data().pausable,
+            this.rst_etiquetas = doc.data().etiquetas,
+            this.rst_fechaRealizacion = doc.data().fecha_realizacion
           }).catch(function(error) {
           console.log("Error gettings document:", error);
         });
@@ -547,7 +598,7 @@
         });
       },
       updateTask(id) {
-        console.log('up_tsk_id_>'+id+'<')
+        //console.log('up_tsk_id_>'+id+'<')
         var tsRef = db.collection("sinAsignar").doc(id.toString());
 
         return tsRef.update({
@@ -789,6 +840,23 @@
     padding-bottom: 2px;
   }
 
+
+  div.wn-col-container::-webkit-scrollbar {
+    width: 8px;
+    max-width: 8px;
+  }
+
+  div.wn-col-container::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 10px;
+  }
+
+  div.wn-col-container::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+  }
+
+
   div.wn-col-container {
     overflow-y:scroll;
     overflow-x: hidden;
@@ -859,6 +927,7 @@
     width: 20px;
     float: right;
     margin:    0;
+    margin-right:  6px;
   }
 
   .el-tag + .el-tag {
@@ -872,7 +941,7 @@
     padding-bottom: 0;
   }
   .input-new-tag {
-    width: 90px;
+    width: 180px;
     margin-left: 10px;
     vertical-align: bottom;
   }

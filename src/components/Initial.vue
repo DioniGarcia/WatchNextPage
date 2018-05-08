@@ -103,6 +103,11 @@
 
 <style scoped>
 
+  .welcome {
+    color: whitesmoke;
+    font-size: 42px;
+  }
+
   .fade-enter-active {
     animation: disappear .5s;
   }

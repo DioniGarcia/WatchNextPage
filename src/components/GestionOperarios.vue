@@ -16,12 +16,10 @@
                 :apellidos=operario.apellidos
                 :tags=operario.tags
                 :show-more=operario.showMore
+                :conectado=operario.conectado
               />
 
               <div class="wn-btn-div">
-                <div v-if="conectado" class="wn-task-container">
-                  <i class="plug"></i>
-                </div>
                 <button @click="deleteWorker(operario.id)" class="wn-menu-btn"><i class="fa fa-close " aria-hidden="true"></i></button>
                 <button @click="fillData(operario.id), dialogEditVisible = true" class="wn-menu-btn"><i class="fa fa-edit " aria-hidden="true"></i></button>
                 <button v-if="!operario.showMore" @click="operario.showMore=true" class="wn-menu-btn"><i class="fa fa-eye " aria-hidden="true"></i></button>
@@ -47,6 +45,10 @@
           <el-form-item label="Contraseña:"  required >
             <el-input  type="password" v-model="frm_pass" placeholder="123456"></el-input>
           </el-form-item>
+          <el-form-item label="Repetir contraseña:"  required >
+            <el-input  type="password" v-model="frm_pass_2" placeholder="123456"></el-input>
+          </el-form-item>
+
 
           <el-form-item label="Etiquetas:"  required>
             <el-tag
@@ -153,6 +155,7 @@
         frm_nombre: '',
         frm_apellidos: '',
         frm_pass: '',
+        frm_pass_2: '',
         frm_etiquetas:     [],
         id:'',
 
@@ -171,9 +174,9 @@
     created() {
       db
         .collection('operarios')
-        .get()
-        .then(querySnapshot => {
+        .onSnapshot(querySnapshot => {
           this.loading = false;
+          this.operarios.length=0
           querySnapshot.forEach(doc => {
             const operario = {
               nombre: doc.data().nombre,
@@ -181,28 +184,30 @@
               pass: doc.data().pass,
               id: doc.id, // El autoincrement de FB
               tags: doc.data().etiquetas,
-              showMore: false
+              showMore: false,
+              conectado: false
             }
 
-            var opRef = db.collection("asignadas").doc(operario.id.toString());
+            var opRef = db.collection("operariosConectados").doc(operario.id.toString());
 
             opRef.get()
               .then(doc => {
                 if(doc.exists){
-                  console.log(doc.data().conectado)
-                  conectado: doc.data().conectado;
-                  operario.push(conectado);
+
+                  operario.conectado = doc.data().conectado;
                 }
-
-
               }).catch(function(error) {
-              console.log("Error gettings document:", error);
+              console.log("Error getting document:", error);
             });
-            console.log(operario)
             this.operarios.push(operario)
 
+            this.operarios.sort(function(a, b) {
+              return a.conectado && !b.conectado
+            });
           });
+
         });
+
     },
     components: {
       ButtonGroup,
@@ -224,6 +229,12 @@
         }
         else if (!this.frm_pass) {
           alert('Se requiere un Password')
+        }
+        else if (!this.frm_pass_2) {
+          alert('Se requiere confirmación de Password')
+        }
+        else if (this.frm_pass != this.frm_pass_2) {
+          alert('Las contraseñas no coinciden')
         }
         else if (isNaN(this.frm_pass)) {
           alert('El Password ha de ser numérico')
