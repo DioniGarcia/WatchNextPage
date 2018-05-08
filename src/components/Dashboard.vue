@@ -190,14 +190,18 @@
           </div>
 
           <el-footer class="modal-footer">
+            <el-button @click="clearFields">Borrar campos</el-button>
             <el-button @click="dialogVisible = false">Cancelar</el-button>
             <el-button type="primary" @click="createTask">Confirmar</el-button>
+
           </el-footer>
         </el-container>
 
       </el-container>
 
     </el-dialog>
+
+
     <!-- FIN: Modal Add Tarea -->
 
     <!-- Modal EDIT Tarea -->
@@ -259,11 +263,14 @@
 
       </el-form>
       <span slot="footer" class="dialog-footer">
+        <el-button @click="resetFields">Restablecer campos</el-button>
         <el-button @click="dialogEditVisible = false">Cancel</el-button>
         <el-button type="primary" @click="editTask">Confirm</el-button>
       </span>
     </el-dialog>
     <!-- FIN: Modal EDIT Tarea -->
+
+
   </div>
 
 </template>
@@ -301,6 +308,19 @@
         frm_prioridad:    200,
         frm_pausable:   false,
         frm_etiquetas:     [],
+
+        //Restablecer el modal de edición
+        rst_operario:'',
+        rst_fechaRealizacion:'',
+        rst_asignable: true,
+        rst_titulo: '',
+        rst_descripcion: '',
+        rst_estimado: '',
+        rst_prioridad: 200,
+        rst_pausable: false,
+        rst_etiquetas: [],
+
+
 
         prioridades: [
           { value: 400, text: 'Urgente' },
@@ -411,7 +431,20 @@
       }
     },
     methods: {
-
+      resetFields(){
+          this.frm_operario = this.rst_operario,
+          this.frm_asignable = this.rst_asignable,
+          this.frm_titulo = this.rst_titulo,
+          this.frm_descripcion = this.rst_descripcion,
+          this.frm_estimado=  this.rst_estimado,
+          this.frm_prioridad=  this.rst_prioridad,
+          this.frm_pausable = this.rst_pausable,
+          this.frm_etiquetas = this.rst_etiquetas.slice(),
+          this.frm_fechaRealizacion = this.rst_fechaRealizacion
+      },
+      clearFields(){
+        this.cleanForm();
+      },
       fillTemplates(){
         db.collection('plantillas').orderBy('titulo').get().then(querySnapshot => {
           this.loading = false;
@@ -524,7 +557,17 @@
             this.frm_pausable = doc.data().pausable,
             this.frm_etiquetas = doc.data().etiquetas,
             this.frm_fechaRealizacion = doc.data().fecha_realizacion,
-            this.id = doc.id
+            this.id = doc.id,
+
+            this.frm_operario = "No Asignada",
+            this.rst_asignable = doc.data().asignable,
+            this.rst_titulo = doc.data().titulo,
+            this.rst_descripcion = doc.data().descripcion,
+            this.rst_estimado=  doc.data().estimado,
+            this.rst_prioridad=  doc.data().prioridad,
+            this.rst_pausable = doc.data().pausable,
+            this.rst_etiquetas = doc.data().etiquetas,
+            this.rst_fechaRealizacion = doc.data().fecha_realizacion
           }).catch(function(error) {
           console.log("Error gettings document:", error);
         });
