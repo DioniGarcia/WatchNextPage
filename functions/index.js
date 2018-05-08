@@ -130,6 +130,7 @@ exports.asignarTarea = functions.https.onRequest((req, res) => {
                       "type": "exito",
                       "message": "Tarea " + doc.id + " asignada con exito al operario " + idOperario
                     });
+                    admin.firestore().collection("asignadas").doc(doc.id).update({operario: idOperario})
                   }
                 }
               }
