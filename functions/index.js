@@ -10,8 +10,7 @@ exports.solicitarDatosTarea3 = functions.https.onRequest((req, res) => {
   return admin.firestore().collection('operariosConectados').doc(idOprario.toString()).get()
     .then(doc => {
       tareas=doc.data().tareas
-
-      if (tareas.length == 0)
+      if (tareas ==null || tareas.length == 0)
         return res.status(404).json({"error":"No hay tareas"});
       else
         try {
@@ -29,16 +28,18 @@ exports.solicitarDatosTarea3 = functions.https.onRequest((req, res) => {
               var fecha_realizacion = doc.get("fecha_realizacion")
 
               res.status(200).json({
-                "id": id,
-                "titulo": titulo,
-                "asignable" : asignable,
-                "descripcion": descripcion,
-                "fecha_realizacion" : fecha_realizacion,
-                "estimado": estimado,
-                "prioridad": prioridad,
-                "h_inicio" : h_inicio,
-                "h_fin" : h_fin,
-                "etiquetas":etiquetas
+                "tarea": {
+                  "id": id,
+                  "titulo": titulo,
+                  "asignable": asignable,
+                  "descripcion": descripcion,
+                  "fecha_realizacion": fecha_realizacion,
+                  "estimado": estimado,
+                  "prioridad": prioridad,
+                  "h_inicio": h_inicio,
+                  "h_fin": h_fin,
+                  "etiquetas": etiquetas
+                 }
                 }
               );
             });
@@ -100,7 +101,7 @@ exports.asignarTarea = functions.https.onRequest((req, res) => {
     var tareas = snapshot.get("tareas")
     console.log('Etiquetas y tareas del operario', etiquetas, tareas);
 
-    admin.firestore().collection('sinAsignar').get().then(snapshot => {
+    admin.firestore().collection('sinAsignar').orderBy("prioridad", "desc").get().then(snapshot => {
       console.log('Entramos en sinAsignar', snapshot);
       var asignada = false
       for (x = 0; x < snapshot.docs.length && !asignada; x++) {
@@ -127,7 +128,7 @@ exports.asignarTarea = functions.https.onRequest((req, res) => {
                     asignada = true
                     return res.status(200).json({
                       "type": "exito",
-                      "message": "Tarea" + doc.id + " asignada con exito al operario " + idOperario
+                      "message": "Tarea " + doc.id + " asignada con exito al operario " + idOperario
                     });
                   }
                 }
@@ -167,25 +168,21 @@ exports.asignarTarea = functions.https.onRequest((req, res) => {
       }
       if (!asignada) {
         return res.status(200).json({
-          "type": "error",
-          "message": "No hay tareas disponibles"
+          "error": "No hay tareas"
         });
       }
     }).catch(function (error) {
       return res.status(200).json({
-        "type": "error",
-        "message": e.toString()
+        "error": e.toString()
       });
     }).catch(function (error) {
       return res.status(200).json({
-        "type": "error",
-        "message": e.toString()
+        "error": e.toString()
       });
     });
   }).catch(function (error) {
     return res.status(200).json({
-      "type": "error",
-      "message": e.toString()
+      "error": e.toString()
     });
   });
 });
@@ -193,21 +190,20 @@ exports.asignarTarea = functions.https.onRequest((req, res) => {
 exports.finalizarTarea = functions.https.onRequest((req, res) => {
   var idOperario = req.query.idOperario;
   var idTarea = req.query.idTarea;
+  var satisfaccion = req.query.satisfaccion;
   var tareas1 = []
-  var tarea =
   admin.firestore().collection("operariosConectados").doc(idOperario.toString()).get().then(snapshot => {
     console.log('Tareas dentro snapshot.', snapshot.get("tareas"));
     var tareas1 = snapshot.get("tareas")
     tareas1.indexOf(parseInt(idTarea))
-    console.log('Posicion de la tarea', tareas1.indexOf(parseInt(idTarea)))
     tareas1.splice(tareas1.indexOf(parseInt(idTarea)), 1)
     admin.firestore().collection("operariosConectados").doc(idOperario.toString()).update({"tareas": tareas1}).then(function () {
       admin.firestore().collection("asignadas").doc(idTarea).get().then(tarea =>{
         admin.firestore().collection("finalizadas").doc(tarea.id).set(tarea.data()).then(function () {
-          admin.firestore().collection("finalizadas").doc(tarea.id).update({"operario" : idOperario})
+          admin.firestore().collection("finalizadas").doc(tarea.id).update({"operario" : idOperario, "satisfaccion":parseInt(satisfaccion)})
           admin.firestore().collection("asignadas").doc(idTarea).delete().then(function () {
             return res.status(200).json({
-              "status": "finalizada"
+              "type": "finalizada"
             })
           }).catch(function (error) {
             return res.status(400).json({
