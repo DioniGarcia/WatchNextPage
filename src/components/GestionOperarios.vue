@@ -200,8 +200,14 @@
               console.log("Error getting document:", error);
             });
             this.operarios.push(operario)
+
+            this.operarios.sort(function(a, b) {
+              return a.conectado && !b.conectado
+            });
           });
+
         });
+
     },
     components: {
       ButtonGroup,

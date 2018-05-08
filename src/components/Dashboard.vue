@@ -359,13 +359,18 @@
               showMore: false,
               descripcion: doc.data().descripcion,
               pausable: doc.data().pausable,
-              tags: doc.data().etiquetas
+              tags: doc.data().etiquetas,
+              asignable: doc.data().asignable
             };
-            this.tasks_sin_asignar.push(task);
 
-            this.tasks_sin_asignar.sort(function(a, b) {
-              return b["prioridad"] - a["prioridad"] || a["id"] - b["id"];
-            });
+            if(task.asignable){
+              this.tasks_sin_asignar.push(task);
+
+              this.tasks_sin_asignar.sort(function(a, b) {
+                return b["prioridad"] - a["prioridad"] || a["id"] - b["id"];
+              });
+            }
+
           })
         });
 
