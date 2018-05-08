@@ -235,7 +235,7 @@
           <el-input v-model="frm_estimado" placeholder="30" style="width: 10%"></el-input>
         </el-form-item>
 
-        <el-switch  active-text="Pausable" v-model="frm_pausable"></el-switch>
+
 
         <el-form-item label="Etiquetas:"  required>
           <el-tag
@@ -260,7 +260,7 @@
 
           <el-button v-else class="button-new-tag" size="small" @click="showInput">+ Nuevo tag</el-button>
         </el-form-item>
-
+        <el-switch  active-text="Pausable" v-model="frm_pausable"></el-switch>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="resetFields">Restablecer campos</el-button>
@@ -922,6 +922,7 @@
     width: 20px;
     float: right;
     margin:    0;
+    margin-right:  6px;
   }
 
   .el-tag + .el-tag {

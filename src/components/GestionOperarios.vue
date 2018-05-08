@@ -16,12 +16,10 @@
                 :apellidos=operario.apellidos
                 :tags=operario.tags
                 :show-more=operario.showMore
+                :conectado=operario.conectado
               />
 
               <div class="wn-btn-div">
-                <div v-if="conectado" class="wn-task-container">
-                  <i class="plug"></i>
-                </div>
                 <button @click="deleteWorker(operario.id)" class="wn-menu-btn"><i class="fa fa-close " aria-hidden="true"></i></button>
                 <button @click="fillData(operario.id), dialogEditVisible = true" class="wn-menu-btn"><i class="fa fa-edit " aria-hidden="true"></i></button>
                 <button v-if="!operario.showMore" @click="operario.showMore=true" class="wn-menu-btn"><i class="fa fa-eye " aria-hidden="true"></i></button>
@@ -176,9 +174,9 @@
     created() {
       db
         .collection('operarios')
-        .get()
-        .then(querySnapshot => {
+        .onSnapshot(querySnapshot => {
           this.loading = false;
+          this.operarios.length=0
           querySnapshot.forEach(doc => {
             const operario = {
               nombre: doc.data().nombre,
@@ -186,26 +184,22 @@
               pass: doc.data().pass,
               id: doc.id, // El autoincrement de FB
               tags: doc.data().etiquetas,
-              showMore: false
+              showMore: false,
+              conectado: false
             }
 
-            var opRef = db.collection("asignadas").doc(operario.id.toString());
+            var opRef = db.collection("operariosConectados").doc(operario.id.toString());
 
             opRef.get()
               .then(doc => {
                 if(doc.exists){
-                  console.log(doc.data().conectado)
-                  conectado: doc.data().conectado;
-                  operario.push(conectado);
+
+                  operario.conectado = doc.data().conectado;
                 }
-
-
               }).catch(function(error) {
-              console.log("Error gettings document:", error);
+              console.log("Error getting document:", error);
             });
-            console.log(operario)
             this.operarios.push(operario)
-
           });
         });
     },
