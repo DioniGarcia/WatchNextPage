@@ -3,7 +3,7 @@
     <Navbar />
     <div class="wn-col col-pendientes">
       <div class="wn-col-title">Tareas Sin Asignar
-        <button @click="dialogVisible = true" class="wn-menu-btn">Nueva tarea</button>
+        <button @click="cleanForm(),dialogVisible = true" class="wn-menu-btn">Nueva tarea</button>
       </div>
 
       <div class="wn-col-container scrollbar">

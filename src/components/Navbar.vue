@@ -92,10 +92,11 @@
   }
 
   .menu-item:hover {
-    color: whitesmoke;
+    color: white;
     background: none;
-    /*padding-top: -20px;*/
-    /*margin-bottom: -5px;*/
+    /*padding: -5px;*/
+    margin: -5px;
+
   }
 
   .nav-item, .nav-item:hover {

@@ -4,11 +4,11 @@
 
     <div class="wn-col col-pendientes">
       <b-input-group>
-        <div>
+        <b-form inline>
           <i class="material-icons prefix">search</i>
-          <b-form-input v-model="searchWord" placeholder="Buscar plantilla" />
-        </div>
-          <b-btn :disabled="!searchWord" @click="searchWord = ''">Borrar</b-btn>
+          <b-input style="width: 300px; margin-left: 10px; margin-right: 8px" v-model="searchWord" placeholder="Buscar" />
+          <i :disabled="!searchWord" @click="searchWord = ''" class="fa fa-times-circle prefix"></i>
+        </b-form>
       </b-input-group>
       <div class="wn-col-title">Lista Plantillas
         <button @click="dialogVisible = true" class="wn-menu-btn">Crear nueva</button>
