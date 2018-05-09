@@ -390,9 +390,12 @@
               showMore: false,
               descripcion: doc.data().descripcion,
               pausable: doc.data().pausable,
-              tags: doc.data().etiquetas
+              tags: doc.data().etiquetas,
+              aceptada: doc.data().aceptada
             };
-            this.tasks_asignadas.push(task);
+            if (task.aceptada) {
+              this.tasks_asignadas.push(task);
+            }
 
             this.tasks_asignadas.sort(function(a, b) {
               return b["prioridad"] - a["prioridad"] || a["id"] - b["id"];
@@ -607,7 +610,7 @@
           etiquetas: this.frm_etiquetas,
           pausable: this.frm_pausable,
           prioridad: this.frm_prioridad,
-          titulo: this.frm_titulo,
+          titulo: this.frm_titulo
 
         }).then(function() {
             console.log("Tarea actualizada con éxito!");
@@ -640,7 +643,8 @@
                 h_fin: 0,
                 satisfaccion: 0,
                 id: newTask,
-                operario: 0
+                operario: 0,
+                aceptada: false
 
               }).then(docRef => {
                 console.log('Tarea añadida a FireBase!')
