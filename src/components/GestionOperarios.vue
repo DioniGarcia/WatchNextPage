@@ -4,7 +4,7 @@
 
       <div class="wn-col col-pendientes">
         <div class="wn-col-title">Lista Operarios
-          <button @click="dialogVisible = true" class="wn-menu-btn">Crear nuevo</button>
+          <button @click="inputVisible=false,cleanForm(),dialogVisible = true" class="wn-menu-btn">Crear nuevo</button>
         </div>
 
           <div class="wn-col-container">
@@ -21,7 +21,7 @@
 
               <div class="wn-btn-div">
                 <button @click="deleteWorker(operario.id)" class="wn-menu-btn"><i class="fa fa-close " aria-hidden="true"></i></button>
-                <button @click="fillData(operario.id), dialogEditVisible = true" class="wn-menu-btn"><i class="fa fa-edit " aria-hidden="true"></i></button>
+                <button @click="inputVisible=false,fillData(operario.id), dialogEditVisible = true" class="wn-menu-btn"><i class="fa fa-edit " aria-hidden="true"></i></button>
                 <button v-if="!operario.showMore" @click="operario.showMore=true" class="wn-menu-btn"><i class="fa fa-eye " aria-hidden="true"></i></button>
                 <button v-if="operario.showMore" @click="operario.showMore=false" class="wn-menu-btn"><i class="fa fa-eye-slash " aria-hidden="true"></i></button>
               </div>
@@ -61,6 +61,7 @@
             </el-tag>
 
             <el-autocomplete
+              style="width: 23%; font-size: 10px"
               class="input-new-tag"
               v-if="inputVisible"
               v-model="inputValue"
@@ -109,6 +110,7 @@
             </el-tag>
 
             <el-autocomplete
+              style="width: 23%; font-size: 10px"
               class="input-new-tag"
               v-if="inputVisible"
               v-model="inputValue"
@@ -246,7 +248,7 @@
       },
 
       fillData(id){
-        console.log(id)
+
         var opRef = db.collection("operarios").doc(id.toString());
 
         opRef.get()
@@ -265,7 +267,7 @@
 
       editWorker(evt){
         evt.preventDefault()
-        console.log('thisid_ed_work->'+this.id+'<-')
+
         if (!this.frm_nombre) {
           alert('El nombre no puede estar vacío')
         }
@@ -379,7 +381,6 @@
               }).catch(function (error) {
                 console.error("Error borrando operario!: ", error);
               });
-
               this.removeFromModel(id);
             })
         }
