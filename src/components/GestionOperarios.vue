@@ -158,6 +158,8 @@
         frm_apellidos: '',
         frm_pass: '',
         frm_pass_2: '',
+        frm_conectado: false,
+        frm_tareas: [],
         frm_etiquetas:     [],
         id:'',
 
@@ -187,27 +189,15 @@
               id: doc.id, // El autoincrement de FB
               tags: doc.data().etiquetas,
               showMore: false,
-              conectado: false
+              conectado: doc.data().conectado
             }
 
-            var opRef = db.collection("operariosConectados").doc(operario.id.toString());
-
-            opRef.get()
-              .then(doc => {
-                if(doc.exists){
-
-                  operario.conectado = doc.data().conectado;
-                }
-              }).catch(function(error) {
-              console.log("Error getting document:", error);
-            });
             this.operarios.push(operario)
 
             this.operarios.sort(function(a, b) {
-              return a.conectado && !b.conectado
+              return !a.conectado && b.conectado
             });
           });
-
         });
 
     },
@@ -301,7 +291,9 @@
                 apellidos: this.frm_apellidos,
                 etiquetas: this.frm_etiquetas,
                 pass: this.frm_pass,
-                id: newOp
+                id: newOp,
+                conectado: false,
+                tareas: []
 
               }).then(docRef => {
                   console.log('Operario añadido a FireBase!')
@@ -323,10 +315,11 @@
       },
 
       handleSubmit() {
+        /*
         this.operarios.push(
           {nombre: this.frm_nombre, apellidos: this.frm_apellidos,
             pass: this.frm_pass, id:this.id, etiquetas:this.frm_etiquetas}
-        );
+        );*/
         this.cleanForm();
       },
 
