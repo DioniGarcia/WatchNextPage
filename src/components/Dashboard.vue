@@ -625,7 +625,8 @@
                 h_inicio: 0,
                 h_fin: 0,
                 satisfaccion: 0,
-                id: newTask
+                id: newTask,
+                operario: 0
 
               }).then(docRef => {
                 console.log('Tarea añadida a FireBase!')
@@ -928,7 +929,6 @@
     margin-left: 10px;
     vertical-align: bottom;
   }
-
   .modal-col-plantillas {
     width: 5%;
     float: left;
