@@ -248,6 +248,7 @@
           </el-tag>
 
           <el-autocomplete
+            style="width: 23%; font-size: 10px"
             class="input-new-tag"
             v-if="inputVisible"
             v-model="inputValue"
@@ -460,55 +461,43 @@
             const template = {
               id: doc.id,
               titulo: doc.data().titulo,
-
             };
-            console.log('New tamplate modelo: '+template.titulo+' '+template.id)
+
             this.templates.push(template);
 
           });
         });
       },
-      peix(valor){
-        console.log('peix: '+valor+'!')
-      },
+
       fillModal(id){
 
       },
       handleCurrentChange(val) {
-        console.log(val.id)
         this.fillDataFromTemplate(val.id);
 
         this.currentRow = val;
       },
       querySearch(queryString, cb) {
-        console.log('q_s')
         var tagRecomendations = this.tagRecomendations;
         var results = queryString ? tagRecomendations.filter(this.createFilter(queryString)) : tagRecomendations;
         // call callback function to return suggestions
         cb(results);
       },
       createFilter(queryString) {
-        console.log('C_F')
         return (coso) => {
           return (coso.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
         };
       },
       handleSelectTag(item) {
-        console.log('hd_st')
-        console.log(item);
         this.handleInputConfirm();
       },
       loadTags() {
-        console.log('ld_tags')
         var tags = [];
 
         db.collection('etiquetas').get().then(querySnapshot => {
           querySnapshot.forEach(doc => {
-            console.log('ld_tgs_data: '+doc.data().tag);
             const t = {
-
               "value": doc.data().tag
-
             };
             tags.push(t);
           });
@@ -534,7 +523,6 @@
       },
 
       editTask (evt) {
-        console.log('Edit task')
         evt.preventDefault()
         if (!this.frm_titulo) {
           alert('El título no puede estar vacío')
@@ -551,7 +539,6 @@
         }
       },
       fillData(id){
-        console.log(id)
         var opRef = db.collection("sinAsignar").doc(id.toString());
 
         opRef.get()
@@ -577,7 +564,7 @@
             this.rst_etiquetas = doc.data().etiquetas,
             this.rst_fechaRealizacion = doc.data().fecha_realizacion
           }).catch(function(error) {
-          console.log("Error gettings document:", error);
+          console.log("Error getting document:", error);
         });
       },
       fillDataFromTemplate(id){
@@ -601,7 +588,6 @@
         });
       },
       updateTask(id) {
-        //console.log('up_tsk_id_>'+id+'<')
         var tsRef = db.collection("sinAsignar").doc(id.toString());
 
         return tsRef.update({
@@ -745,7 +731,6 @@
           .catch(err => {console.log('Error getting document', err);});
       },
       handleEdit(id) {
-        console.log('hnd_edit_id>'+id+'<')
         var i = 0;
         for(i=0; i<this.tasks_sin_asignar.length; i++){
 
@@ -764,19 +749,17 @@
         this.cleanForm();
       },
       handleSubmit () {
-        console.log('hd_sm')
-
         this.dialogVisible = false;
         this.cleanForm();
       },
 
       handleClose(tag) {
-        console.log('hd_cls')
+
         this.frm_etiquetas.splice(this.frm_etiquetas.indexOf(tag), 1);
       },
 
       showInput() {
-        console.log('sw_input')
+
         this.inputVisible = true;
         this.$nextTick(_ => {
           this.$refs.saveTagInput.$refs.input.focus();
@@ -784,10 +767,10 @@
       },
 
       handleInputConfirm() {
-        console.log('hd_icnf')
+
         let inputValue = this.inputValue;
         if (inputValue) {
-          console.log('iv'+inputValue)
+
           this.frm_etiquetas.push(inputValue);
         }
         this.inputVisible = false;
@@ -796,7 +779,7 @@
 
 
       cleanForm () {
-        console.log('cl_frm')
+
         this.frm_titulo='';
         this.frm_descripcion='';
         this.frm_estimado='';
@@ -809,7 +792,7 @@
     },
 
     mounted() {
-      console.log('mounted')
+
       this.tagRecomendations = this.loadTags();
     },
 

@@ -248,38 +248,30 @@
       }
     },
     methods: {
-      peix(){
-        console.log('peix!')
-      },
+
       querySearch(queryString, cb) {
-        console.log('q_s')
+
         var tagRecomendations = this.tagRecomendations;
         var results = queryString ? tagRecomendations.filter(this.createFilter(queryString)) : tagRecomendations;
         // call callback function to return suggestions
         cb(results);
       },
       createFilter(queryString) {
-        console.log('C_F')
         return (coso) => {
           return (coso.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
         };
       },
       handleSelectTag(item) {
-        console.log('hd_st')
-        console.log(item);
         this.handleInputConfirm();
       },
       loadTags() {
-        console.log('ld_tags')
         var tags = [];
 
         db.collection('etiquetas').get().then(querySnapshot => {
           querySnapshot.forEach(doc => {
-            console.log('ld_tgs_data: '+doc.data().tag);
+
             const t = {
-
               "value": doc.data().tag
-
             };
             tags.push(t);
           });
@@ -305,7 +297,7 @@
       },
 
       editTemplate (evt) {
-        console.log('Edit task')
+
         evt.preventDefault()
         if (!this.frm_titulo) {
           alert('El título no puede estar vacío')
@@ -322,7 +314,7 @@
         }
       },
       fillData(id){
-        console.log(id)
+
         var opRef = db.collection("plantillas").doc(id.toString());
 
         opRef.get()
@@ -341,7 +333,7 @@
         });
       },
       updateTemplate(id) {
-        console.log('up_temo_id_>'+id+'<')
+
         var tsRef = db.collection("plantillas").doc(id.toString());
 
         return tsRef.update({
@@ -479,10 +471,10 @@
           .catch(err => {console.log('Error getting document', err);});
       },
       handleEdit(id) {
-        console.log('hnd_edit_id>'+id+'<')
+
         var i = 0;
         for(i=0; i<this.templates.length; i++){
-          console.log('peces en el rio')
+
           if(this.templates[i].id == id){
             this.templates[i].titulo=this.frm_titulo;
             this.templates[i].operario=this.frm_operario;
@@ -498,7 +490,7 @@
         this.cleanForm();
       },
       handleSubmit () {
-        console.log('hd_sm')
+
         this.templates.push(
           {
             titulo: this.frm_titulo,
@@ -514,12 +506,12 @@
       },
 
       handleClose(tag) {
-        console.log('hd_cls')
+
         this.frm_etiquetas.splice(this.frm_etiquetas.indexOf(tag), 1);
       },
 
       showInput() {
-        console.log('sw_input')
+
         this.inputVisible = true;
         this.$nextTick(_ => {
           this.$refs.saveTagInput.$refs.input.focus();
@@ -527,10 +519,10 @@
       },
 
       handleInputConfirm() {
-        console.log('hd_icnf')
+
         let inputValue = this.inputValue;
         if (inputValue) {
-          console.log('iv'+inputValue)
+
           this.frm_etiquetas.push(inputValue);
         }
         this.inputVisible = false;
@@ -539,7 +531,7 @@
 
 
       cleanForm () {
-        console.log('cl_frm')
+
         this.frm_titulo='';
         this.frm_descripcion='';
         this.frm_estimado='';
@@ -552,7 +544,6 @@
     },
 
     mounted() {
-      console.log('mounted')
       this.tagRecomendations = this.loadTags();
     },
 

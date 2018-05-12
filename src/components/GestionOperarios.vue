@@ -4,7 +4,7 @@
 
       <div class="wn-col col-pendientes">
         <div class="wn-col-title">Lista Operarios
-          <button @click="dialogVisible = true" class="wn-menu-btn">Crear nuevo</button>
+          <button @click="inputVisible=false,cleanForm(),dialogVisible = true" class="wn-menu-btn">Crear nuevo</button>
         </div>
 
           <div class="wn-col-container">
@@ -21,7 +21,7 @@
 
               <div class="wn-btn-div">
                 <button @click="deleteWorker(operario.id)" class="wn-menu-btn"><i class="fa fa-close " aria-hidden="true"></i></button>
-                <button @click="fillData(operario.id), dialogEditVisible = true" class="wn-menu-btn"><i class="fa fa-edit " aria-hidden="true"></i></button>
+                <button @click="inputVisible=false,fillData(operario.id), dialogEditVisible = true" class="wn-menu-btn"><i class="fa fa-edit " aria-hidden="true"></i></button>
                 <button v-if="!operario.showMore" @click="operario.showMore=true" class="wn-menu-btn"><i class="fa fa-eye " aria-hidden="true"></i></button>
                 <button v-if="operario.showMore" @click="operario.showMore=false" class="wn-menu-btn"><i class="fa fa-eye-slash " aria-hidden="true"></i></button>
               </div>
@@ -61,6 +61,7 @@
             </el-tag>
 
             <el-autocomplete
+              style="width: 23%; font-size: 10px"
               class="input-new-tag"
               v-if="inputVisible"
               v-model="inputValue"
@@ -109,6 +110,7 @@
             </el-tag>
 
             <el-autocomplete
+              style="width: 23%; font-size: 10px"
               class="input-new-tag"
               v-if="inputVisible"
               v-model="inputValue"
@@ -156,6 +158,8 @@
         frm_apellidos: '',
         frm_pass: '',
         frm_pass_2: '',
+        frm_conectado: false,
+        frm_tareas: [],
         frm_etiquetas:     [],
         id:'',
 
@@ -185,27 +189,15 @@
               id: doc.id, // El autoincrement de FB
               tags: doc.data().etiquetas,
               showMore: false,
-              conectado: false
+              conectado: doc.data().conectado
             }
 
-            var opRef = db.collection("operariosConectados").doc(operario.id.toString());
-
-            opRef.get()
-              .then(doc => {
-                if(doc.exists){
-
-                  operario.conectado = doc.data().conectado;
-                }
-              }).catch(function(error) {
-              console.log("Error getting document:", error);
-            });
             this.operarios.push(operario)
 
             this.operarios.sort(function(a, b) {
-              return a.conectado && !b.conectado
+              return !a.conectado && b.conectado
             });
           });
-
         });
 
     },
@@ -246,7 +238,7 @@
       },
 
       fillData(id){
-        console.log(id)
+
         var opRef = db.collection("operarios").doc(id.toString());
 
         opRef.get()
@@ -265,7 +257,7 @@
 
       editWorker(evt){
         evt.preventDefault()
-        console.log('thisid_ed_work->'+this.id+'<-')
+
         if (!this.frm_nombre) {
           alert('El nombre no puede estar vacío')
         }
@@ -299,7 +291,9 @@
                 apellidos: this.frm_apellidos,
                 etiquetas: this.frm_etiquetas,
                 pass: this.frm_pass,
-                id: newOp
+                id: newOp,
+                conectado: false,
+                tareas: []
 
               }).then(docRef => {
                   console.log('Operario añadido a FireBase!')
@@ -321,10 +315,11 @@
       },
 
       handleSubmit() {
+        /*
         this.operarios.push(
           {nombre: this.frm_nombre, apellidos: this.frm_apellidos,
             pass: this.frm_pass, id:this.id, etiquetas:this.frm_etiquetas}
-        );
+        );*/
         this.cleanForm();
       },
 
@@ -379,7 +374,6 @@
               }).catch(function (error) {
                 console.error("Error borrando operario!: ", error);
               });
-
               this.removeFromModel(id);
             })
         }
