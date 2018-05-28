@@ -10,7 +10,11 @@
       </h3>
 
       <p><b>Operario:</b>  {{this.operario}}</p>
-      <p><b>Duración:</b> {{this.duracion}}/{{this.estimado}} min</p>
+      <p><b>Duración:</b>
+        <span v-if="this.duracion <= this.estimado">{{this.duracion}}</span>
+        <span v-if="this.duracion > this.estimado && this.duracion < this.estimado*2" style="color: darkorange">{{this.duracion}}</span>
+        <span v-if="this.duracion > this.estimado*2" style="color: red">{{this.duracion}}</span>
+        /{{this.estimado}} min</p>
 
       <div v-if="showMore" class="more-info">
         <p><b>Id:</b> {{this.id}}</p>
