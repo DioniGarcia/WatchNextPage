@@ -2,7 +2,7 @@
 
   <b-navbar toggleable="md" type="dark" variant="info">
     <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
-    <b-navbar-brand href="#">WatchNext</b-navbar-brand>
+    <b-navbar-brand style="cursor: default">WatchNext</b-navbar-brand>
     <b-collapse is-nav id="nav_collapse">
 
       <b-navbar-nav>
@@ -13,20 +13,6 @@
 
       <!-- Right aligned nav items -->
       <b-navbar-nav class="ml-auto">
-
-        <!--
-        <div class="block">
-          <el-date-picker
-            class="menu-item"
-            v-model="frm_timestamp"
-            clear-icon="none"
-            type="date"
-            placeholder="Selecciona una fecha"
-            format="yyyy/MM/dd"
-            value-format="timestamp">
-          </el-date-picker>
-        </div>
-        -->
 
         <b-nav-item-dropdown right>
           <!-- Using button-content slot -->
@@ -78,7 +64,6 @@
 
   .bg-info {
     /*background: linear-gradient(to bottom, #bcede9, #599693) !important;*/
-
     background: #81cac7; /* Old browsers */
     background: -moz-linear-gradient(top, #bcede9 0%, #81cac7 40%, #599693 100%); /* FF3.6-15 */
     background: -webkit-linear-gradient(top, #bcede9 0%, #81cac7 40%,#599693 100%); /* Chrome10-25,Safari5.1-6 */
@@ -86,23 +71,41 @@
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bcede9', endColorstr='#599693',GradientType=0 );
   }
 
+  em, em:hover {
+    background: none !important;
+  }
+
   .menu-item {
      color: whitesmoke;
      text-decoration: none;
   }
 
-  .menu-item:hover {
-    color: white;
-    background: none;
-    /*padding: -5px;*/
-    margin: -5px;
+  nav ul a:hover {
+    background-color: none !important;
+  }
 
+  nav ul a a:hover {
+    color: white;
+    background: #81cac7; /* Old browsers */
+    background: -moz-linear-gradient(top, #bcede9 0%, #81cac7 40%, #5e9f9c 88%, #f4ffff 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, #bcede9 0%, #81cac7 40%, #5e9f9c 88%, #f4ffff 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, #bcede9 0%, #81cac7 40%, #5e9f9c 88%, #f4ffff 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter:  progid:DXImageTransform.Microsoft.gradient( startColorstr='#bcede9', endColorstr='#599693',GradientType=0 );
   }
 
   .nav-item, .nav-item:hover {
     margin-bottom: -5px;
     margin-top: -5px;
     backface-visibility: hidden;
+  }
+
+  .white_shadow_hover:hover {
+    background: none !important;
+    background: #81cac7; /* Old browsers */
+    background: -moz-linear-gradient(top, #bcede9 0%, #81cac7 40%, #5e9f9c 88%, #f4ffff 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, #bcede9 0%, #81cac7 40%, #5e9f9c 88%, #f4ffff 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, #bcede9 0%, #81cac7 40%, #5e9f9c 88%, #f4ffff 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter:  progid:DXImageTransform.Microsoft.gradient( startColorstr='#bcede9', endColorstr='#599693',GradientType=0 );
   }
 
 </style>
