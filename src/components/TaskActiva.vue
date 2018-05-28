@@ -22,6 +22,7 @@
         <p><b>Descipción:</b>  {{this.descripcion}}</p>
         <p><b>Etiquetas:</b></p>
         <div class="el-tag" v-for="t in this.tags"><p>{{t}}</p></div>
+        <p v-if="this.tags.length == 0">No hay etiquetas asignadas</p>
       </div>
 
       <div class="end-line">
