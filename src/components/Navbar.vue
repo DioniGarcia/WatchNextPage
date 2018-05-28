@@ -81,7 +81,7 @@
   }
 
   nav ul a:hover {
-    background-color: none !important;
+    background-color: transparent !important;
   }
 
   nav ul a a:hover {
