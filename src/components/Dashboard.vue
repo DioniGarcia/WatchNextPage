@@ -19,6 +19,7 @@
             :descripcion=task.descripcion
             :pausable=task.pausable
             :tags=task.tags
+            :h_inicio="task.h_inicio"
           />
           <div class="wn-btn-div">
             <button @click="deleteTask(task.id)" class="wn-menu-btn"><i class="fa fa-close " aria-hidden="true"></i></button>
@@ -36,7 +37,7 @@
       <div class="wn-col-title">Tareas Asignadas</div>
         <div class="wn-col-container">
           <div v-for="task in tasks_asignadas" v-bind:key="task.id" class="wn-task-container">
-            <Task
+            <TaskActiva
               :id=task.id
               :titulo=task.titulo
               :operario=task.operario
@@ -47,6 +48,7 @@
               :descripcion=task.descripcion
               :pausable=task.pausable
               :tags=task.tags
+              :h_inicio="task.h_inicio"
             />
             <div class="wn-btn-div">
               <button v-if="!task.showMore" @click="task.showMore=true" class="wn-menu-btn"><i class="fa fa-eye " aria-hidden="true"></i></button>
@@ -74,6 +76,7 @@
               :descripcion=task.descripcion
               :pausable=task.pausable
               :tags=task.tags
+              :h_inicio="task.h_inicio"
             />
             <div class="wn-btn-div">
               <button v-if="!task.showMore" @click="task.showMore=true" class="wn-menu-btn"><i class="fa fa-eye " aria-hidden="true"></i></button>
@@ -281,6 +284,7 @@
 <script>
   import Navbar from './Navbar';
   import Task from './Task';
+  import TaskActiva from './TaskActiva';
   import db from './firebaseInit';
   import ButtonGroup from "bootstrap-vue/es/components/button-group/button-group";
   import InputTag from 'vue-input-tag';
@@ -361,7 +365,8 @@
               descripcion: doc.data().descripcion,
               pausable: doc.data().pausable,
               tags: doc.data().etiquetas,
-              asignable: doc.data().asignable
+              asignable: doc.data().asignable,
+              h_inicio: doc.data().h_inicio
             };
 
             if(task.asignable){
@@ -389,14 +394,15 @@
               id: doc.id,
               operario: doc.data().operario,
               titulo: doc.data().titulo,
-              duracion: Math.round((h_actual-doc.data().h_inicio.getTime())/60000),
+              duracion: Math.round((new Date().getTime()-doc.data().h_inicio.getTime())/60000),
               estimado: doc.data().estimado,
               prioridad: doc.data().prioridad,
               showMore: false,
               descripcion: doc.data().descripcion,
               pausable: doc.data().pausable,
               tags: doc.data().etiquetas,
-              aceptada: doc.data().aceptada
+              aceptada: doc.data().aceptada,
+              h_inicio: doc.data().h_inicio
             };
             if (task.aceptada) {
               this.tasks_asignadas.push(task);
@@ -418,13 +424,14 @@
               id: doc.id,
               operario: doc.data().operario,
               titulo: doc.data().titulo,
-              duracion: doc.data().duracion,
+              duracion: Math.round((doc.data().h_fin.getTime()-doc.data().h_inicio.getTime())/60000),
               estimado: doc.data().estimado,
               prioridad: doc.data().prioridad,
               showMore: false,
               descripcion: doc.data().descripcion,
               pausable: doc.data().pausable,
-              tags: doc.data().etiquetas
+              tags: doc.data().etiquetas,
+              h_inicio: doc.data().h_inicio
             };
             this.tasks_realizadas.push(task);
             this.tasks_realizadas.sort(function(a, b) {
@@ -783,7 +790,6 @@
 
 
       cleanForm () {
-
         this.frm_titulo='';
         this.frm_descripcion='';
         this.frm_estimado='';
@@ -792,11 +798,9 @@
         this.frm_etiquetas=[]
         this.id = '';
       },
-
     },
 
     mounted() {
-
       this.tagRecomendations = this.loadTags();
     },
 
@@ -805,6 +809,7 @@
       ButtonGroup,
       Navbar,
       Task,
+      TaskActiva,
       'bootstrap-modal': require('vue2-bootstrap-modal'),
       InputTag
     }
@@ -812,7 +817,6 @@
 </script>
 
 <style>
-
   div.wn-col div{
     padding-left:  10px;
     padding-top:    3px;

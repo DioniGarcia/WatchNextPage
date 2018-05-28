@@ -39,7 +39,6 @@
           'id',
           'titulo',
           'operario',
-          'duracion',
           'estimado',
           'prioridad',
           'showMore',
@@ -48,6 +47,28 @@
           'tags',
           'h_inicio'
         ],
+
+      data() {
+        return {
+          h_actual: new Date().getTime(),
+          h_obtenida: this.h_inicio.getTime(),
+          duracion: Math.round((this.h_actual-this.h_obtenida)/60000)
+        }
+      },
+
+          mounted() {
+        this.updateDateTime
+        setInterval(this.updateDateTime, 1000);
+      },
+
+      methods: {
+        updateDateTime () {
+          var h_actual = new Date().getTime()
+          var h_obtenida = this.h_inicio.getTime()
+          var duracion_calculada = Math.round((h_actual-h_obtenida)/60000)
+          this.duracion=duracion_calculada;
+        },
+      }
     }
 
 
@@ -80,9 +101,9 @@
 
   div.more-info {
     padding-left: 0;
-    margin-left: 0;
+    margin-left:  0;
     margin-top: 14px;
-    border-top: 1px solid cadetblue;
+    border-top:  1px solid cadetblue;
     width: 120%;
   }
 
