@@ -354,7 +354,7 @@
               id: doc.id,
               operario: "No Asignado",
               titulo: doc.data().titulo,
-              duracion: doc.data().duracion,
+              duracion: 0,
               estimado: doc.data().estimado,
               prioridad: doc.data().prioridad,
               showMore: false,
@@ -380,12 +380,16 @@
         //.orderBy("prioridad","desc").orderBy("id")
         .onSnapshot(querySnapshot => {
           this.tasks_asignadas.length=0
+          var h_actual = new Date().getTime()
           querySnapshot.docs.map(doc => {
+            //date_inicio = Date(doc.data().h_inicio);
+            //var h_inicio=date_inicio.getTime();
+
             const task = {
               id: doc.id,
               operario: doc.data().operario,
               titulo: doc.data().titulo,
-              duracion: doc.data().duracion,
+              duracion: Math.round((h_actual-doc.data().h_inicio.getTime())/60000),
               estimado: doc.data().estimado,
               prioridad: doc.data().prioridad,
               showMore: false,
