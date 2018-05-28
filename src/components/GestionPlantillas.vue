@@ -2,16 +2,18 @@
   <div id="gOperarios">
     <Navbar />
 
-    <div class="wn-col col-pendientes">
-      <b-input-group>
+      <div class="wn-col col-pendientes">
+      <b-input-group v-if="searchVisible" class="fondo-buscador">
         <b-form inline>
           <i class="material-icons prefix">search</i>
           <b-input style="width: 300px; margin-left: 10px; margin-right: 8px" v-model="searchWord" placeholder="Buscar" />
           <i :disabled="!searchWord" @click="searchWord = ''" class="fa fa-times-circle prefix"></i>
         </b-form>
       </b-input-group>
-      <div class="wn-col-title">Lista Plantillas
-        <button @click="dialogVisible = true" class="wn-menu-btn">Crear nueva</button>
+      <div class="wn-col-title">Plantillas
+        <el-button v-if="!searchVisible" @click="searchVisible = true"  class="wn-menu-btn" icon="el-icon-search">Abrir</el-button>
+        <el-button v-if="searchVisible"  @click="searchVisible = false" class="wn-menu-btn" icon="el-icon-search">Cerrar</el-button>
+        <el-button @click="dialogVisible = true" class="wn-menu-btn">Crear nueva</el-button>
       </div>
 
       <div class="wn-col-container">
@@ -184,6 +186,7 @@
       return {
 
         dialogVisible: false,
+        searchVisible: false,
         dialogEditVisible: false,
 
         templates: [],
@@ -626,6 +629,10 @@
     float: right;
   }
 
+  .el-button {
+    margin-top: 3px !important;
+  }
+
   button.wn-menu-btn {
     border: none;
     background: whitesmoke;
@@ -665,5 +672,10 @@
     vertical-align: bottom;
   }
 
+  .fondo-buscador {
+    background-color: #66a7a4;
+    border-bottom: solid 2px whitesmoke;
+    padding-left: 29px !important;
+  }
 
 </style>
