@@ -3,42 +3,46 @@
     <Navbar />
 
       <div class="wn-col col-pendientes">
-      <b-input-group v-if="searchVisible" class="fondo-buscador">
-        <b-form inline>
-          <i class="material-icons prefix">search</i>
-          <b-input style="width: 300px; margin-left: 10px; margin-right: 8px" v-model="searchWord" placeholder="Buscar" />
-          <i :disabled="!searchWord" @click="searchWord = ''" class="fa fa-times-circle prefix"></i>
-        </b-form>
-      </b-input-group>
+
       <div class="wn-col-title">Plantillas
         <el-button v-if="!searchVisible" @click="searchVisible = true"  class="wn-menu-btn" icon="el-icon-search">Abrir</el-button>
-        <el-button v-if="searchVisible"  @click="searchVisible = false" class="wn-menu-btn" icon="el-icon-search">Cerrar</el-button>
+        <el-button v-if="searchVisible"  @click="searchVisible = false; searchWord = ''" class="wn-menu-btn" icon="el-icon-search">Cerrar</el-button>
         <el-button @click="dialogVisible = true" class="wn-menu-btn">Crear nueva</el-button>
       </div>
 
-      <div class="wn-col-container">
+        <div class="table-width">
+          <b-input-group v-if="searchVisible" class="fondo-buscador">
+            <b-form inline>
+              <i class="material-icons prefix">search</i>
+              <b-input style="width: 300px; margin-left: 10px; margin-right: 8px" v-model="searchWord" placeholder="Buscar" />
+              <i :disabled="!searchWord" @click="searchWord = ''" class="fa fa-times-circle prefix"></i>
+            </b-form>
+          </b-input-group>
 
-        <div v-for="template in filteredTemplates" v-bind:key="template.id" class="wn-task-container">
-          <Task
-            :id=template.id
-            :titulo=template.titulo
-            :operario=template.operario
-            :duracion=template.duracion
-            :estimado=template.estimado
-            :prioridad=template.prioridad
-            :showMore=template.showMore
-            :descripcion=template.descripcion
-            :pausable=template.pausable
-            :tags=template.tags
-          />
-          <div class="wn-btn-div">
-            <button @click="deleteTemplate(template.id)" class="wn-menu-btn"><i class="fa fa-close " aria-hidden="true"></i></button>
-            <button @click="fillData(template.id), dialogEditVisible = true" class="wn-menu-btn"><i class="fa fa-edit " aria-hidden="true"></i></button>
-            <button v-if="!template.showMore" @click="template.showMore=true" class="wn-menu-btn"><i class="fa fa-eye " aria-hidden="true"></i></button>
-            <button v-if="template.showMore" @click="template.showMore=false" class="wn-menu-btn"><i class="fa fa-eye-slash " aria-hidden="true"></i></button>
+          <div class="wn-col-container">
+            <div v-for="template in filteredTemplates" v-bind:key="template.id" class="wn-task-container">
+              <Task
+                :id=template.id
+                :titulo=template.titulo
+                :operario=template.operario
+                :duracion=template.duracion
+                :estimado=template.estimado
+                :prioridad=template.prioridad
+                :showMore=template.showMore
+                :descripcion=template.descripcion
+                :pausable=template.pausable
+                :tags=template.tags
+              />
+              <div class="wn-btn-div">
+                <button @click="deleteTemplate(template.id)" class="wn-menu-btn"><i class="fa fa-close " aria-hidden="true"></i></button>
+                <button @click="fillData(template.id), dialogEditVisible = true" class="wn-menu-btn"><i class="fa fa-edit " aria-hidden="true"></i></button>
+                <button v-if="!template.showMore" @click="template.showMore=true" class="wn-menu-btn"><i class="fa fa-eye " aria-hidden="true"></i></button>
+                <button v-if="template.showMore" @click="template.showMore=false" class="wn-menu-btn"><i class="fa fa-eye-slash " aria-hidden="true"></i></button>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+
     </div>
     <!-- Modal Add Plantilla -->
     <el-dialog
@@ -587,8 +591,6 @@
     background: whitesmoke;
     padding: 0;
     margin:  0;
-    height: 600px;
-    width:  100%;
   }
 
   div.wn-task-container {
@@ -673,9 +675,20 @@
   }
 
   .fondo-buscador {
-    background-color: #66a7a4;
-    border-bottom: solid 2px whitesmoke;
-    padding-left: 29px !important;
+    background-color: #ffffff;
+    color: #5f9ea0;
+
+    /*border-top:    solid  2px whitesmoke;*/
+    border-left:   solid  1px #5F9EA0;
+    border-right:  solid  1px #5F9EA0;
+    border-bottom: solid  1px #5F9EA0;
+    padding-left: 30px !important;
+  }
+
+  .table-width {
+    height: 100%;
+    padding-top:  0  !important;
+    padding-left: 0  !important;
   }
 
 </style>
