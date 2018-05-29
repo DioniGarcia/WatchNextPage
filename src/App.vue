@@ -13,6 +13,11 @@
 </script>
 
 <style>
+
+  body {
+    overflow-y: hidden;
+  }
+
   nav {
     margin-bottom: 7px;
     border-bottom: 2px solid whitesmoke ;

@@ -21,7 +21,7 @@
           </b-input-group>
           </transition>
 
-          <div class="wn-col-container searchOn">
+          <div class="wn-col-container" :class="[searchVisible ? 'searchOn' : '']">
             <div v-for="template in filteredTemplates" v-bind:key="template.id" class="wn-task-container">
               <Task
                 :id=template.id
@@ -593,11 +593,12 @@
     background: whitesmoke;
     padding: 0;
     margin:  0;
-  }
-
-  div.searchOff {
     height: 600px !important;
   }
+
+  /*div.searchOff {
+    height: 600px !important;
+  }*/
 
   div.searchOn {
     height: 534px !important;
@@ -699,7 +700,7 @@
     border-right:  solid   1px #5F9EA0;
     border-bottom: solid   1px #5F9EA0;
     border-bottom-radius: 50px;
-    padding-left: 30px !important;
+    padding-left: 40px !important;
   }
 
   .bounce-enter-active {
