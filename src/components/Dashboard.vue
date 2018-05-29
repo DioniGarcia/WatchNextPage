@@ -356,7 +356,7 @@
           querySnapshot.docs.map(doc => {
             const task = {
               id: doc.id,
-              operario: "No Asignado",
+              operario: "Se asignará durante la ejecución",
               titulo: doc.data().titulo,
               duracion: 0,
               estimado: doc.data().estimado,

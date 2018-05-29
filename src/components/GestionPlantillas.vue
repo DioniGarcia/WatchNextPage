@@ -233,9 +233,9 @@
           querySnapshot.forEach(doc => {
             const template = {
               id: doc.id,
-              operario: doc.data().operario,
+              operario: 'Se asignará durante la ejecución',
               titulo: doc.data().titulo,
-              duracion: doc.data().duracion,
+              duracion: 0,
               estimado: doc.data().estimado,
               prioridad: doc.data().prioridad,
               descripcion: doc.data().descripcion,
@@ -596,11 +596,11 @@
   }
 
   div.searchOff {
-    height: 600px;
+    height: 600px !important;
   }
 
   div.searchOn {
-    height: 534px;
+    height: 534px !important;
   }
 
   div.wn-task-container {
