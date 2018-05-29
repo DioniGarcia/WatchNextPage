@@ -11,6 +11,7 @@
       </div>
 
         <div class="table-width">
+          <transition name="bounce">
           <b-input-group v-if="searchVisible" class="fondo-buscador">
             <b-form inline>
               <i class="material-icons prefix">search</i>
@@ -18,8 +19,9 @@
               <i :disabled="!searchWord" @click="searchWord = ''" class="fa fa-times-circle prefix"></i>
             </b-form>
           </b-input-group>
+          </transition>
 
-          <div class="wn-col-container">
+          <div class="wn-col-container searchOn">
             <div v-for="template in filteredTemplates" v-bind:key="template.id" class="wn-task-container">
               <Task
                 :id=template.id
@@ -593,6 +595,14 @@
     margin:  0;
   }
 
+  div.searchOff {
+    height: 600px;
+  }
+
+  div.searchOn {
+    height: 534px;
+  }
+
   div.wn-task-container {
     margin-top: 3px;
 
@@ -674,21 +684,44 @@
     vertical-align: bottom;
   }
 
+  .table-width {
+    height: 600px;
+    padding-top:  0  !important;
+    padding-left: 0  !important;
+  }
+
   .fondo-buscador {
     background-color: #ffffff;
     color: #5f9ea0;
 
     /*border-top:    solid  2px whitesmoke;*/
-    border-left:   solid  1px #5F9EA0;
-    border-right:  solid  1px #5F9EA0;
-    border-bottom: solid  1px #5F9EA0;
+    border-left:   solid   1px #5F9EA0;
+    border-right:  solid   1px #5F9EA0;
+    border-bottom: solid   1px #5F9EA0;
+    border-bottom-radius: 50px;
     padding-left: 30px !important;
   }
 
-  .table-width {
-    height: 100%;
-    padding-top:  0  !important;
-    padding-left: 0  !important;
+  .bounce-enter-active {
+    animation: bounce-in .1s;
   }
+  .bounce-leave-active {
+    animation: bounce-in .1s reverse;
+  }
+  @keyframes bounce-in {
+    0% {
+      opacity: 0;
+      height: 20px;
+    }
+    50% {
+      opacity: 50;
+      height: 40px;
+    }
+    100% {
+      opacity: 100;
+      height: 73px;
+    }
+  }
+
 
 </style>
