@@ -394,7 +394,7 @@
               id: doc.id,
               operario: doc.data().operario,
               titulo: doc.data().titulo,
-              duracion: Math.round((new Date().getTime()-doc.data().h_inicio.getTime())/60000),
+              duracion: 0,
               estimado: doc.data().estimado,
               prioridad: doc.data().prioridad,
               showMore: false,
