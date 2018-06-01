@@ -4,7 +4,7 @@
 
       <div class="wn-col col-pendientes">
         <div class="wn-col-title">Lista Operarios
-          <button @click="inputVisible=false,cleanForm(),dialogVisible = true" class="wn-menu-btn">Crear nuevo</button>
+          <el-button @click="inputVisible=false,cleanForm(),dialogVisible = true" class="wn-menu-btn">Crear nuevo</el-button>
         </div>
 
           <div class="wn-col-container">

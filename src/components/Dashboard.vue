@@ -3,7 +3,7 @@
     <Navbar />
     <div class="wn-col col-pendientes">
       <div class="wn-col-title">Tareas Sin Asignar
-        <button @click="cleanForm(),dialogVisible = true" class="wn-menu-btn">Nueva tarea</button>
+        <el-button @click="cleanForm(),dialogVisible = true" class="wn-menu-btn">Nueva tarea</el-button>
       </div>
 
       <div class="wn-col-container scrollbar">
@@ -902,6 +902,10 @@
     float: right;
   }
 
+  .el-button {
+    margin-top: 3px !important;
+  }
+
   button.wn-menu-btn {
     border: none;
     background: whitesmoke;
@@ -960,6 +964,39 @@
 
   .resize-triggers { /*Recomendador de etiquetas*/
 
+  }
+
+  .fondo-buscador {
+    background-color: #ffffff;
+    color: #5f9ea0;
+
+    /*border-top:    solid  2px whitesmoke;*/
+    border-left:   solid   1px #5F9EA0;
+    border-right:  solid   1px #5F9EA0;
+    border-bottom: solid   1px #5F9EA0;
+    border-bottom-radius: 50px;
+    padding-left: 40px !important;
+  }
+
+  .bounce-enter-active {
+    animation: bounce-in .1s;
+  }
+  .bounce-leave-active {
+    animation: bounce-in .1s reverse;
+  }
+  @keyframes bounce-in {
+    0% {
+      opacity: 0;
+      height: 20px;
+    }
+    50% {
+      opacity: 50;
+      height: 40px;
+    }
+    100% {
+      opacity: 100;
+      height: 73px;
+    }
   }
 
 </style>
